@@ -19,6 +19,7 @@
   <style>
     :root{--plum:#452535;--ink:#30212b;--pink:#df328b;--pink-2:#fbe8ed;--lav:#b98dbb;--paper:#fffcfb;--line:#ead7e2;--muted:#756c73;--ok:#2c815f}
     *{box-sizing:border-box} body{margin:0;background:linear-gradient(155deg,#fff6f8 0%,#fbe8ed 47%,#f8edf8 100%);color:var(--ink);font-family:'Noto Sans JP',system-ui,sans-serif;min-height:100vh}
+    .seminar-card{margin:18px 0 0;padding:15px;border:1px solid #e7c5d6;border-radius:15px;background:linear-gradient(135deg,#fff7fb,#f7eefb)}.seminar-card h3{font-size:16px;margin:0 0 5px;color:var(--plum)}.seminar-card .small{margin:0 0 9px}.seminar-lead{font-size:12px;font-weight:700;color:#8c3164;margin:0 0 10px}.seminar-options{display:grid;gap:8px}.seminar-options button{min-height:48px;font-size:14px;background:#fff;color:#8c3164;border:1px solid #deb7cb;box-shadow:none}
     .shell{max-width:560px;margin:auto;padding:0 16px calc(94px + env(safe-area-inset-bottom))}.top{margin:0 -16px 20px;padding:calc(14px + env(safe-area-inset-top)) 20px 16px;background:var(--plum);color:#fff}.brand{font-size:12px;letter-spacing:.14em;font-weight:700;opacity:.78}.title{font-size:20px;font-weight:700;margin-top:3px}.hero{padding:18px 18px 16px;border-radius:22px;background:linear-gradient(130deg,#fbd7e6,#efe1f4);border:1px solid #fff;box-shadow:0 10px 24px #7f506326;margin:6px 0 16px}.eyebrow{font-size:12px;letter-spacing:.08em;color:#8c3164;font-weight:700}.hero h1{font-size:26px;line-height:1.35;margin:7px 0}.hero p{margin:0;color:#624b58;font-size:14px}.card{background:var(--paper);border:1px solid var(--line);box-shadow:0 7px 20px #56304212;border-radius:18px;padding:18px;margin:12px 0}.hide{display:none!important}.step{font-size:12px;color:#9d5580;font-weight:700;letter-spacing:.05em}.card h2{font-size:19px;margin:5px 0 7px}.small{font-size:13px;line-height:1.65;color:var(--muted);margin:4px 0 14px}.notice{min-height:22px;font-size:14px;line-height:1.55;margin:10px 2px;color:#9a225c}.notice.ok{color:var(--ok)}.error-code{display:block;font-size:11px;margin-top:4px;color:#876977}button,a.button{appearance:none;display:flex;width:100%;min-height:52px;padding:12px 16px;align-items:center;justify-content:center;border:0;border-radius:14px;font:600 16px inherit;cursor:pointer;text-decoration:none;transition:transform .16s ease,box-shadow .16s ease;background:var(--pink);color:#fff;box-shadow:0 5px 12px #bd267044}button:active,a.button:active,button.busy{transform:scale(.98)}button[disabled]{cursor:wait;opacity:.72}.busy::before{content:'';width:15px;height:15px;margin-right:8px;border:2px solid #fff8;border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite}.ghost{background:#fff;color:#a52c67;border:1px solid #e8b4ce;box-shadow:none;margin-top:10px}.dark{background:var(--plum)}.fields{display:grid;gap:13px;margin:10px 0 0}.field{display:grid;gap:6px}.field label{font-size:14px;font-weight:700}.required{display:inline-block;margin-left:4px;color:#a52c67;font-size:11px}.form-group{margin:14px 0;padding:14px;border:1px solid #eedde6;border-radius:14px;background:#fffafb}.section-label{font-size:15px;margin:0;color:var(--plum);font-weight:700}.section-label:first-child{margin-top:0}input{font:16px inherit;border:1px solid #ddcbd5;border-radius:12px;background:#fff;min-height:48px;padding:10px 12px;width:100%;color:var(--ink)}input:focus{outline:3px solid #f4bdd8;border-color:#b42b6b}.problem input{border-color:#d33264;background:#fff6f8}.password-row{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center}.password-row button{width:auto;min-height:48px;padding:8px 12px;background:#fff;color:#a52c67;border:1px solid #e8b4ce;box-shadow:none;font-size:13px}.complete{background:linear-gradient(135deg,#fff8fb,#f3e9f6)}.mark{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;background:#fae0ec;color:#b7286b;font-size:25px;font-weight:700;margin-bottom:8px}.footer{padding:14px 3px 0;font-size:11px;color:#907f88;text-align:center}.divider{height:1px;background:#eee0e7;margin:18px 0}.loading{display:inline-flex;gap:8px;align-items:center}.dot{width:8px;height:8px;border-radius:50%;background:currentColor;animation:pulse 1s infinite alternate}.sticky-action{position:fixed;left:max(16px,calc((100vw - 560px)/2 + 16px));right:max(16px,calc((100vw - 560px)/2 + 16px));bottom:calc(12px + env(safe-area-inset-bottom));z-index:4;padding:10px;background:#fffcfbec;border:1px solid var(--line);border-radius:16px;box-shadow:0 8px 22px #56304228}.progress{position:fixed;top:0;left:0;width:100%;height:4px;background:#ffffff44;z-index:10;opacity:0;transition:opacity .2s}.progress.active{opacity:1}.progress i{display:block;width:0;height:100%;background:linear-gradient(90deg,#df328b,#c59aca);transition:width .28s ease}.skeleton{height:17px;border-radius:8px;margin:13px 0;background:linear-gradient(90deg,#f5e8ee 25%,#fff 37%,#f5e8ee 63%);background-size:400% 100%;animation:shimmer 1.15s infinite}.skeleton.short{width:57%}.slow-tip{font-size:12px;color:#756c73;margin:7px 2px;min-height:18px}@keyframes pulse{to{opacity:.25;transform:scale(.7)}}@keyframes spin{to{transform:rotate(360deg)}}@keyframes shimmer{to{background-position:-135% 0}}
   </style>
 </head>
@@ -39,13 +40,19 @@
 
     <section class="card hide" id="screen-register"><div class="step">STEP 2</div><h2>店舗情報を確認</h2><p class="small">入力済みの内容をご確認ください。印のある項目だけ入力・修正してください。</p><div id="register-fields"></div><div class="fields"><div class="field"><label for="password">パスワード <span class="required">必須</span></label><div class="password-row"><input id="password" type="password" autocomplete="new-password"><button id="password-toggle" type="button" aria-pressed="false">表示</button></div></div></div><div class="sticky-action"><button id="register-button" type="button">登録する</button></div></section>
 
-    <section class="card complete hide" id="screen-done"><div class="mark">✓</div><div class="step">COMPLETE</div><h2 id="done-title">ご登録が完了しました</h2><p class="small" id="done-copy"></p><div id="done-id" class="small"></div><button class="dark" id="close-button" type="button">LINEに戻る</button></section>
+    <section class="card complete hide" id="screen-done"><div class="mark">✓</div><div class="step">COMPLETE</div><h2 id="done-title">ご登録が完了しました</h2><p class="small" id="done-copy"></p><div id="done-id" class="small"></div><section class="seminar-card hide" id="seminar-card"><h3>合同説明会のご案内</h3><p class="small">LOCの使い方と、お店での活かし方をご紹介します（オンライン・1時間）</p><p class="seminar-lead">次の画面で日程をお選びください</p><div class="seminar-options" id="seminar-options"></div></section><button class="dark" id="close-button" type="button">LINEに戻る</button></section>
     <p class="footer">リアン株式会社｜お困りの際は会場スタッフへお声がけください。</p>
   </main>
   <script>
   (function () {
     'use strict';
     var cfg = window.LOC_CONFIG || {}, qs = new URLSearchParams(location.search);
+    /* 代表承認済みの合同説明会。開始時刻を過ぎた回は画面に表示しない。 */
+    var SEMINAR_DATES = [
+      { slot:'1027', startsAt:'2026-10-27T14:00:00+09:00', label:'10月27日（火）14:00〜15:00｜オンライン' },
+      { slot:'1028', startsAt:'2026-10-28T19:00:00+09:00', label:'10月28日（水）19:00〜20:00｜オンライン' }
+    ];
+    var SEMINAR_FORM_URL = 'https://liff.line.me/1654464542-Wky3Ay7r?liff_id=1654464542-Wky3Ay7r&group_id=157954';
     var state = { sid:'', mode: qs.get('p') === 'register' ? 'register' : 'link', ref: qs.get('ref') || '', src: qs.get('src') || '', fields:[], busy:false, waitTimers:[], starting:false, email:'', codeTimer:0, codeExpiresAt:0, resendUntil:0 };
     function $(id) { return document.getElementById(id); }
     function text(id, value) { $(id).textContent = String(value || ''); }
@@ -134,6 +141,25 @@
       url.searchParams.set('api', 'liff');
       return url.toString();
     }
+    function seminarLogUrl() {
+      var url = new URL(String(cfg.apiUrl || ''), location.href);
+      url.searchParams.set('api', 'liff_seminar');
+      return url.toString();
+    }
+    function openSeminar(slot) {
+      /* クリック数だけを匿名で残す。LINEのトークン・氏名・店舗情報は送らない。 */
+      try { if (navigator.sendBeacon) navigator.sendBeacon(seminarLogUrl(), new Blob([JSON.stringify({ slot:slot })], { type:'text/plain;charset=UTF-8' })); } catch (ignore) {}
+      location.href = SEMINAR_FORM_URL;
+    }
+    function renderSeminarCard() {
+      var options = $('seminar-options'), now = Date.now();
+      while (options.firstChild) options.removeChild(options.firstChild);
+      SEMINAR_DATES.filter(function (seminar) { return Date.parse(seminar.startsAt) > now; }).forEach(function (seminar) {
+        var button = document.createElement('button'); button.type = 'button'; button.textContent = seminar.label;
+        button.onclick = function () { openSeminar(seminar.slot); }; options.appendChild(button);
+      });
+      $('seminar-card').classList.toggle('hide', !options.children.length);
+    }
     function tokenNeedsRefresh() {
       try { var decoded = liff.getDecodedIDToken(), exp = Number(decoded && decoded.exp); return !exp || exp * 1000 <= Date.now() + 60000; } catch (ignore) { return true; }
     }
@@ -191,7 +217,7 @@
     function done(r) {
       text('done-title', r.already ? 'LINEとの連携が完了しました' : 'ご登録が完了しました');
       text('done-copy', r.message || 'ご利用ありがとうございます。');
-      text('done-id', r.loginId ? 'ログインID：' + r.loginId : ''); show('screen-done'); note('', true); waitDone();
+      text('done-id', r.loginId ? 'ログインID：' + r.loginId : ''); renderSeminarCard(); show('screen-done'); note('', true); waitDone();
     }
     function showDuplicate() {
       var entered = $('field-email') ? $('field-email').value : $('email').value;
