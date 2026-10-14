@@ -46,13 +46,13 @@
 
     <section class="card hide" id="screen-email"><div class="step">STEP 2</div><h2>ご登録済みの方</h2><p class="small">メールアドレスへ確認コードをお送りします。</p><div class="fields"><div class="field"><label for="email">メールアドレス</label><input id="email" type="email" inputmode="email" autocomplete="email"></div><div class="field hide" id="code-wrap"><label for="code">確認コード</label><input id="code" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6"></div></div><div class="hide" id="code-support"><p class="small" id="code-expiry" aria-live="polite"></p><p class="small">メールが届くまで、1〜2分ほどかかることがあります。届かない場合は、迷惑メールフォルダもご確認ください。</p><p class="small">メールアドレスを修正して再送するか、会場スタッフへお声がけください。</p></div><button id="email-button" type="button">確認コードを送る</button><button class="ghost hide" id="resend-button" type="button">新しいコードを送る</button><button class="ghost hide" id="resume-email-button" type="button">続きから再開する</button></section>
 
-    <section class="card hide" id="screen-duplicate"><div class="step">STEP 2</div><h2>LOCにご登録済みの方</h2><p class="small">このメールアドレスは、すでにLOCの会員として登録されています。新規登録はせず、LINEとLOCをつなげます。</p><button id="link-existing-button" type="button">LINEとLOCをつなぐ</button></section>
+    <section class="card hide" id="screen-duplicate"><div class="step">ご確認ください</div><h2>この店舗はご登録済みです</h2><p class="small" id="duplicate-copy">この店舗はすでにご登録があります。ご注文は、登録済みの方のLINEからお進みください。</p><button class="ghost" id="duplicate-close-button" type="button">LINEに戻る</button></section>
 
     <section class="card hide" id="screen-register"><div class="step" id="register-step">STEP 1</div><h2 id="register-title">LINE店舗登録</h2><p class="small" id="register-copy">まず店舗情報をご登録ください。注文をご希望の方だけ、次の画面でLOC会員登録へ進みます。</p><p class="small hide" id="test-mode-note">これは代表専用のテスト登録です。店舗名は「【テスト】」から始め、メールアドレスには「+test」を含めてください。通常のLINEとLOCの連携は変更されません。</p><div id="register-fields"></div><div id="order-only" class="hide"><div id="order-profile" class="small"></div><div class="fields"><div class="field"><label for="password">LOCのログインパスワード <span class="required">必須</span></label><p class="field-hint">英字（小文字）と数字をそれぞれ1文字以上含む、8文字以上・半角</p><div class="password-row"><input id="password" type="password" autocomplete="new-password"><button id="password-toggle" type="button" aria-pressed="false">表示</button></div></div></div></div><div class="sticky-action"><button id="register-button" type="button">LINE店舗登録を完了する</button></div></section>
 
-    <section class="card complete hide" id="screen-profile-done"><div class="mark">✓</div><div class="step">STEP 1 COMPLETE</div><h2>LINE店舗登録が完了しました</h2><p class="small">ご希望の操作をお選びください。今すぐ注文しない場合も、店舗情報は記録されています。</p><button id="order-now-button" type="button">今すぐ注文する</button><button class="ghost" id="seminar-button" type="button">セミナーに参加する</button><button class="ghost hide" id="instagram-button" type="button">インスタグラムを見る</button></section>
+    <section class="card complete hide" id="screen-profile-done"><div class="mark">✓</div><div class="step">STEP 1 COMPLETE</div><h2>LINE店舗登録が完了しました</h2><p class="small">ご希望の操作をお選びください。今すぐ注文しない場合も、店舗情報は記録されています。</p><div id="profile-done-id" class="small"></div><button id="order-now-button" type="button">今すぐ注文する</button><button class="ghost" id="seminar-button" type="button">セミナーに参加する</button><button class="ghost hide" id="instagram-button" type="button">インスタグラムを見る</button></section>
 
-    <section class="card complete hide" id="screen-done"><div class="mark">✓</div><div class="step">COMPLETE</div><h2 id="done-title">ご登録が完了しました</h2><p class="small" id="done-copy"></p><div id="done-id" class="small"></div><section class="seminar-card hide" id="seminar-card"><h3>合同説明会のご案内</h3><p class="small">LOCの使い方と、お店での活かし方をご紹介します（オンライン・1時間）</p><p class="seminar-lead">次の画面で日程をお選びください</p><div class="seminar-options" id="seminar-options"></div></section><button class="dark" id="close-button" type="button">LINEに戻る</button></section>
+    <section class="card complete hide" id="screen-done"><div class="mark">✓</div><div class="step">COMPLETE</div><h2 id="done-title">ご登録が完了しました</h2><p class="small" id="done-copy"></p><div id="done-id" class="small"></div><button class="dark hide" id="order-open-button" type="button">LOCの注文画面を開く</button><section class="seminar-card hide" id="seminar-card"><h3>合同説明会のご案内</h3><p class="small">LOCの使い方と、お店での活かし方をご紹介します（オンライン・1時間）</p><p class="seminar-lead">次の画面で日程をお選びください</p><div class="seminar-options" id="seminar-options"></div></section><button class="dark" id="close-button" type="button">LINEに戻る</button></section>
     <p class="footer">リアン株式会社｜お困りの際は会場スタッフへお声がけください。</p>
   </main>
   <script>
@@ -65,7 +65,8 @@
       { slot:'1028', startsAt:'2026-10-28T19:00:00+09:00', label:'10月28日（水）19:00〜20:00｜オンライン' }
     ];
     var SEMINAR_FORM_URL = 'https://liff.line.me/1654464542-Wky3Ay7r?liff_id=1654464542-Wky3Ay7r&group_id=157954';
-    var state = { sid:'', mode: qs.get('p') === 'register' ? 'register' : 'link', ref: qs.get('ref') || '', src: qs.get('src') || '', testNew:qs.get('test') === 'new', fields:[], busy:false, waitTimers:[], starting:false, email:'', codeTimer:0, codeSendTimer:0, codeExpiresAt:0, resendUntil:0, instagramUrl:'' };
+    var pageMode = qs.get('p');
+    var state = { sid:'', mode: pageMode === 'order' ? 'order' : (pageMode === 'register' ? 'register' : 'link'), ref: qs.get('ref') || '', src: qs.get('src') || '', testNew:qs.get('test') === 'new', fields:[], busy:false, waitTimers:[], starting:false, email:'', codeTimer:0, codeSendTimer:0, codeExpiresAt:0, resendUntil:0, instagramUrl:'', orderUrl:'' };
     function $(id) { return document.getElementById(id); }
     function text(id, value) { $(id).textContent = String(value || ''); }
     function show(id) { ['screen-start','screen-friend','screen-email','screen-duplicate','screen-register','screen-profile-done','screen-done'].forEach(function (x) { $(x).classList.toggle('hide', x !== id); }); }
@@ -345,6 +346,7 @@
     }
     function drawProfileDone(r) {
       state.profileFields = r.profile || state.profileFields || []; state.industries = r.industries || state.industries || [];
+      text('profile-done-id', r.receiptNo ? '受付番号：' + r.receiptNo : '');
       $('instagram-button').classList.toggle('hide', !/^https:\/\/www\.instagram\.com\//.test(state.instagramUrl));
       show('screen-profile-done'); note('', true); waitDone();
     }
@@ -386,9 +388,14 @@
       $('password').value = ''; show('screen-register');
     }
     function done(r) {
-      text('done-title', r.testMode ? 'テスト登録が完了しました' : (r.already ? 'LINEとの連携が完了しました' : 'ご登録が完了しました'));
-      text('done-copy', r.testMode ? 'テスト用の登録が完了しました。通常のLINEとLOCの連携は変更されていません。' : (r.message || 'ご利用ありがとうございます。'));
-      text('done-id', r.loginId ? 'ログインID：' + r.loginId : ''); renderSeminarCard(); show('screen-done'); note('', true); waitDone();
+      var isOrder = r && r.state === 'order_existing';
+      text('done-title', isOrder ? 'LOCの注文画面へ進めます' : (r.testMode ? 'テスト登録が完了しました' : (r.already ? 'LINEとの連携が完了しました' : 'ご登録が完了しました')));
+      text('done-copy', isOrder ? 'ご登録済みのLOC会員です。下のボタンから注文画面を開けます。' : (r.testMode ? 'テスト用の登録が完了しました。通常のLINEとLOCの連携は変更されていません。' : (r.message || 'ご利用ありがとうございます。')));
+      var number = r.memberNumber ? '会員番号：' + r.memberNumber : (r.receiptNo ? '受付番号：' + r.receiptNo : '');
+      text('done-id', number || (r.loginId ? 'ログインID：' + r.loginId : ''));
+      state.orderUrl = /^https:\/\/[^\s"'<>]+$/.test(String(r.orderUrl || '')) ? String(r.orderUrl) : '';
+      $('order-open-button').classList.toggle('hide', !state.orderUrl);
+      renderSeminarCard(); show('screen-done'); note('', true); waitDone();
     }
     function showDuplicate() {
       if (state.testNew) {
@@ -396,15 +403,15 @@
         window.setTimeout(function () { var field = $('field-email'); if (field) { field.scrollIntoView({ behavior:'smooth', block:'center' }); field.focus({ preventScroll:true }); } }, 0);
         return;
       }
-      var entered = $('field-email') ? $('field-email').value : $('email').value;
-      state.duplicateEmail = entered || '';
+      text('duplicate-copy', 'この店舗はすでにご登録があります。ご注文は、登録済みの方のLINEからお進みください。');
       show('screen-duplicate');
       note('', false);
     }
     async function continueFlow(preloaded) {
-      if (state.mode !== 'register') { show('screen-email'); return; }
+      if (state.mode === 'link') { show('screen-email'); return; }
       var r = preloaded || await api('liff_profile_load', { sid:state.sid });
       if (!r.ok) throw tagError(new Error('server response'), 'liff_profile_load');
+      if (r.state === 'order_existing') return done(r);
       if (r.state === 'profile_form' || r.state === 'form') return drawForm(r);
       if (r.state === 'profile_done') return drawProfileDone(r);
       if (r.state === 'dup') return showDuplicate();
@@ -418,11 +425,20 @@
         $('retry-button').classList.add('hide'); $('start-button').classList.remove('hide'); setBusy($('start-button'), true, '確認しています…'); waitStart('LINEを確認しています…', 20);
         var friendship = await liff.getFriendship();
         currentAction = 'liff_start';
-        if (state.mode === 'register') { waitStage('店舗情報を読み込んでいます…', 48); drawFormSkeleton(); }
+        if (state.mode !== 'link') { waitStage('店舗情報を読み込んでいます…', 48); drawFormSkeleton(); }
         var r = await api('liff_start', { friend:!!friendship.friendFlag, mode:state.mode, ref:state.ref, src:state.src, testNew:state.testNew });
         if (r.needFriend) { show('screen-friend'); note(r.error || '公式LINEの友だち追加をお願いします。'); waitDone(); return; }
         if (!r.ok) { fail(r.error); return; }
-        state.sid = r.sid; state.instagramUrl = String(r.instagramUrl || ''); await continueFlow(r.registration);
+        state.sid = r.sid; state.instagramUrl = String(r.instagramUrl || '');
+        if (state.mode === 'order') {
+          var orderStart = r.registration;
+          if (!orderStart || !orderStart.ok) throw tagError(new Error('server response'), 'liff_order_entry');
+          if (orderStart.state === 'order_existing') return done(orderStart);
+          if (orderStart.state === 'profile_form' || orderStart.state === 'form') return drawForm(orderStart);
+          if (orderStart.state === 'profile_done') return startOrder();
+          return done(orderStart);
+        }
+        await continueFlow(r.registration);
       } catch (e) { if (!e || !e.locRelogin) fail('LINEの確認に時間がかかっています。もう一度お試しください。', currentAction, e); }
       finally { state.starting = false; setBusy($('start-button'), false, '確認を開始する'); }
     }
@@ -436,11 +452,7 @@
     }
     $('friend-button').href = String(cfg.oaUrl || '#');
     $('start-button').onclick = start; $('retry-button').onclick = start; $('friend-check').onclick = start;
-    $('link-existing-button').onclick = function () {
-      if (state.testNew) { show('screen-register'); note('テストモードでは既存会員との連携は行えません。「+test」を含むメールアドレスで登録してください。'); return; }
-      state.mode = 'link'; $('email').value = state.duplicateEmail || ''; state.email = state.duplicateEmail || ''; $('code-wrap').classList.add('hide'); $('code-support').classList.add('hide'); $('resend-button').classList.add('hide'); $('resume-email-button').classList.add('hide'); clearCodeTimer();
-      $('email-button').textContent = '確認コードを送る'; show('screen-email'); note('登録済みのメールアドレスを確認します。');
-    };
+    $('duplicate-close-button').onclick = function () { if (liff.isInClient()) liff.closeWindow(); else location.href = 'https://line.me/'; };
     document.addEventListener('visibilitychange', function () { if (!document.hidden && !$('screen-friend').classList.contains('hide')) window.setTimeout(start, 350); });
     async function requestCode(button) {
       var action = 'liff_request_code';
@@ -502,6 +514,11 @@
       if (!/^https:\/\/www\.instagram\.com\//.test(state.instagramUrl)) return;
       if (liff && typeof liff.openWindow === 'function') liff.openWindow({ url:state.instagramUrl, external:true });
       else window.open(state.instagramUrl, '_blank', 'noopener');
+    };
+    $('order-open-button').onclick = function () {
+      if (!state.orderUrl) return;
+      if (liff && typeof liff.openWindow === 'function') liff.openWindow({ url:state.orderUrl, external:true });
+      else location.href = state.orderUrl;
     };
     $('register-button').onclick = async function () {
       var button = this, edits = collectEdits();
