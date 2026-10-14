@@ -1,14 +1,21 @@
 <!doctype html>
-<html lang="ja"><head>
+<html lang="ja">
+<head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#452535">
   <title>LOC リアンオンラインコレクション</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script>
+    window.LOC_CONFIG = {
+      liffId: '1654464542-nn1iQBwK',
+      apiUrl: 'https://script.google.com/macros/s/AKfycbxWeayUASpi4cociq1BlGg7QHX77Akg5M77Cgfmzrb4m4njyq24-qQn-mRqdZrXDf05JQ/exec',
+      oaUrl: 'https://lin.ee/RSlv9w3'
+    };
+  </script>
   <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
-  <script>window.LOC_CONFIG={liffId:'1654464542-nn1iQBwK',apiUrl:'https://script.google.com/macros/s/AKfycbxWeayUASpi4cociq1BlGg7QHX77Akg5M77Cgfmzrb4m4njyq24-qQn-mRqdZrXDf05JQ/exec',oaUrl:'https://lin.ee/RSlv9w3'};</script>
   <style>
     :root{--plum:#452535;--ink:#30212b;--pink:#df328b;--pink-2:#fbe8ed;--lav:#b98dbb;--paper:#fffcfb;--line:#ead7e2;--muted:#756c73;--ok:#2c815f}
     *{box-sizing:border-box} body{margin:0;background:linear-gradient(155deg,#fff6f8 0%,#fbe8ed 47%,#f8edf8 100%);color:var(--ink);font-family:'Noto Sans JP',system-ui,sans-serif;min-height:100vh}
@@ -26,7 +33,7 @@
 
     <section class="card hide" id="screen-friend"><div class="step">STEP 1</div><h2>公式LINEを友だち追加してください</h2><p class="small">追加後、この画面に戻ると自動で確認して次へ進みます。LINEログインをやり直す必要はありません。</p><a class="button dark" id="friend-button" href="#">公式LINEを友だち追加する</a><button class="ghost" id="friend-check" type="button">追加しました（確認する）</button></section>
 
-    <section class="card hide" id="screen-email"><div class="step">STEP 2</div><h2>ご登録済みの方</h2><p class="small">メールアドレスへ確認コードをお送りします。</p><div class="fields"><div class="field"><label for="email">メールアドレス</label><input id="email" type="email" inputmode="email" autocomplete="email"></div><div class="field hide" id="code-wrap"><label for="code">確認コード</label><input id="code" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6"></div></div><button id="email-button" type="button">確認コードを送る</button></section>
+    <section class="card hide" id="screen-email"><div class="step">STEP 2</div><h2>ご登録済みの方</h2><p class="small">メールアドレスへ確認コードをお送りします。</p><div class="fields"><div class="field"><label for="email">メールアドレス</label><input id="email" type="email" inputmode="email" autocomplete="email"></div><div class="field hide" id="code-wrap"><label for="code">確認コード</label><input id="code" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6"></div></div><div class="hide" id="code-support"><p class="small" id="code-expiry" aria-live="polite"></p><p class="small">メールが届かない場合：迷惑メールフォルダをご確認ください。メールアドレスを修正して再送するか、会場スタッフへお声がけください。</p></div><button id="email-button" type="button">確認コードを送る</button><button class="ghost hide" id="resend-button" type="button">新しいコードを送る</button><button class="ghost hide" id="resume-email-button" type="button">続きから再開する</button></section>
 
     <section class="card hide" id="screen-duplicate"><div class="step">STEP 2</div><h2>LOCにご登録済みの方</h2><p class="small">このメールアドレスは、すでにLOCの会員として登録されています。新規登録はせず、LINEとLOCをつなげます。</p><button id="link-existing-button" type="button">LINEとLOCをつなぐ</button></section>
 
@@ -39,7 +46,7 @@
   (function () {
     'use strict';
     var cfg = window.LOC_CONFIG || {}, qs = new URLSearchParams(location.search);
-    var state = { sid:'', mode: qs.get('p') === 'register' ? 'register' : 'link', ref: qs.get('ref') || '', src: qs.get('src') || '', fields:[], busy:false, waitTimers:[], starting:false };
+    var state = { sid:'', mode: qs.get('p') === 'register' ? 'register' : 'link', ref: qs.get('ref') || '', src: qs.get('src') || '', fields:[], busy:false, waitTimers:[], starting:false, email:'', codeTimer:0, codeExpiresAt:0, resendUntil:0 };
     function $(id) { return document.getElementById(id); }
     function text(id, value) { $(id).textContent = String(value || ''); }
     function show(id) { ['screen-start','screen-friend','screen-email','screen-duplicate','screen-register','screen-done'].forEach(function (x) { $(x).classList.toggle('hide', x !== id); }); }
@@ -59,6 +66,42 @@
       state.waitTimers.push(window.setTimeout(function () { $('retry-button').classList.remove('hide'); }, 15000));
     }
     function waitDone() { clearWaitTimers(); $('progress').firstElementChild.style.width = '100%'; window.setTimeout(function () { $('progress').classList.remove('active'); $('progress').firstElementChild.style.width = '0'; }, 220); }
+    function rememberEmail() { state.email = String($('email').value || '').trim(); return state.email; }
+    function restoreEmail() { if (state.email) $('email').value = state.email; }
+    function clearCodeTimer() { if (state.codeTimer) { clearInterval(state.codeTimer); state.codeTimer = 0; } }
+    function setResendCountdown(seconds) {
+      var button = $('resend-button'), until = Date.now() + Math.max(0, Number(seconds) || 0) * 1000;
+      state.resendUntil = until;
+      clearCodeTimer(); button.classList.remove('hide');
+      function tick() {
+        var left = Math.max(0, Math.ceil((until - Date.now()) / 1000));
+        button.disabled = left > 0;
+        button.textContent = left > 0 ? '新しいコードを送る（あと' + left + '秒）' : '新しいコードを送る';
+        if (!left) clearCodeTimer();
+      }
+      tick(); if (until > Date.now()) state.codeTimer = window.setInterval(tick, 250);
+    }
+    function setCodeDetails(result, resendNow) {
+      $('code-wrap').classList.remove('hide'); $('code-support').classList.remove('hide'); $('resume-email-button').classList.add('hide');
+      $('email-button').textContent = '確認する';
+      var exp = Date.parse(String(result && result.codeExpiresAt || ''));
+      if (resendNow) {
+        $('code-expiry').textContent = '前の確認コードは使えません。新しいコードをお送りします。';
+      } else if (!isNaN(exp)) {
+        state.codeExpiresAt = exp;
+        var clock = new Intl.DateTimeFormat('ja-JP', { hour:'2-digit', minute:'2-digit' }).format(new Date(exp));
+        $('code-expiry').textContent = '確認コードの有効期限：' + clock + 'まで（送信から30分）';
+      } else $('code-expiry').textContent = '下のボタンで新しい確認コードをお送りします。';
+      setResendCountdown(resendNow ? 0 : Math.max(0, Number(result && result.resendAfterSeconds) || 0));
+    }
+    function showEmailRecovery(message) {
+      show('screen-email'); restoreEmail(); $('resume-email-button').classList.remove('hide');
+      note(message || '確認を続けるため、下のボタンを押してください。'); waitDone();
+    }
+    function showCodeRecovery(message, result) {
+      show('screen-email'); restoreEmail(); setCodeDetails(result || {}, true);
+      note(message || '下のボタンで新しいコードをお送りします。'); waitDone();
+    }
     function newErrorCode() { return 'E' + Math.random().toString(36).slice(2, 8).toUpperCase().padEnd(6, '0'); }
     function telemetryText(value) {
       return String(value || '').replace(/https?:\/\/\S+/gi, 'url').replace(/[A-Za-z0-9_-]{24,}/g, 'redacted').replace(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/gi, 'email').slice(0, 160);
@@ -111,7 +154,7 @@
           throw new Error('HTTP request failed');
         }
         var json = await res.json();
-        if (json && json.reload) { reLogin(); var reload = new Error('LINEセッションを更新しています'); reload.locRelogin = true; throw reload; }
+        if (json && json.reload && action === 'liff_start') { reLogin(); var reload = new Error('LINEセッションを更新しています'); reload.locRelogin = true; throw reload; }
         return json;
       } catch (e) { throw tagError(e, action, res); }
     }
@@ -191,16 +234,45 @@
     $('friend-button').href = String(cfg.oaUrl || '#');
     $('start-button').onclick = start; $('retry-button').onclick = start; $('friend-check').onclick = start;
     $('link-existing-button').onclick = function () {
-      state.mode = 'link'; $('email').value = state.duplicateEmail || ''; $('code-wrap').classList.add('hide');
+      state.mode = 'link'; $('email').value = state.duplicateEmail || ''; state.email = state.duplicateEmail || ''; $('code-wrap').classList.add('hide'); $('code-support').classList.add('hide'); $('resend-button').classList.add('hide'); $('resume-email-button').classList.add('hide'); clearCodeTimer();
       $('email-button').textContent = '確認コードを送る'; show('screen-email'); note('登録済みのメールアドレスを確認します。');
     };
     document.addEventListener('visibilitychange', function () { if (!document.hidden && !$('screen-friend').classList.contains('hide')) window.setTimeout(start, 350); });
-    $('email-button').onclick = async function () {
-      try { var action = $('code-wrap').classList.contains('hide') ? 'liff_request_code' : 'liff_verify_code'; var payload = { sid:state.sid };
-        if (action === 'liff_request_code') payload.email = $('email').value; else payload.code = $('code').value;
-        setBusy(this, true, action === 'liff_request_code' ? '送信しています…' : '確認しています…'); waitStart(action === 'liff_request_code' ? '確認コードを送っています…' : '登録情報を確認しています…', 64); var r = await api(action, payload);
-        if (!r.ok) { note(r.error); return; } if (action === 'liff_request_code') { $('code-wrap').classList.remove('hide'); note(r.message || '確認コードを送りました。', true); this.textContent = '確認する'; } else done(r);
-      } catch (e) { if (!e || !e.locRelogin) note('通信を確認できませんでした。もう一度お試しください。', false, logClientError(action, e)); } finally { this.disabled = false; this.classList.remove('busy'); if (!state.relogging) waitDone(); }
+    async function requestCode(button) {
+      var action = 'liff_request_code';
+      try {
+        var email = rememberEmail();
+        setBusy(button, true, '送信しています…'); waitStart('確認コードを送っています…', 64);
+        var r = await api(action, { sid:state.sid, email:email });
+        if (!r.ok) {
+          if (r.recover === 'resume') return showEmailRecovery(r.error);
+          if (r.canResend || r.retryAfterSeconds) setCodeDetails(r, false);
+          note(r.error || '確認コードを送れませんでした。下のボタンでもう一度お試しください。'); return;
+        }
+        setCodeDetails(r, false); note(r.message || '確認コードをお送りしました。', true);
+      } catch (e) { if (!e || !e.locRelogin) showCodeRecovery('通信を確認できませんでした。下のボタンで新しいコードをお送りします。'); }
+      finally { button.disabled = button === $('resend-button') && state.resendUntil > Date.now(); button.classList.remove('busy'); if (!state.relogging) waitDone(); }
+    }
+    async function verifyCode(button) {
+      var action = 'liff_verify_code';
+      try {
+        setBusy(button, true, '確認しています…'); waitStart('登録情報を確認しています…', 64);
+        var r = await api(action, { sid:state.sid, code:$('code').value });
+        if (!r.ok) {
+          if (r.recover === 'resume') return showEmailRecovery(r.error);
+          if (r.codeExpired || r.canResend) return showCodeRecovery(r.error, r);
+          note(r.error || '確認コードを確認できませんでした。入力内容をご確認ください。'); return;
+        }
+        done(r);
+      } catch (e) { if (!e || !e.locRelogin) showCodeRecovery('通信を確認できませんでした。下のボタンで新しいコードをお送りします。'); }
+      finally { button.disabled = false; button.classList.remove('busy'); if (!state.relogging) waitDone(); }
+    }
+    $('email-button').onclick = function () { return $('code-wrap').classList.contains('hide') ? requestCode(this) : verifyCode(this); };
+    $('resend-button').onclick = function () { return requestCode(this); };
+    $('resume-email-button').onclick = async function () {
+      var saved = rememberEmail(); setBusy(this, true, '再開しています…');
+      try { await start(); $('email').value = saved; state.email = saved; if (!$('screen-email').classList.contains('hide')) note('メールアドレスはそのままです。確認コードを送ってください。'); }
+      catch (ignore) {} finally { this.disabled = false; this.classList.remove('busy'); }
     };
     $('password-toggle').onclick = function () { var input = $('password'), shown = input.type === 'text'; input.type = shown ? 'password' : 'text'; this.textContent = shown ? '表示' : '隠す'; this.setAttribute('aria-pressed', String(!shown)); };
     $('register-button').onclick = async function () {
@@ -215,4 +287,5 @@
     window.addEventListener('DOMContentLoaded', boot);
   }());
   </script>
-</body></html>
+</body>
+</html>
