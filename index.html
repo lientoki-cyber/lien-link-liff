@@ -34,11 +34,11 @@
 
     <section class="card hide" id="screen-friend"><div class="step">STEP 1</div><h2>公式LINEを友だち追加してください</h2><p class="small">追加後、この画面に戻ると自動で確認して次へ進みます。LINEログインをやり直す必要はありません。</p><a class="button dark" id="friend-button" href="#">公式LINEを友だち追加する</a><button class="ghost" id="friend-check" type="button">追加しました（確認する）</button></section>
 
-    <section class="card hide" id="screen-email"><div class="step">STEP 2</div><h2>ご登録済みの方</h2><p class="small">メールアドレスへ確認コードをお送りします。</p><div class="fields"><div class="field"><label for="email">メールアドレス</label><input id="email" type="email" inputmode="email" autocomplete="email"></div><div class="field hide" id="code-wrap"><label for="code">確認コード</label><input id="code" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6"></div></div><div class="hide" id="code-support"><p class="small" id="code-expiry" aria-live="polite"></p><p class="small">メールが届かない場合：迷惑メールフォルダをご確認ください。メールアドレスを修正して再送するか、会場スタッフへお声がけください。</p></div><button id="email-button" type="button">確認コードを送る</button><button class="ghost hide" id="resend-button" type="button">新しいコードを送る</button><button class="ghost hide" id="resume-email-button" type="button">続きから再開する</button></section>
+    <section class="card hide" id="screen-email"><div class="step">STEP 2</div><h2>ご登録済みの方</h2><p class="small">メールアドレスへ確認コードをお送りします。</p><div class="fields"><div class="field"><label for="email">メールアドレス</label><input id="email" type="email" inputmode="email" autocomplete="email"></div><div class="field hide" id="code-wrap"><label for="code">確認コード</label><input id="code" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6"></div></div><div class="hide" id="code-support"><p class="small" id="code-expiry" aria-live="polite"></p><p class="small">メールが届くまで、1〜2分ほどかかることがあります。届かない場合は、迷惑メールフォルダもご確認ください。</p><p class="small">メールアドレスを修正して再送するか、会場スタッフへお声がけください。</p></div><button id="email-button" type="button">確認コードを送る</button><button class="ghost hide" id="resend-button" type="button">新しいコードを送る</button><button class="ghost hide" id="resume-email-button" type="button">続きから再開する</button></section>
 
     <section class="card hide" id="screen-duplicate"><div class="step">STEP 2</div><h2>LOCにご登録済みの方</h2><p class="small">このメールアドレスは、すでにLOCの会員として登録されています。新規登録はせず、LINEとLOCをつなげます。</p><button id="link-existing-button" type="button">LINEとLOCをつなぐ</button></section>
 
-    <section class="card hide" id="screen-register"><div class="step">STEP 2</div><h2>店舗情報を確認</h2><p class="small">入力済みの内容をご確認ください。印のある項目だけ入力・修正してください。</p><div id="register-fields"></div><div class="fields"><div class="field"><label for="password">パスワード <span class="required">必須</span></label><div class="password-row"><input id="password" type="password" autocomplete="new-password"><button id="password-toggle" type="button" aria-pressed="false">表示</button></div></div></div><div class="sticky-action"><button id="register-button" type="button">登録する</button></div></section>
+    <section class="card hide" id="screen-register"><div class="step">STEP 2</div><h2>店舗情報を確認</h2><p class="small">入力済みの内容をご確認ください。印のある項目だけ入力・修正してください。</p><p class="small hide" id="test-mode-note">これは代表専用のテスト登録です。店舗名は「【テスト】」から始め、メールアドレスには「+test」を含めてください。通常のLINEとLOCの連携は変更されません。</p><div id="register-fields"></div><div class="fields"><div class="field"><label for="password">パスワード <span class="required">必須</span></label><div class="password-row"><input id="password" type="password" autocomplete="new-password"><button id="password-toggle" type="button" aria-pressed="false">表示</button></div></div></div><div class="sticky-action"><button id="register-button" type="button">登録する</button></div></section>
 
     <section class="card complete hide" id="screen-done"><div class="mark">✓</div><div class="step">COMPLETE</div><h2 id="done-title">ご登録が完了しました</h2><p class="small" id="done-copy"></p><div id="done-id" class="small"></div><section class="seminar-card hide" id="seminar-card"><h3>合同説明会のご案内</h3><p class="small">LOCの使い方と、お店での活かし方をご紹介します（オンライン・1時間）</p><p class="seminar-lead">次の画面で日程をお選びください</p><div class="seminar-options" id="seminar-options"></div></section><button class="dark" id="close-button" type="button">LINEに戻る</button></section>
     <p class="footer">リアン株式会社｜お困りの際は会場スタッフへお声がけください。</p>
@@ -53,7 +53,7 @@
       { slot:'1028', startsAt:'2026-10-28T19:00:00+09:00', label:'10月28日（水）19:00〜20:00｜オンライン' }
     ];
     var SEMINAR_FORM_URL = 'https://liff.line.me/1654464542-Wky3Ay7r?liff_id=1654464542-Wky3Ay7r&group_id=157954';
-    var state = { sid:'', mode: qs.get('p') === 'register' ? 'register' : 'link', ref: qs.get('ref') || '', src: qs.get('src') || '', fields:[], busy:false, waitTimers:[], starting:false, email:'', codeTimer:0, codeExpiresAt:0, resendUntil:0 };
+    var state = { sid:'', mode: qs.get('p') === 'register' ? 'register' : 'link', ref: qs.get('ref') || '', src: qs.get('src') || '', testNew:qs.get('test') === 'new', fields:[], busy:false, waitTimers:[], starting:false, email:'', codeTimer:0, codeSendTimer:0, codeExpiresAt:0, resendUntil:0 };
     function $(id) { return document.getElementById(id); }
     function text(id, value) { $(id).textContent = String(value || ''); }
     function show(id) { ['screen-start','screen-friend','screen-email','screen-duplicate','screen-register','screen-done'].forEach(function (x) { $(x).classList.toggle('hide', x !== id); }); }
@@ -76,6 +76,17 @@
     function rememberEmail() { state.email = String($('email').value || '').trim(); return state.email; }
     function restoreEmail() { if (state.email) $('email').value = state.email; }
     function clearCodeTimer() { if (state.codeTimer) { clearInterval(state.codeTimer); state.codeTimer = 0; } }
+    function clearCodeSendTimer() { if (state.codeSendTimer) { clearInterval(state.codeSendTimer); state.codeSendTimer = 0; } }
+    function showCodeSendPending() {
+      var startedAt = Date.now();
+      clearCodeSendTimer(); $('code-wrap').classList.remove('hide'); $('code-support').classList.remove('hide');
+      $('resume-email-button').classList.add('hide'); $('resend-button').classList.add('hide');
+      function tick() {
+        var seconds = Math.max(0, Math.floor((Date.now() - startedAt) / 1000));
+        $('code-expiry').textContent = '確認コードを送信しています… ' + seconds + '秒';
+      }
+      tick(); state.codeSendTimer = window.setInterval(tick, 250);
+    }
     function setResendCountdown(seconds) {
       var button = $('resend-button'), until = Date.now() + Math.max(0, Number(seconds) || 0) * 1000;
       state.resendUntil = until;
@@ -89,6 +100,7 @@
       tick(); if (until > Date.now()) state.codeTimer = window.setInterval(tick, 250);
     }
     function setCodeDetails(result, resendNow) {
+      clearCodeSendTimer();
       $('code-wrap').classList.remove('hide'); $('code-support').classList.remove('hide'); $('resume-email-button').classList.add('hide');
       $('email-button').textContent = '確認する';
       var exp = Date.parse(String(result && result.codeExpiresAt || ''));
@@ -207,7 +219,7 @@
         var heading = document.createElement('div'); heading.className = 'section-label'; heading.textContent = group.label; section.appendChild(heading);
         var fieldBox = document.createElement('div'); fieldBox.className = 'fields'; fields.forEach(function (field) { fieldBox.appendChild(fieldInput(field)); }); section.appendChild(fieldBox); box.appendChild(section);
       });
-      state.token = r.token || ''; show('screen-register'); note(r.notice || ''); waitDone();
+      state.token = r.token || ''; $('test-mode-note').classList.toggle('hide', !r.testMode); show('screen-register'); note(r.notice || ''); waitDone();
     }
     function drawFormSkeleton() {
       var box = $('register-fields'); while (box.firstChild) box.removeChild(box.firstChild);
@@ -215,8 +227,8 @@
       $('password').value = ''; show('screen-register');
     }
     function done(r) {
-      text('done-title', r.already ? 'LINEとの連携が完了しました' : 'ご登録が完了しました');
-      text('done-copy', r.message || 'ご利用ありがとうございます。');
+      text('done-title', r.testMode ? 'テスト登録が完了しました' : (r.already ? 'LINEとの連携が完了しました' : 'ご登録が完了しました'));
+      text('done-copy', r.testMode ? 'テスト用の登録が完了しました。通常のLINEとLOCの連携は変更されていません。' : (r.message || 'ご利用ありがとうございます。'));
       text('done-id', r.loginId ? 'ログインID：' + r.loginId : ''); renderSeminarCard(); show('screen-done'); note('', true); waitDone();
     }
     function showDuplicate() {
@@ -242,7 +254,7 @@
         var friendship = await liff.getFriendship();
         currentAction = 'liff_start';
         if (state.mode === 'register') { waitStage('店舗情報を読み込んでいます…', 48); drawFormSkeleton(); }
-        var r = await api('liff_start', { friend:!!friendship.friendFlag, mode:state.mode, ref:state.ref, src:state.src });
+        var r = await api('liff_start', { friend:!!friendship.friendFlag, mode:state.mode, ref:state.ref, src:state.src, testNew:state.testNew });
         if (r.needFriend) { show('screen-friend'); note(r.error || '公式LINEの友だち追加をお願いします。'); waitDone(); return; }
         if (!r.ok) { fail(r.error); return; }
         state.sid = r.sid; await continueFlow(r.registration);
@@ -268,6 +280,7 @@
       var action = 'liff_request_code';
       try {
         var email = rememberEmail();
+        showCodeSendPending();
         setBusy(button, true, '送信しています…'); waitStart('確認コードを送っています…', 64);
         var r = await api(action, { sid:state.sid, email:email });
         if (!r.ok) {
@@ -277,7 +290,7 @@
         }
         setCodeDetails(r, false); note(r.message || '確認コードをお送りしました。', true);
       } catch (e) { if (!e || !e.locRelogin) showCodeRecovery('通信を確認できませんでした。下のボタンで新しいコードをお送りします。'); }
-      finally { button.disabled = button === $('resend-button') && state.resendUntil > Date.now(); button.classList.remove('busy'); if (!state.relogging) waitDone(); }
+      finally { clearCodeSendTimer(); button.disabled = button === $('resend-button') && state.resendUntil > Date.now(); button.classList.remove('busy'); if (!state.relogging) waitDone(); }
     }
     async function verifyCode(button) {
       var action = 'liff_verify_code';
