@@ -44,15 +44,17 @@
 
     <section class="card hide" id="screen-friend"><div class="step">STEP 1</div><h2>公式LINEを友だち追加してください</h2><p class="small">追加後、この画面に戻ると自動で確認して次へ進みます。LINEログインをやり直す必要はありません。</p><a class="button dark" id="friend-button" href="#">公式LINEを友だち追加する</a><button class="ghost" id="friend-check" type="button">追加しました（確認する）</button></section>
 
-    <section class="card hide" id="screen-email"><div class="step">STEP 2</div><h2>ご登録済みの方</h2><p class="small">メールアドレスへ確認コードをお送りします。</p><div class="fields"><div class="field"><label for="email">メールアドレス</label><input id="email" type="email" inputmode="email" autocomplete="email"></div><div class="field hide" id="code-wrap"><label for="code">確認コード</label><input id="code" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6"></div></div><div class="hide" id="code-support"><p class="small" id="code-expiry" aria-live="polite"></p><p class="small">メールが届くまで、1〜2分ほどかかることがあります。届かない場合は、迷惑メールフォルダもご確認ください。</p><p class="small">メールアドレスを修正して再送するか、会場スタッフへお声がけください。</p></div><button id="email-button" type="button">確認コードを送る</button><button class="ghost hide" id="resend-button" type="button">新しいコードを送る</button><button class="ghost hide" id="resume-email-button" type="button">続きから再開する</button></section>
+    <section class="card hide" id="screen-choice"><div class="step">STEP 1</div><h2>ご利用方法をお選びください</h2><p class="small">はじめての方は店舗情報をご登録ください。すでにLOCでお取引のある方は、メールアドレスでLINEとLOCをつなげられます。</p><div class="seminar-card"><p class="seminar-lead">BEAUTYWORLD OSAKA 2026</p><p class="small">展示会のご来場特典をご用意しています。</p></div><button id="choice-register-button" type="button">はじめての方（新規店舗登録）</button><button class="ghost" id="choice-link-button" type="button">すでにLOCでお取引のある方（メールアドレスでログイン）</button></section>
+
+    <section class="card hide" id="screen-email"><div class="step">STEP 2</div><h2>ご登録済みの方</h2><p class="small">メールアドレスへ確認コードをお送りします。</p><div class="fields"><div class="field"><label for="email">メールアドレス</label><input id="email" type="email" inputmode="email" autocomplete="email"></div><div class="field hide" id="code-wrap"><label for="code">確認コード</label><input id="code" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6"></div></div><div class="hide" id="code-support"><p class="small" id="code-expiry" aria-live="polite"></p><p class="small">メールが届くまで、1〜2分ほどかかることがあります。届かない場合は、迷惑メールフォルダもご確認ください。</p><p class="small">メールアドレスを修正して再送するか、会場スタッフへお声がけください。</p></div><button id="email-button" type="button">確認コードを送る</button><button class="ghost hide" id="resend-button" type="button">新しいコードを送る</button><button class="ghost hide" id="resume-email-button" type="button">続きから再開する</button><button class="ghost" id="email-new-button" type="button">はじめての方はこちら</button></section>
 
     <section class="card hide" id="screen-duplicate"><div class="step">ご確認ください</div><h2>この店舗はご登録済みです</h2><p class="small" id="duplicate-copy">この店舗はすでにご登録があります。ご注文は、登録済みの方のLINEからお進みください。</p><button class="ghost" id="duplicate-close-button" type="button">LINEに戻る</button></section>
 
-    <section class="card hide" id="screen-register"><div class="step" id="register-step">STEP 1</div><h2 id="register-title">LINE店舗登録</h2><p class="small" id="register-copy">まず店舗情報をご登録ください。注文をご希望の方だけ、次の画面でLOC会員登録へ進みます。</p><p class="small hide" id="test-mode-note">これは代表専用のテスト登録です。店舗名は「【テスト】」から始め、メールアドレスには「+test」を含めてください。通常のLINEとLOCの連携は変更されません。</p><div id="register-fields"></div><div id="order-only" class="hide"><div id="order-profile" class="small"></div><div class="fields"><div class="field"><label for="password">LOCのログインパスワード <span class="required">必須</span></label><p class="field-hint">英字（小文字）と数字をそれぞれ1文字以上含む、8文字以上・半角</p><div class="password-row"><input id="password" type="password" autocomplete="new-password"><button id="password-toggle" type="button" aria-pressed="false">表示</button></div></div></div></div><div class="sticky-action"><button id="register-button" type="button">LINE店舗登録を完了する</button></div></section>
+    <section class="card hide" id="screen-register"><div class="step" id="register-step">STEP 1</div><h2 id="register-title">LINE店舗登録</h2><p class="small" id="register-copy">まず店舗情報をご登録ください。注文をご希望の方だけ、次の画面でLOC会員登録へ進みます。</p><p class="small hide" id="test-mode-note">これは代表専用のテスト登録です。店舗名は「【テスト】」から始め、メールアドレスには「+test」を含めてください。通常のLINEとLOCの連携は変更されません。</p><div id="register-fields"></div><div id="order-only" class="hide"><div id="order-profile" class="small"></div><div class="fields"><div class="field"><label for="password">LOCのログインパスワード <span class="required">必須</span></label><p class="field-hint">英字（小文字）と数字をそれぞれ1文字以上含む、8文字以上・半角</p><div class="password-row"><input id="password" type="password" autocomplete="new-password"><button id="password-toggle" type="button" aria-pressed="false">表示</button></div></div></div></div><div class="sticky-action"><button id="register-button" type="button">LINE店舗登録を完了する</button><button class="ghost hide" id="order-alternate-login-button" type="button">別の方法でログインする</button></div></section>
 
     <section class="card complete hide" id="screen-profile-done"><div class="mark">✓</div><div class="step">STEP 1 COMPLETE</div><h2>LINE店舗登録が完了しました</h2><p class="small">ご希望の操作をお選びください。今すぐ注文しない場合も、店舗情報は記録されています。</p><div id="profile-done-id" class="small"></div><button id="order-now-button" type="button">今すぐ注文する</button><button class="ghost" id="seminar-button" type="button">セミナーに参加する</button><button class="ghost hide" id="instagram-button" type="button">インスタグラムを見る</button></section>
 
-    <section class="card complete hide" id="screen-done"><div class="mark">✓</div><div class="step">COMPLETE</div><h2 id="done-title">ご登録が完了しました</h2><p class="small" id="done-copy"></p><div id="done-id" class="small"></div><button class="dark hide" id="order-open-button" type="button">LOCの注文画面を開く</button><section class="seminar-card hide" id="seminar-card"><h3>合同説明会のご案内</h3><p class="small">LOCの使い方と、お店での活かし方をご紹介します（オンライン・1時間）</p><p class="seminar-lead">次の画面で日程をお選びください</p><div class="seminar-options" id="seminar-options"></div></section><button class="dark" id="close-button" type="button">LINEに戻る</button></section>
+    <section class="card complete hide" id="screen-done"><div class="mark">✓</div><div class="step">COMPLETE</div><h2 id="done-title">ご登録が完了しました</h2><p class="small" id="done-copy"></p><div id="done-id" class="small"></div><button class="dark hide" id="order-open-button" type="button">LOCの注文画面を開く</button><button class="ghost hide" id="done-alternate-login-button" type="button">別の方法でログインする</button><section class="seminar-card hide" id="seminar-card"><h3>合同説明会のご案内</h3><p class="small">LOCの使い方と、お店での活かし方をご紹介します（オンライン・1時間）</p><p class="seminar-lead">次の画面で日程をお選びください</p><div class="seminar-options" id="seminar-options"></div></section><button class="dark" id="close-button" type="button">LINEに戻る</button></section>
     <p class="footer">リアン株式会社｜お困りの際は会場スタッフへお声がけください。</p>
   </main>
   <script>
@@ -66,10 +68,10 @@
     ];
     var SEMINAR_FORM_URL = 'https://liff.line.me/1654464542-Wky3Ay7r?liff_id=1654464542-Wky3Ay7r&group_id=157954';
     var pageMode = qs.get('p');
-    var state = { sid:'', mode: pageMode === 'order' ? 'order' : (pageMode === 'register' ? 'register' : 'link'), ref: qs.get('ref') || '', src: qs.get('src') || '', testNew:qs.get('test') === 'new', fields:[], busy:false, waitTimers:[], starting:false, email:'', codeTimer:0, codeSendTimer:0, codeExpiresAt:0, resendUntil:0, instagramUrl:'', orderUrl:'' };
+    var state = { sid:'', mode: pageMode === 'order' ? 'order' : 'entry', ref: qs.get('ref') || '', src: qs.get('src') || '', testNew:qs.get('test') === 'new', fields:[], busy:false, waitTimers:[], starting:false, email:'', codeTimer:0, codeSendTimer:0, codeExpiresAt:0, resendUntil:0, instagramUrl:'', orderUrl:'', entryKnown:false };
     function $(id) { return document.getElementById(id); }
     function text(id, value) { $(id).textContent = String(value || ''); }
-    function show(id) { ['screen-start','screen-friend','screen-email','screen-duplicate','screen-register','screen-profile-done','screen-done'].forEach(function (x) { $(x).classList.toggle('hide', x !== id); }); }
+    function show(id) { ['screen-start','screen-friend','screen-choice','screen-email','screen-duplicate','screen-register','screen-profile-done','screen-done'].forEach(function (x) { $(x).classList.toggle('hide', x !== id); }); }
     function note(message, ok, errorCode) {
       var el = $('notice'); el.textContent = message || ''; el.classList.toggle('ok', !!ok);
       if (errorCode) { var code = document.createElement('span'); code.className = 'error-code'; code.textContent = 'エラー番号：' + errorCode; el.appendChild(code); }
@@ -367,6 +369,7 @@
         var loginSection = document.createElement('section'); loginSection.className = 'form-group'; var loginHeading = document.createElement('div'); loginHeading.className = 'section-label'; loginHeading.textContent = 'ログイン情報'; loginSection.appendChild(loginHeading); var loginIntro = document.createElement('p'); loginIntro.className = 'small'; loginIntro.textContent = 'LOC（発注サイト）にログインするときに使います。LINEのパスワードではありません。'; loginSection.appendChild(loginIntro); var loginBox = document.createElement('div'); loginBox.className = 'fields'; preparePasswordFields(loginBox); prepareConsentFields(loginBox); loginSection.appendChild(loginBox); box.appendChild(loginSection);
         $('register-button').textContent = 'LOCに登録する';
       }
+      $('order-alternate-login-button').classList.toggle('hide', !(state.step === 'order' && state.entryKnown));
       state.token = r.token || state.token || ''; if (r.testMode !== undefined) state.testMode = !!r.testMode;
       $('test-mode-note').classList.toggle('hide', !state.testMode); show('screen-register'); note(r.notice || ''); waitDone();
     }
@@ -395,6 +398,7 @@
       text('done-id', number || (r.loginId ? 'ログインID：' + r.loginId : ''));
       state.orderUrl = /^https:\/\/[^\s"'<>]+$/.test(String(r.orderUrl || '')) ? String(r.orderUrl) : '';
       $('order-open-button').classList.toggle('hide', !state.orderUrl);
+      $('done-alternate-login-button').classList.toggle('hide', !(state.entryKnown && isOrder));
       renderSeminarCard(); show('screen-done'); note('', true); waitDone();
     }
     function showDuplicate() {
@@ -406,6 +410,38 @@
       text('duplicate-copy', 'この店舗はすでにご登録があります。ご注文は、登録済みの方のLINEからお進みください。');
       show('screen-duplicate');
       note('', false);
+    }
+    function showChoice() {
+      $('choice-register-button').disabled = false; $('choice-link-button').disabled = false;
+      show('screen-choice'); note('', true); waitDone();
+    }
+    function showExistingLogin() {
+      state.mode = 'link'; show('screen-email'); restoreEmail(); $('resume-email-button').classList.remove('hide');
+      note('', true); waitDone();
+    }
+    async function chooseNewRegistration(button) {
+      try {
+        setBusy(button, true, '準備しています…'); waitStart('店舗情報を読み込んでいます…', 48); drawFormSkeleton();
+        var r = await api('liff_entry_choose', { sid:state.sid, choice:'register' });
+        if (!r.ok) throw tagError(new Error(r.error || 'server response'), 'liff_entry_choose');
+        state.mode = 'register'; state.entryKnown = false;
+        if (r.state === 'profile_form' || r.state === 'form') return drawForm(r);
+        if (r.state === 'profile_done') return drawProfileDone(r);
+        if (r.state === 'dup') return showDuplicate();
+        return done(r);
+      } catch (e) { if (!e || !e.locRelogin) fail('店舗情報を確認できませんでした。もう一度お試しください。', 'liff_entry_choose', e); }
+      finally { setBusy(button, false, 'はじめての方（新規店舗登録）'); if (!state.relogging) waitDone(); }
+    }
+    function routeEntry(r) {
+      if (!r || !r.ok) throw tagError(new Error((r && r.error) || 'server response'), 'liff_start');
+      state.entryKnown = r.state !== 'entry_choice';
+      if (r.state === 'entry_choice') return showChoice();
+      if (r.state === 'order_existing') return done(r);
+      if (r.state === 'profile_form') return showChoice();
+      if (r.state === 'form') return drawForm(r);
+      if (r.state === 'profile_done') return startOrder();
+      if (r.state === 'dup') return showDuplicate();
+      return done(r);
     }
     async function continueFlow(preloaded) {
       if (state.mode === 'link') { show('screen-email'); return; }
@@ -425,11 +461,12 @@
         $('retry-button').classList.add('hide'); $('start-button').classList.remove('hide'); setBusy($('start-button'), true, '確認しています…'); waitStart('LINEを確認しています…', 20);
         var friendship = await liff.getFriendship();
         currentAction = 'liff_start';
-        if (state.mode !== 'link') { waitStage('店舗情報を読み込んでいます…', 48); drawFormSkeleton(); }
+        if (state.mode === 'register' || state.mode === 'order') { waitStage('店舗情報を読み込んでいます…', 48); drawFormSkeleton(); }
         var r = await api('liff_start', { friend:!!friendship.friendFlag, mode:state.mode, ref:state.ref, src:state.src, testNew:state.testNew });
         if (r.needFriend) { show('screen-friend'); note(r.error || '公式LINEの友だち追加をお願いします。'); waitDone(); return; }
         if (!r.ok) { fail(r.error); return; }
         state.sid = r.sid; state.instagramUrl = String(r.instagramUrl || '');
+        if (state.mode === 'entry') return routeEntry(r.registration);
         if (state.mode === 'order') {
           var orderStart = r.registration;
           if (!orderStart || !orderStart.ok) throw tagError(new Error('server response'), 'liff_order_entry');
@@ -452,6 +489,9 @@
     }
     $('friend-button').href = String(cfg.oaUrl || '#');
     $('start-button').onclick = start; $('retry-button').onclick = start; $('friend-check').onclick = start;
+    $('choice-register-button').onclick = function () { return chooseNewRegistration(this); };
+    $('choice-link-button').onclick = showExistingLogin;
+    $('email-new-button').onclick = function () { return chooseNewRegistration(this); };
     $('duplicate-close-button').onclick = function () { if (liff.isInClient()) liff.closeWindow(); else location.href = 'https://line.me/'; };
     document.addEventListener('visibilitychange', function () { if (!document.hidden && !$('screen-friend').classList.contains('hide')) window.setTimeout(start, 350); });
     async function requestCode(button) {
@@ -509,6 +549,8 @@
       finally { setBusy($('order-now-button'), false, '今すぐ注文する'); if (!state.relogging) waitDone(); }
     }
     $('order-now-button').onclick = startOrder;
+    $('done-alternate-login-button').onclick = showExistingLogin;
+    $('order-alternate-login-button').onclick = showExistingLogin;
     $('seminar-button').onclick = function () { text('done-title', '合同説明会に参加する'); text('done-copy', 'ご希望の日程をお選びください。'); text('done-id', ''); renderSeminarCard(); show('screen-done'); };
     $('instagram-button').onclick = function () {
       if (!/^https:\/\/www\.instagram\.com\//.test(state.instagramUrl)) return;
