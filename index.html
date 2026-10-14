@@ -21,6 +21,15 @@
     *{box-sizing:border-box} body{margin:0;background:linear-gradient(155deg,#fff6f8 0%,#fbe8ed 47%,#f8edf8 100%);color:var(--ink);font-family:'Noto Sans JP',system-ui,sans-serif;min-height:100vh}
     .seminar-card{margin:18px 0 0;padding:15px;border:1px solid #e7c5d6;border-radius:15px;background:linear-gradient(135deg,#fff7fb,#f7eefb)}.seminar-card h3{font-size:16px;margin:0 0 5px;color:var(--plum)}.seminar-card .small{margin:0 0 9px}.seminar-lead{font-size:12px;font-weight:700;color:#8c3164;margin:0 0 10px}.seminar-options{display:grid;gap:8px}.seminar-options button{min-height:48px;font-size:14px;background:#fff;color:#8c3164;border:1px solid #deb7cb;box-shadow:none}
     .shell{max-width:560px;margin:auto;padding:0 16px calc(94px + env(safe-area-inset-bottom))}.top{margin:0 -16px 20px;padding:calc(14px + env(safe-area-inset-top)) 20px 16px;background:var(--plum);color:#fff}.brand{font-size:12px;letter-spacing:.14em;font-weight:700;opacity:.78}.title{font-size:20px;font-weight:700;margin-top:3px}.hero{padding:18px 18px 16px;border-radius:22px;background:linear-gradient(130deg,#fbd7e6,#efe1f4);border:1px solid #fff;box-shadow:0 10px 24px #7f506326;margin:6px 0 16px}.eyebrow{font-size:12px;letter-spacing:.08em;color:#8c3164;font-weight:700}.hero h1{font-size:26px;line-height:1.35;margin:7px 0}.hero p{margin:0;color:#624b58;font-size:14px}.card{background:var(--paper);border:1px solid var(--line);box-shadow:0 7px 20px #56304212;border-radius:18px;padding:18px;margin:12px 0}.hide{display:none!important}.step{font-size:12px;color:#9d5580;font-weight:700;letter-spacing:.05em}.card h2{font-size:19px;margin:5px 0 7px}.small{font-size:13px;line-height:1.65;color:var(--muted);margin:4px 0 14px}.notice{min-height:22px;font-size:14px;line-height:1.55;margin:10px 2px;color:#9a225c}.notice.ok{color:var(--ok)}.error-code{display:block;font-size:11px;margin-top:4px;color:#876977}button,a.button{appearance:none;display:flex;width:100%;min-height:52px;padding:12px 16px;align-items:center;justify-content:center;border:0;border-radius:14px;font:600 16px inherit;cursor:pointer;text-decoration:none;transition:transform .16s ease,box-shadow .16s ease;background:var(--pink);color:#fff;box-shadow:0 5px 12px #bd267044}button:active,a.button:active,button.busy{transform:scale(.98)}button[disabled]{cursor:wait;opacity:.72}.busy::before{content:'';width:15px;height:15px;margin-right:8px;border:2px solid #fff8;border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite}.ghost{background:#fff;color:#a52c67;border:1px solid #e8b4ce;box-shadow:none;margin-top:10px}.dark{background:var(--plum)}.fields{display:grid;gap:13px;margin:10px 0 0}.field{display:grid;gap:6px}.field label{font-size:14px;font-weight:700}.required{display:inline-block;margin-left:4px;color:#a52c67;font-size:11px}.form-group{margin:14px 0;padding:14px;border:1px solid #eedde6;border-radius:14px;background:#fffafb}.section-label{font-size:15px;margin:0;color:var(--plum);font-weight:700}.section-label:first-child{margin-top:0}input{font:16px inherit;border:1px solid #ddcbd5;border-radius:12px;background:#fff;min-height:48px;padding:10px 12px;width:100%;color:var(--ink)}input:focus{outline:3px solid #f4bdd8;border-color:#b42b6b}.problem input{border-color:#d33264;background:#fff6f8}.password-row{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center}.password-row button{width:auto;min-height:48px;padding:8px 12px;background:#fff;color:#a52c67;border:1px solid #e8b4ce;box-shadow:none;font-size:13px}.complete{background:linear-gradient(135deg,#fff8fb,#f3e9f6)}.mark{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;background:#fae0ec;color:#b7286b;font-size:25px;font-weight:700;margin-bottom:8px}.footer{padding:14px 3px 0;font-size:11px;color:#907f88;text-align:center}.divider{height:1px;background:#eee0e7;margin:18px 0}.loading{display:inline-flex;gap:8px;align-items:center}.dot{width:8px;height:8px;border-radius:50%;background:currentColor;animation:pulse 1s infinite alternate}.sticky-action{position:fixed;left:max(16px,calc((100vw - 560px)/2 + 16px));right:max(16px,calc((100vw - 560px)/2 + 16px));bottom:calc(12px + env(safe-area-inset-bottom));z-index:4;padding:10px;background:#fffcfbec;border:1px solid var(--line);border-radius:16px;box-shadow:0 8px 22px #56304228}.progress{position:fixed;top:0;left:0;width:100%;height:4px;background:#ffffff44;z-index:10;opacity:0;transition:opacity .2s}.progress.active{opacity:1}.progress i{display:block;width:0;height:100%;background:linear-gradient(90deg,#df328b,#c59aca);transition:width .28s ease}.skeleton{height:17px;border-radius:8px;margin:13px 0;background:linear-gradient(90deg,#f5e8ee 25%,#fff 37%,#f5e8ee 63%);background-size:400% 100%;animation:shimmer 1.15s infinite}.skeleton.short{width:57%}.slow-tip{font-size:12px;color:#756c73;margin:7px 2px;min-height:18px}@keyframes pulse{to{opacity:.25;transform:scale(.7)}}@keyframes spin{to{transform:rotate(360deg)}}@keyframes shimmer{to{background-position:-135% 0}}
+    /* iOS Safari must receive an explicit 16px size or it zooms the page on focus. */
+    input,select,textarea{min-width:0;width:100%;font-size:16px;font-family:inherit;border:1px solid #ddcbd5;border-radius:12px;background:#fff;min-height:48px;padding:10px 12px;color:var(--ink)}
+    input:focus,select:focus,textarea:focus{outline:3px solid #f4bdd8;border-color:#b42b6b}
+    .shell,.card,.form-group,.fields,.field{min-width:0}.form-group{margin:18px 0 0;padding:18px 0 0;border:0;border-top:1px solid #eedde6;border-radius:0;background:transparent}.form-group:first-child{margin-top:0;padding-top:0;border-top:0}
+    .problem input,.problem select{border-color:#d33264;background:#fff6f8}.field-error{margin:0;color:#c7275f;font-size:13px;font-weight:600}.field-hint{margin:0;color:var(--muted);font-size:12px;line-height:1.45}
+    .name-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px}.zip-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:end}.zip-row button{width:auto;min-height:48px;padding:8px 12px;white-space:nowrap;background:#fff;color:#a52c67;border:1px solid #e8b4ce;box-shadow:none;font-size:13px}
+    /* 登録ボタンはキーボードの上に固定せず、フォームの末尾に置く。 */
+    .sticky-action{position:static;display:block;margin-top:22px;padding:0;border:0;border-radius:0;background:transparent;box-shadow:none}.footer{padding-bottom:calc(12px + env(safe-area-inset-bottom))}
+    @media(max-width:360px){.card{padding:15px}.hero{padding:16px}.zip-row{grid-template-columns:1fr}.zip-row button{width:100%}}
   </style>
 </head>
 <body>
@@ -196,19 +205,83 @@
         return json;
       } catch (e) { throw tagError(e, action, res); }
     }
+    var PREFECTURES = ['北海道','青森県','岩手県','宮城県','秋田県','山形県','福島県','茨城県','栃木県','群馬県','埼玉県','千葉県','東京都','神奈川県','新潟県','富山県','石川県','福井県','山梨県','長野県','岐阜県','静岡県','愛知県','三重県','滋賀県','京都府','大阪府','兵庫県','奈良県','和歌山県','鳥取県','島根県','岡山県','広島県','山口県','徳島県','香川県','愛媛県','高知県','福岡県','佐賀県','長崎県','熊本県','大分県','宮崎県','鹿児島県','沖縄県'];
+    function fieldHint(key) {
+      if (key === 'zip') return 'ハイフンなし・7桁（例：1234567）';
+      if (key === 'tel' || key === 'mobile_phone') return 'ハイフンなし（例：09012345678）';
+      return '';
+    }
     function fieldInput(field) {
-      var box = document.createElement('div'), label = document.createElement('label'), input = document.createElement('input');
+      var box = document.createElement('div'), label = document.createElement('label'), input;
       box.className = 'field' + (field.problem ? ' problem' : ''); label.htmlFor = 'field-' + field.key;
       label.appendChild(document.createTextNode(field.label));
       if (field.req) { var badge = document.createElement('span'); badge.className = 'required'; badge.textContent = '必須'; label.appendChild(badge); }
-      input.id = 'field-' + field.key; input.name = field.key; input.value = field.value || ''; input.autocomplete = field.key === 'email' ? 'email' : 'off';
-      input.type = field.kind === 'email' ? 'email' : (field.kind === 'tel' ? 'tel' : 'text'); if (field.kind === 'tel') input.inputMode = 'tel';
-      box.appendChild(label); box.appendChild(input); return box;
+      if (field.kind === 'pref') {
+        input = document.createElement('select');
+        var blank = document.createElement('option'); blank.value = ''; blank.textContent = '都道府県を選択してください'; input.appendChild(blank);
+        PREFECTURES.forEach(function (name) { var option = document.createElement('option'); option.value = name; option.textContent = name; if (name === field.value) option.selected = true; input.appendChild(option); });
+      } else {
+        input = document.createElement('input'); input.type = field.kind === 'email' ? 'email' : 'text';
+        if (field.kind === 'zip' || field.kind === 'tel') input.inputMode = 'numeric';
+      }
+      input.id = 'field-' + field.key; input.name = field.key; if (field.kind !== 'pref') input.value = field.value || '';
+      input.autocomplete = field.key === 'email' ? 'email' : 'off';
+      box.appendChild(label);
+      var hint = fieldHint(field.key); if (hint) { var help = document.createElement('p'); help.className = 'field-hint'; help.textContent = hint; box.appendChild(help); }
+      if (field.kind === 'zip') {
+        var row = document.createElement('div'), lookup = document.createElement('button'); row.className = 'zip-row'; lookup.type = 'button'; lookup.textContent = '住所を検索';
+        lookup.onclick = function () { lookupZip(input, lookup); }; row.appendChild(input); row.appendChild(lookup); box.appendChild(row);
+      } else box.appendChild(input);
+      if (field.problemText) { var problem = document.createElement('p'); problem.className = 'field-error'; problem.textContent = field.problemText; box.appendChild(problem); }
+      return box;
+    }
+    async function lookupZip(input, button) {
+      var zip = String(input.value || '');
+      if (!state.sid) return;
+      try {
+        setBusy(button, true, '検索中…'); note('住所を検索しています…');
+        var r = await api('liff_zip_lookup', { sid:state.sid, zip:zip });
+        if (!r.ok) { note(r.error || '住所を自動で入れられませんでした。都道府県と住所を手入力してください。'); return; }
+        input.value = String(r.zip || '').replace(/-/g, '');
+        if ($('field-pref')) $('field-pref').value = r.pref || '';
+        if ($('field-address1')) $('field-address1').value = String(r.city || '') + String(r.town || '');
+        note('都道府県と市区町村・町名を入力しました。番地・建物名をご入力ください。', true);
+        if ($('field-address2')) $('field-address2').focus();
+      } catch (e) { note('住所を自動で入れられませんでした。都道府県と住所を手入力してください。'); }
+      finally { setBusy(button, false, '住所を検索'); }
+    }
+    function setPasswordLabel(field, textValue) {
+      var label = field.querySelector('label'); while (label.firstChild) label.removeChild(label.firstChild);
+      label.appendChild(document.createTextNode(textValue + ' ')); var badge = document.createElement('span'); badge.className = 'required'; badge.textContent = '必須'; label.appendChild(badge);
+    }
+    function passwordToggle(input, button) {
+      var shown = input.type === 'text'; input.type = shown ? 'password' : 'text'; button.textContent = shown ? '表示' : '隠す'; button.setAttribute('aria-pressed', String(!shown));
+    }
+    function retainLoginFields() {
+      var passwordField = state.passwordField || ($('password') && $('password').closest('.field'));
+      var confirmField = state.passwordConfirmField || $('password-confirm-field');
+      [passwordField, confirmField].forEach(function (field) { if (field && field.parentNode) field.parentNode.removeChild(field); });
+      state.passwordField = passwordField || null; state.passwordConfirmField = confirmField || null;
+    }
+    function preparePasswordFields(fieldBox) {
+      var passwordField = state.passwordField || ($('password') && $('password').closest('.field')), password = passwordField && passwordField.querySelector('#password'); if (!password || !passwordField) return;
+      passwordField.id = 'password-field'; setPasswordLabel(passwordField, 'LOCのログインパスワード（新しく決めてください）');
+      var existingHint = passwordField.querySelector('.password-hint'); if (!existingHint) { var hint = document.createElement('p'); hint.className = 'field-hint password-hint'; hint.textContent = '英字（小文字）と数字をそれぞれ1文字以上含む、8文字以上・半角'; passwordField.querySelector('.password-row').insertAdjacentElement('beforebegin', hint); }
+      var existingError = $('password-error'); if (!existingError) { existingError = document.createElement('p'); existingError.id = 'password-error'; existingError.className = 'field-error hide'; passwordField.appendChild(existingError); }
+      var confirmField = state.passwordConfirmField || $('password-confirm-field');
+      if (!confirmField) {
+        confirmField = document.createElement('div'); var confirmLabel = document.createElement('label'), confirmHint = document.createElement('p'), confirmRow = document.createElement('div'), confirm = document.createElement('input'), confirmToggle = document.createElement('button'), confirmError = document.createElement('p');
+        confirmField.className = 'field'; confirmField.id = 'password-confirm-field'; confirmLabel.htmlFor = 'password-confirm'; confirmLabel.appendChild(document.createTextNode('パスワード（確認のためもう一度） ')); var confirmBadge = document.createElement('span'); confirmBadge.className = 'required'; confirmBadge.textContent = '必須'; confirmLabel.appendChild(confirmBadge);
+        confirmHint.className = 'field-hint'; confirmHint.textContent = '同じパスワードをもう一度入力してください。'; confirmRow.className = 'password-row'; confirm.id = 'password-confirm'; confirm.type = 'password'; confirm.autocomplete = 'new-password'; confirmToggle.type = 'button'; confirmToggle.textContent = '表示'; confirmToggle.setAttribute('aria-pressed', 'false'); confirmToggle.onclick = function () { passwordToggle(confirm, confirmToggle); }; confirmError.id = 'password-confirm-error'; confirmError.className = 'field-error hide';
+        confirmRow.appendChild(confirm); confirmRow.appendChild(confirmToggle); confirmField.appendChild(confirmLabel); confirmField.appendChild(confirmHint); confirmField.appendChild(confirmRow); confirmField.appendChild(confirmError);
+      }
+      state.passwordField = passwordField; state.passwordConfirmField = confirmField;
+      fieldBox.appendChild(passwordField); fieldBox.appendChild(confirmField);
     }
     function drawForm(r) {
-      state.fields = r.fields || []; var box = $('register-fields'); while (box.firstChild) box.removeChild(box.firstChild);
+      state.fields = r.fields || []; var box = $('register-fields'); retainLoginFields(); while (box.firstChild) box.removeChild(box.firstChild);
       var groups = [
-        { label:'お店の情報', keys:['comp_name','industry','zip','pref','address1','address2','address3'] },
+        { label:'お店の情報', keys:['comp_name','zip','pref','address1','address2','address3'] },
         { label:'ご担当者', keys:['tanto_last_name','tanto_first_name','tel','mobile_phone','department','job'] },
         { label:'ログイン情報', keys:['email'] }
       ];
@@ -217,9 +290,33 @@
         if (!fields.length) return;
         var section = document.createElement('section'); section.className = 'form-group';
         var heading = document.createElement('div'); heading.className = 'section-label'; heading.textContent = group.label; section.appendChild(heading);
-        var fieldBox = document.createElement('div'); fieldBox.className = 'fields'; fields.forEach(function (field) { fieldBox.appendChild(fieldInput(field)); }); section.appendChild(fieldBox); box.appendChild(section);
+        var fieldBox = document.createElement('div'); fieldBox.className = 'fields';
+        for (var i = 0; i < fields.length; i++) {
+          var field = fields[i], next = fields[i + 1];
+          if (field.key === 'tanto_last_name' && next && next.key === 'tanto_first_name') {
+            var nameRow = document.createElement('div'); nameRow.className = 'name-row'; nameRow.appendChild(fieldInput(field)); nameRow.appendChild(fieldInput(next)); fieldBox.appendChild(nameRow); i++;
+          } else fieldBox.appendChild(fieldInput(field));
+        }
+        if (group.label === 'ログイン情報') {
+          var intro = document.createElement('p'); intro.className = 'small'; intro.textContent = 'LOC（発注サイト）にログインするときに使います。LINEのパスワードではありません。'; heading.insertAdjacentElement('afterend', intro);
+          preparePasswordFields(fieldBox);
+        }
+        section.appendChild(fieldBox); box.appendChild(section);
       });
-      state.token = r.token || ''; $('test-mode-note').classList.toggle('hide', !r.testMode); show('screen-register'); note(r.notice || ''); waitDone();
+      state.token = r.token || state.token || ''; if (r.testMode !== undefined) state.testMode = !!r.testMode;
+      $('test-mode-note').classList.toggle('hide', !state.testMode); show('screen-register'); note(r.notice || ''); waitDone();
+    }
+    function focusFirstProblem() {
+      window.setTimeout(function () {
+        var control = document.querySelector('.field.problem input,.field.problem select');
+        if (!control) return;
+        control.scrollIntoView({ behavior:'smooth', block:'center' }); control.focus({ preventScroll:true });
+      }, 0);
+    }
+    function showPasswordProblem(message) {
+      var field = $('password-field'), error = $('password-error'); if (!field || !error) return;
+      field.classList.add('problem'); error.textContent = message || 'パスワードを確認してください。'; error.classList.remove('hide');
+      window.setTimeout(function () { $('password').scrollIntoView({ behavior:'smooth', block:'center' }); $('password').focus({ preventScroll:true }); }, 0);
     }
     function drawFormSkeleton() {
       var box = $('register-fields'); while (box.firstChild) box.removeChild(box.firstChild);
@@ -232,6 +329,11 @@
       text('done-id', r.loginId ? 'ログインID：' + r.loginId : ''); renderSeminarCard(); show('screen-done'); note('', true); waitDone();
     }
     function showDuplicate() {
+      if (state.testNew) {
+        show('screen-register'); note('テストモードでは既存会員との連携は行えません。「+test」を含むメールアドレスに直して登録してください。');
+        window.setTimeout(function () { var field = $('field-email'); if (field) { field.scrollIntoView({ behavior:'smooth', block:'center' }); field.focus({ preventScroll:true }); } }, 0);
+        return;
+      }
       var entered = $('field-email') ? $('field-email').value : $('email').value;
       state.duplicateEmail = entered || '';
       show('screen-duplicate');
@@ -272,6 +374,7 @@
     $('friend-button').href = String(cfg.oaUrl || '#');
     $('start-button').onclick = start; $('retry-button').onclick = start; $('friend-check').onclick = start;
     $('link-existing-button').onclick = function () {
+      if (state.testNew) { show('screen-register'); note('テストモードでは既存会員との連携は行えません。「+test」を含むメールアドレスで登録してください。'); return; }
       state.mode = 'link'; $('email').value = state.duplicateEmail || ''; state.email = state.duplicateEmail || ''; $('code-wrap').classList.add('hide'); $('code-support').classList.add('hide'); $('resend-button').classList.add('hide'); $('resume-email-button').classList.add('hide'); clearCodeTimer();
       $('email-button').textContent = '確認コードを送る'; show('screen-email'); note('登録済みのメールアドレスを確認します。');
     };
@@ -280,6 +383,11 @@
       var action = 'liff_request_code';
       try {
         var email = rememberEmail();
+        if (state.testNew && !/^[^@+\s]+\+test[^@\s]*@[^@\s]+\.[^@\s]+$/i.test(email)) {
+          show('screen-register'); note('テストモードでは、「+test」を含むメールアドレスを入力してください。');
+          window.setTimeout(function () { var field = $('field-email'); if (field) { field.scrollIntoView({ behavior:'smooth', block:'center' }); field.focus({ preventScroll:true }); } }, 0);
+          return;
+        }
         showCodeSendPending();
         setBusy(button, true, '送信しています…'); waitStart('確認コードを送っています…', 64);
         var r = await api(action, { sid:state.sid, email:email });
@@ -313,11 +421,14 @@
       try { await start(); $('email').value = saved; state.email = saved; if (!$('screen-email').classList.contains('hide')) note('メールアドレスはそのままです。確認コードを送ってください。'); }
       catch (ignore) {} finally { this.disabled = false; this.classList.remove('busy'); }
     };
-    $('password-toggle').onclick = function () { var input = $('password'), shown = input.type === 'text'; input.type = shown ? 'password' : 'text'; this.textContent = shown ? '表示' : '隠す'; this.setAttribute('aria-pressed', String(!shown)); };
+    $('password-toggle').onclick = function () { passwordToggle($('password'), this); };
     $('register-button').onclick = async function () {
       var edits = {}; state.fields.forEach(function (f) { edits[f.key] = $('field-' + f.key).value; });
-      try { setBusy(this, true, '登録しています…'); waitStart('LOCに登録しています（10秒ほど）…', 72); var password = $('password').value; var r = await api('liff_register_submit', { sid:state.sid, token:state.token, edits:edits, password:password, password2:password });
-        if (!r.ok) { note(r.error); if (r.fix) drawForm({ fields:r.fix, token:r.token || state.token }); return; }
+      var password = $('password').value, passwordConfirm = $('password-confirm') ? $('password-confirm').value : '';
+      $('password-field').classList.remove('problem'); $('password-error').classList.add('hide'); if ($('password-confirm-field')) { $('password-confirm-field').classList.remove('problem'); $('password-confirm-error').classList.add('hide'); }
+      if (password !== passwordConfirm) { var confirmError = $('password-confirm-error'); $('password-confirm-field').classList.add('problem'); confirmError.textContent = 'パスワードが一致しません。'; confirmError.classList.remove('hide'); window.setTimeout(function () { $('password-confirm').scrollIntoView({ behavior:'smooth', block:'center' }); $('password-confirm').focus({ preventScroll:true }); }, 0); return; }
+      try { setBusy(this, true, '登録しています…'); waitStart('LOCに登録しています（10秒ほど）…', 72); var r = await api('liff_register_submit', { sid:state.sid, token:state.token, edits:edits, password:password, password2:passwordConfirm });
+        if (!r.ok) { note(r.error); if (r.fix) { drawForm({ fields:r.fix, token:r.token || state.token, testMode:state.testMode }); focusFirstProblem(); return; } if (/パスワード/.test(String(r.error || ''))) { showPasswordProblem(r.error); return; } return; }
         if (r.state === 'dup') { showDuplicate(); return; }
         done(r);
       } catch (e) { if (!e || !e.locRelogin) note('通信を確認できませんでした。もう一度お試しください。', false, logClientError('liff_register_submit', e)); } finally { this.disabled = false; this.classList.remove('busy'); this.textContent = '登録する'; if (!state.relogging) waitDone(); }
