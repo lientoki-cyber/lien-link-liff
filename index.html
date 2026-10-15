@@ -108,7 +108,9 @@
     }
     var currentScreen = 'screen-start', screenTrail = [];
     function renderScreen(id) {
-      currentScreen = id; stepsFor(id); _show(id);
+      currentScreen = id;
+      if (id !== 'screen-rally') stopClaimPolling();
+      stepsFor(id); _show(id);
       $('screen-back').classList.toggle('hide', id === 'screen-start');
       window.scrollTo(0, 0);
     }
@@ -374,7 +376,7 @@
     /* 4つそろったら、サーバーに「受け取り用の番号」を発行してもらい、QRで表示する。
        QRの中身は乱数の番号だけ（氏名・LINEのIDは入れない）。スタッフがEXPO CONNECTで読み取ると、
        サーバーが特典の受け渡しを記録し、LINEに達成者のタグを付ける（1店舗1回）。 */
-    var CLAIM_KEY = 'loc_rally_claim_bwj2026', claimBusy = false;
+    var CLAIM_KEY = 'loc_rally_claim_bwj2026', claimBusy = false, claimPollTimer = 0;
     function claimLoad() { try { var v = JSON.parse(localStorage.getItem(CLAIM_KEY) || 'null'); return v && typeof v.token === 'string' ? v : null; } catch (ignore) { return null; } }
     function claimSave(v) { try { localStorage.setItem(CLAIM_KEY, JSON.stringify(v)); } catch (ignore) {} }
     function loadQrLib() {
@@ -400,13 +402,22 @@
         text('rally-receipt', state.receiptNo ? '受付番号 ' + state.receiptNo : '');
       } catch (e) { drawClaimFallback(); }
     }
+    function stopClaimPolling() {
+      if (claimPollTimer) { clearTimeout(claimPollTimer); claimPollTimer = 0; }
+    }
+    function scheduleClaimRefresh(c) {
+      stopClaimPolling();
+      /* お渡し操作はスタッフ側で行われるため、この画面を開いたままでも表示を更新する。 */
+      if (!c || c.delivered || $('screen-rally').classList.contains('hide')) return;
+      claimPollTimer = setTimeout(function () { ensureClaim(); }, 10000);
+    }
     async function ensureClaim() {
       var cached = claimLoad();
       if (cached) drawClaim(cached); else drawClaimFallback();
       if (claimBusy || !state.sid) return; claimBusy = true;
       try {
         var r = await api('liff_rally_claim', { sid:state.sid, stamps:Object.keys(rallyLoad()) });
-        if (r && r.ok && r.token) { var c = { token:String(r.token), delivered:!!r.delivered }; claimSave(c); drawClaim(c); }
+        if (r && r.ok && r.token) { var c = { token:String(r.token), delivered:!!r.delivered }; claimSave(c); drawClaim(c); scheduleClaimRefresh(c); }
       } catch (ignore) { /* 受け口がまだ無い・通信不良：受付番号の表示のまま */ }
       finally { claimBusy = false; }
     }
