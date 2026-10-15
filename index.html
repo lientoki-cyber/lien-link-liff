@@ -78,7 +78,7 @@
     <section class="card complete hide" id="screen-staff-code"><div class="mark">★</div><div class="step">STAFF PARTICIPATION</div><h2>スタッフ参加を確認します</h2><p class="small">EXPO CONNECTの画面に表示された10桁の確認コードを入力してください。QRだけではスタッフ参加になりません。</p><div class="fields"><div class="field"><label for="staff-code">確認コード</label><input id="staff-code" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="10" placeholder="10桁の数字"></div></div><button id="staff-code-button" type="button">スタッフ参加を確認する</button></section>
     <section class="card complete hide" id="screen-staff-experience"><div class="mark">✓</div><div class="step">STEP 2　店舗登録を体験</div><h2>店舗登録の流れを体験できます</h2><p class="small">ここで入力した内容は保存・送信されず、ご注文用の会員登録も作られません。</p><div class="fields"><div class="field"><label for="staff-store">店舗名（体験用）</label><input id="staff-store" type="text" autocomplete="organization"></div><div class="name-row"><div class="field"><label for="staff-last">ご担当者 姓</label><input id="staff-last" type="text" autocomplete="family-name"></div><div class="field"><label for="staff-first">名</label><input id="staff-first" type="text" autocomplete="given-name"></div></div><div class="field"><label for="staff-email">メールアドレス（体験用）</label><input id="staff-email" type="email" inputmode="email" autocomplete="email"></div></div><button id="staff-experience-button" type="button">店舗登録を体験する</button></section>
     <section class="card complete hide" id="screen-staff-done"><div class="mark">✓</div><div class="step">スタッフ参加</div><h2>参加ありがとうございます</h2><p class="small">スタッフ参加として記録しました。ご注文用の会員登録・来場者数・特典・売上の集計には含まれません。</p><button id="staff-rally-button" type="button">スタンプラリーに参加する</button><button class="ghost" id="staff-close-button" type="button">LINEに戻る</button></section>
-    <section class="card hide" id="screen-rally"><div class="step">STAMP RALLY</div><h2 id="rally-title">4つ回って、ご来場特典を受け取ろう</h2><p class="small">各コーナーで「QRを読む」か、スタッフがお伝えする「合言葉」を入れると、スタンプが押されます。</p><div class="rally-progress"><b id="rally-count">0</b>／4 そろいました</div><div class="rally-grid" id="rally-grid"></div><div class="rally-goal hide" id="rally-goal"><h3 id="rally-goal-title">4つそろいました</h3><p id="rally-claim-lead">このQRをスタッフにお見せください。読み取ったら特典をお渡しします。</p><div class="claim-qr hide" id="rally-qr" role="img" aria-label="特典受け取り用のQRコード"></div><div class="receipt" id="rally-receipt"></div><p id="rally-goal-note">特典のお渡しは1店舗1回です。数量限定のため、なくなり次第終了します。</p></div><button class="ghost" id="rally-back-button" type="button">前の画面に戻る</button></section>
+    <section class="card hide" id="screen-rally"><div class="step">STAMP RALLY</div><h2 id="rally-title">4つ回って、ご来場特典を受け取ろう</h2><p class="small">各コーナーで「QRを読む」か、スタッフがお伝えする「合言葉」を入れると、スタンプが押されます。</p><div class="rally-progress"><b id="rally-count">0</b>／4 そろいました</div><div class="rally-grid" id="rally-grid"></div><div class="rally-goal hide" id="rally-goal"><h3 id="rally-goal-title">4つそろいました</h3><p id="rally-claim-lead">このQRをスタッフにお見せください。読み取ったら特典をお渡しします。</p><div class="claim-qr hide" id="rally-qr" role="img" aria-label="特典受け取り用のQRコード"></div><div class="receipt" id="rally-receipt"></div><p id="rally-goal-note">特典のお渡しは1店舗1回です。数量限定のため、なくなり次第終了します。</p><button class="ghost hide" id="rally-claim-refresh" type="button">表示を更新する</button></div><button class="ghost" id="rally-back-button" type="button">前の画面に戻る</button></section>
     <div class="word-sheet hide" id="word-sheet" role="dialog" aria-modal="true" aria-labelledby="word-title"><div class="word-box"><h3 id="word-title">合言葉</h3><p>スタッフがお伝えする合言葉を入力してください（漢字・ひらがな・カタカナ、どれでも大丈夫です）。</p><input id="word-input" type="text" autocomplete="off" autocapitalize="off" enterkeyhint="done" maxlength="20" aria-label="合言葉"><button id="word-ok" type="button">スタンプを押す</button><button class="ghost" id="word-close" type="button">閉じる</button></div></div>
     <div class="scan-layer hide" id="scan-layer" role="dialog" aria-modal="true" aria-labelledby="scan-title"><p class="scan-title" id="scan-title">QRを読み取る</p><p class="scan-hint" id="scan-hint">スタッフのQRコードを枠の中に入れてください</p><div class="scan-box"><video id="scan-video" playsinline muted autoplay></video><div class="scan-frame"></div></div><button class="ghost" id="scan-close" type="button">閉じる</button></div>
     <p class="footer">リアン株式会社｜お困りの際は会場スタッフへお声がけください。</p>
@@ -479,6 +479,9 @@
        QRの中身は乱数の番号だけ（氏名・LINEのIDは入れない）。スタッフがEXPO CONNECTで読み取ると、
        サーバーが特典の受け渡しを記録し、LINEに達成者のタグを付ける（1店舗1回）。 */
     var CLAIM_KEY = 'loc_rally_claim_bwj2026', claimBusy = false, claimPollTimer = 0, claimRetryCount = 0;
+    /* 自動更新はサーバーの回数制限（1人5分30回・他の操作と共通）に当たらないよう、45秒ごと・最大5分で止める（QA P1-03）。
+       5分を過ぎたら「表示を更新する」ボタンで手動更新できる。 */
+    var CLAIM_POLL_MS = 45000, CLAIM_POLL_MAX_MS = 5 * 60 * 1000, claimPollSince = 0;
     function claimLoad() { try { var v = JSON.parse(localStorage.getItem(scopedStorageKey(CLAIM_KEY)) || 'null'); return v && typeof v.token === 'string' ? v : null; } catch (ignore) { return null; } }
     function claimSave(v) { try { localStorage.setItem(scopedStorageKey(CLAIM_KEY), JSON.stringify(v)); } catch (ignore) {} }
     function loadQrLib() {
@@ -507,11 +510,21 @@
     function stopClaimPolling() {
       if (claimPollTimer) { clearTimeout(claimPollTimer); claimPollTimer = 0; }
     }
+    /* 5分の数え始めは、画面を開いた（または手動更新した）あと最初にQRの状態を確認できた時点。 */
+    function startClaimPollWindow() { claimPollSince = 0; claimRetryCount = 0; $('rally-claim-refresh').classList.add('hide'); }
     function scheduleClaimRefresh(c) {
       stopClaimPolling();
       /* お渡し操作はスタッフ側で行われるため、この画面を開いたままでも表示を更新する。 */
-      if (!c || c.delivered || $('screen-rally').classList.contains('hide')) return;
-      claimPollTimer = setTimeout(function () { ensureClaim(); }, 10000);
+      if (!c || c.delivered || $('screen-rally').classList.contains('hide')) { $('rally-claim-refresh').classList.add('hide'); return; }
+      if (!claimPollSince) claimPollSince = Date.now();
+      if (Date.now() - claimPollSince + CLAIM_POLL_MS > CLAIM_POLL_MAX_MS) { $('rally-claim-refresh').classList.remove('hide'); return; }
+      claimPollTimer = setTimeout(function () { ensureClaim(); }, CLAIM_POLL_MS);
+    }
+    function refreshClaimByHand() {
+      /* 連打で回数制限に当たらないよう、押したあと12秒はボタンを無効にする */
+      var button = $('rally-claim-refresh'); if (claimBusy || button.disabled) return;
+      button.disabled = true; window.setTimeout(function () { button.disabled = false; }, 12000);
+      stopClaimPolling(); startClaimPollWindow(); ensureClaim();
     }
     async function ensureClaim() {
       var cached = claimLoad();
@@ -522,17 +535,25 @@
         var r = await api('liff_rally_claim', { sid:state.sid, stamps:Object.keys(rallyLoad()) });
         if (r && r.ok && r.token) { claimRetryCount = 0; var c = { token:String(r.token), delivered:!!r.delivered }; claimSave(c); drawClaim(c); scheduleClaimRefresh(c); }
         else {
-          /* サーバーが返すのは個人情報を含まない分類だけ。画面には案内文だけを表示する。 */
-          note((r && r.error) || '受け取り用QRを準備できません。受付でお声がけください。', false);
+          /* サーバーが返すのは個人情報を含まない分類だけ。画面には案内文だけを表示する。
+             すでにQRを表示している間は赤字を出さず、QRを出したまま落ち着いた案内にする（QA P1-03）。 */
+          if (cached && !cached.delivered && !$('rally-qr').classList.contains('hide')) text('rally-claim-lead', 'スタッフにこの画面をお見せください。');
+          else note((r && r.error) || '受け取り用QRを準備できません。受付でお声がけください。', false);
           var missing = new Error('claim_' + (/^[a-z_]{3,40}$/.test(String(r && r.code || '')) ? r.code : 'unavailable'));
           missing.locAction = 'liff_rally_claim'; throw missing;
         }
       } catch (e) {
-        /* 通信状態だけを記録し、受付番号を特典の証明にはしない。数秒おき、最大3回だけ自動再試行する。 */
+        /* 通信状態だけを記録し、受付番号を特典の証明にはしない。
+           QRがまだ無いときだけ数秒おき・最大3回の再試行。QR表示中は通常の45秒間隔（最大5分）のまま続ける。 */
         logClientError('liff_rally_claim', e);
-        if (claimRetryCount < 3 && !$('screen-rally').classList.contains('hide')) {
-          claimRetryCount++; stopClaimPolling(); claimPollTimer = setTimeout(ensureClaim, claimRetryCount * 3000);
+        if (cached && !cached.delivered) {
+          /* QRを出せていない（受付番号での代替表示）ときは、従来の案内を残す */
+          if (!$('rally-qr').classList.contains('hide')) text('rally-claim-lead', 'スタッフにこの画面をお見せください。');
+          scheduleClaimRefresh(cached);
         }
+        else if (claimRetryCount < 3 && !$('screen-rally').classList.contains('hide')) {
+          claimRetryCount++; stopClaimPolling(); claimPollTimer = setTimeout(ensureClaim, claimRetryCount * 3000);
+        } else if (!$('screen-rally').classList.contains('hide')) $('rally-claim-refresh').classList.remove('hide');
       }
       finally { claimBusy = false; }
     }
@@ -546,7 +567,7 @@
         b.appendChild(small); b.classList.toggle('done-state', complete);
       });
     }
-    function openRally(from) { rallyBack = from; drawRally(); show('screen-rally'); note('', true); window.scrollTo(0, 0); }
+    function openRally(from) { rallyBack = from; startClaimPollWindow(); drawRally(); show('screen-rally'); note('', true); window.scrollTo(0, 0); }
     function openSeminarScreen(from) {
       var options = $('seminar-only-options'), now = Date.now(); while (options.firstChild) options.removeChild(options.firstChild);
       SEMINAR_DATES.filter(function (seminar) { return Date.parse(seminar.startsAt) > now; }).forEach(function (seminar) {
@@ -1083,6 +1104,7 @@
     $('email-new-button').onclick = function () { return chooseNewRegistration(this); };
     $('login-help-email-button').onclick = loadLoginHelp;
     $('login-help-line-button').onclick = openLineLoginSupport;
+    $('rally-claim-refresh').onclick = refreshClaimByHand;
     $('duplicate-close-button').onclick = function () { if (liff.isInClient()) liff.closeWindow(); else location.href = 'https://line.me/'; };
     document.addEventListener('visibilitychange', function () {
       if (!document.hidden && !$('screen-friend').classList.contains('hide')) {
