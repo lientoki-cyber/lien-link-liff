@@ -12,7 +12,9 @@
     window.LOC_CONFIG = {
       liffId: '1654464542-nn1iQBwK',
       apiUrl: 'https://script.google.com/macros/s/AKfycbxWeayUASpi4cociq1BlGg7QHX77Akg5M77Cgfmzrb4m4njyq24-qQn-mRqdZrXDf05JQ/exec',
-      oaUrl: 'https://lin.ee/RSlv9w3'
+      oaUrl: 'https://lin.ee/RSlv9w3',
+      lineSupportId: '@226eztnh',
+      passwordResetUrl: 'https://lien-ec.i10.bcart.jp/password.php'
     };
   </script>
   <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
@@ -43,6 +45,7 @@
     .option-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.check-option{display:flex;align-items:center;gap:8px;padding:10px;border:1px solid #e5d2dd;border-radius:10px;font-size:13px;font-weight:600;background:#fff}.check-option input{width:20px;min-width:20px;min-height:20px;padding:0;accent-color:var(--pink)}.terms-box{max-height:120px;overflow:auto;padding:12px;border:1px solid #ddcbd5;border-radius:12px;background:#fff;color:#58434e;font-size:12px;line-height:1.7;white-space:pre-line}.terms-agree{display:flex;gap:9px;align-items:flex-start;font-weight:700;font-size:14px}.terms-agree input{width:21px;min-width:21px;min-height:21px;padding:0;accent-color:var(--pink)}
     /* 登録ボタンはキーボードの上に固定せず、フォームの末尾に置く。 */
     .sticky-action{position:static;display:block;margin-top:22px;padding:0;border:0;border-radius:0;background:transparent;box-shadow:none}.footer{padding-bottom:calc(12px + env(safe-area-inset-bottom))}
+    .login-help{margin-top:14px;border-top:1px solid #ead7e2;padding-top:12px}.login-help summary{cursor:pointer;color:#8c3164;font-size:14px;font-weight:700}.login-help-body{padding-top:10px}.login-help-body p{margin:5px 0;color:var(--muted);font-size:13px;line-height:1.6}.login-help-email{padding:10px 12px;border:1px solid #ead7e2;border-radius:12px;background:#fff8fb}.login-help-email b{display:block;font-size:13px;color:var(--plum)}.login-help .ghost{margin-top:8px;min-height:46px;font-size:14px}
     @media(max-width:360px){.card{padding:15px}.hero{padding:16px}.zip-row{grid-template-columns:1fr}.zip-row button{width:100%}}
   </style>
 </head>
@@ -60,7 +63,7 @@
 
     <section class="card hide" id="screen-choice"><div class="step">STEP 2　店舗登録</div><h2>ご利用方法をお選びください</h2><p class="small">はじめての方は店舗情報をご登録ください。すでにリアンの会員登録がある方は、ご登録のメールアドレスでLINEとつなげられます。</p><div class="seminar-card"><p class="seminar-lead">BEAUTYWORLD OSAKA 2026</p><p class="small">展示会のご来場特典をご用意しています。</p></div><button id="choice-register-button" type="button">はじめての方（新規店舗登録）</button><button class="ghost" id="choice-link-button" type="button">会員登録済みの方（メールアドレスで確認）</button></section>
 
-    <section class="card hide" id="screen-email"><div class="step">STEP 3　ご注文用の会員登録</div><h2>ご登録済みの方</h2><p class="small">メールアドレスへ確認コードをお送りします。</p><div class="fields"><div class="field"><label for="email">メールアドレス</label><input id="email" type="email" inputmode="email" autocomplete="email"></div><div class="field hide" id="code-wrap"><label for="code">確認コード</label><input id="code" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6"></div></div><div class="hide" id="code-support"><p class="small" id="code-expiry" aria-live="polite"></p><p class="small">メールが届くまで、1〜2分ほどかかることがあります。届かない場合は、迷惑メールフォルダもご確認ください。</p><p class="small">わからないときは会場スタッフへお声がけください。</p></div><button id="email-button" type="button">確認コードを送る</button><button class="ghost hide" id="resend-button" type="button">新しいコードを送る</button><button class="ghost hide" id="resume-email-button" type="button">続きから再開する</button><button class="ghost" id="email-new-button" type="button">はじめての方はこちら</button></section>
+    <section class="card hide" id="screen-email"><div class="step">STEP 3　ご注文用の会員登録</div><h2>ご登録済みの方</h2><p class="small">メールアドレスへ確認コードをお送りします。</p><div class="fields"><div class="field"><label for="email">メールアドレス</label><input id="email" type="email" inputmode="email" autocomplete="email"></div><div class="field hide" id="code-wrap"><label for="code">確認コード</label><input id="code" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6"></div></div><div class="hide" id="code-support"><p class="small" id="code-expiry" aria-live="polite"></p><p class="small">メールが届くまで、1〜2分ほどかかることがあります。届かない場合は、迷惑メールフォルダもご確認ください。</p><p class="small">わからないときは会場スタッフへお声がけください。</p></div><button id="email-button" type="button">確認コードを送る</button><button class="ghost hide" id="resend-button" type="button">新しいコードを送る</button><button class="ghost hide" id="resume-email-button" type="button">続きから再開する</button><button class="ghost" id="email-new-button" type="button">はじめての方はこちら</button><details class="login-help" id="login-help"><summary>メールアドレス・パスワードを忘れたとき</summary><div class="login-help-body"><div class="login-help-email hide" id="login-help-email"><b>ご登録のメールアドレス</b><p id="login-help-email-value"></p><p>上のメールアドレスで確認コードをお送りください。</p></div><button class="ghost" id="login-help-email-button" type="button">登録済みのメールアドレスを確認する</button><a class="button ghost" id="login-help-password" href="https://lien-ec.i10.bcart.jp/password.php">パスワードを再設定する</a><button class="ghost" id="login-help-line-button" type="button">公式LINEに「ログインできません」と送る</button></div></details></section>
 
     <section class="card hide" id="screen-duplicate"><div class="step">ご確認ください</div><h2>この店舗はご登録済みです</h2><p class="small" id="duplicate-copy">この店舗はすでにご登録があります。ご注文は、登録済みの方のLINEからお進みください。</p><button class="ghost" id="duplicate-close-button" type="button">LINEに戻る</button></section>
 
@@ -761,7 +764,37 @@
     }
     function showExistingLogin() {
       state.mode = 'link'; show('screen-email'); restoreEmail(); $('resume-email-button').classList.remove('hide');
+      resetLoginHelp();
       note('', true); waitDone();
+    }
+    function resetLoginHelp() {
+      $('login-help-email').classList.add('hide'); text('login-help-email-value', '');
+      $('login-help-email-button').disabled = false; $('login-help-email-button').textContent = '登録済みのメールアドレスを確認する';
+      $('login-help-password').href = /^https:\/\/lien-ec\.i10\.bcart\.jp\/password\.php$/.test(String(cfg.passwordResetUrl || '')) ? cfg.passwordResetUrl : 'https://lien-ec.i10.bcart.jp/password.php';
+    }
+    async function loadLoginHelp() {
+      var button = $('login-help-email-button');
+      try {
+        setBusy(button, true, '確認しています…');
+        var r = await api('liff_login_help', { sid:state.sid });
+        if (!r || !r.ok || !r.maskedEmail) {
+          note('ご登録のメールアドレスを確認できませんでした。公式LINEへご相談ください。');
+          return;
+        }
+        text('login-help-email-value', r.maskedEmail);
+        $('login-help-email').classList.remove('hide');
+        note('ご登録のメールアドレスを確認しました。伏字を手がかりに、上の欄へ入力してください。', true);
+      } catch (e) {
+        note('ご登録のメールアドレスを確認できませんでした。公式LINEへご相談ください。');
+      } finally {
+        button.disabled = false; button.classList.remove('busy'); button.textContent = '登録済みのメールアドレスを確認する';
+      }
+    }
+    function openLineLoginSupport() {
+      var id = String(cfg.lineSupportId || '');
+      var url = /^@[A-Za-z0-9_-]+$/.test(id) ? 'https://line.me/R/oaMessage/' + encodeURIComponent(id) + '/?' + encodeURIComponent('ログインできません') : String(cfg.oaUrl || '');
+      if (!/^https:\/\/line\.me\/|^https:\/\/lin\.ee\//.test(url)) { note('公式LINEを開けませんでした。会場スタッフへお声がけください。'); return; }
+      try { liff.openWindow({ url:url, external:true }); } catch (e) { location.href = url; }
     }
     async function chooseNewRegistration(button) {
       try {
@@ -837,6 +870,8 @@
     $('choice-register-button').onclick = function () { return chooseNewRegistration(this); };
     $('choice-link-button').onclick = showExistingLogin;
     $('email-new-button').onclick = function () { return chooseNewRegistration(this); };
+    $('login-help-email-button').onclick = loadLoginHelp;
+    $('login-help-line-button').onclick = openLineLoginSupport;
     $('duplicate-close-button').onclick = function () { if (liff.isInClient()) liff.closeWindow(); else location.href = 'https://line.me/'; };
     document.addEventListener('visibilitychange', function () { if (!document.hidden && !$('screen-friend').classList.contains('hide')) window.setTimeout(start, 350); });
     async function requestCode(button) {
