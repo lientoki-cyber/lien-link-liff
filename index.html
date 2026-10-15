@@ -67,7 +67,7 @@
     <section class="card hide" id="screen-seminar"><div class="step">ONLINE SEMINAR</div><h2>後日のオンライン説明会</h2><p class="small">会場ではなく、後日オンラインで開催します（1時間・無料）。日程をお選びください。</p><div class="seminar-options" id="seminar-only-options"></div><p class="small hide" id="seminar-none">現在ご案内できる日程はありません。公式LINEで次回のご案内をお送りします。</p><button class="ghost" id="seminar-back-button" type="button">前の画面に戻る</button></section>
 
     <section class="card hide" id="screen-rally"><div class="step">STAMP RALLY</div><h2>4つ回って、ご来場特典を受け取ろう</h2><p class="small">各コーナーで「QRを読む」か、スタッフがお伝えする「合言葉」を入れると、スタンプが押されます。</p><div class="rally-progress"><b id="rally-count">0</b>／4 そろいました</div><div class="rally-grid" id="rally-grid"></div><button class="ghost hide" id="rally-instagram-button" type="button">Instagramを見る（4番のスタンプ）</button><div class="rally-goal hide" id="rally-goal"><h3>4つそろいました</h3><p>この画面をブースのSTAFFにお見せください。</p><div class="receipt" id="rally-receipt"></div><p>特典のお渡しは1店舗1回です。数量限定のため、なくなり次第終了します。</p></div><button class="ghost" id="rally-back-button" type="button">前の画面に戻る</button></section>
-    <div class="word-sheet hide" id="word-sheet" role="dialog" aria-modal="true" aria-labelledby="word-title"><div class="word-box"><h3 id="word-title">合言葉</h3><p>スタッフがお伝えする合言葉を、ひらがなで入力してください。</p><input id="word-input" type="text" autocomplete="off" autocapitalize="off" enterkeyhint="done" maxlength="20" aria-label="合言葉"><button id="word-ok" type="button">スタンプを押す</button><button class="ghost" id="word-close" type="button">閉じる</button></div></div>
+    <div class="word-sheet hide" id="word-sheet" role="dialog" aria-modal="true" aria-labelledby="word-title"><div class="word-box"><h3 id="word-title">合言葉</h3><p>スタッフがお伝えする合言葉を入力してください（漢字・ひらがな・カタカナ、どれでも大丈夫です）。</p><input id="word-input" type="text" autocomplete="off" autocapitalize="off" enterkeyhint="done" maxlength="20" aria-label="合言葉"><button id="word-ok" type="button">スタンプを押す</button><button class="ghost" id="word-close" type="button">閉じる</button></div></div>
     <div class="scan-layer hide" id="scan-layer" role="dialog" aria-modal="true" aria-labelledby="scan-title"><p class="scan-title" id="scan-title">QRを読み取る</p><p class="scan-hint" id="scan-hint">スタッフのQRコードを枠の中に入れてください</p><div class="scan-box"><video id="scan-video" playsinline muted autoplay></video><div class="scan-frame"></div></div><button class="ghost" id="scan-close" type="button">閉じる</button></div>
     <p class="footer">リアン株式会社｜お困りの際は会場スタッフへお声がけください。</p>
   </main>
@@ -217,9 +217,10 @@
       { no:4, name:'LINE＋Instagram', sub:'友だち追加とInstagramを見る' }
     ];
     var RALLY_CODES = { '1':'TSUB', '2':'HAKK', '3':'NEST' };
-    /* 合言葉（スタッフが体験のあとに口頭で伝える）。変えるときはここだけ直す。ひらがな・カタカナどちらで入れても通る */
-    var RALLY_WORDS = { '1':'ひかり', '2':'かんぱい', '3':'たからもの' };
-    function kanaNorm(v) { return String(v || '').normalize('NFKC').replace(/[\s\u3000ー－\-・。、.,!！?？]/g, '').replace(/[\u30a1-\u30f6]/g, function (c) { return String.fromCharCode(c.charCodeAt(0) - 0x60); }).toLowerCase(); }
+    /* 合言葉（代表決定 10/15 12:01。スタッフが体験のあとに口頭で伝える）。変えるときはここだけ直す。
+       漢字・ひらがな・カタカナ、長音「ー」の有無、小さい文字（ょ等）の違いはどれでも通る */
+    var RALLY_WORDS = { '1':['比叡山','ひえいざん'], '2':['免疫','めんえき'], '3':['ジョホールバル','ジョホールバール','じょほーるばる'] };
+    function kanaNorm(v) { return String(v || '').normalize('NFKC').replace(/[\s\u3000ー－\-・。、.,!！?？]/g, '').replace(/[\u30a1-\u30f6]/g, function (c) { return String.fromCharCode(c.charCodeAt(0) - 0x60); }).replace(/[ぁぃぅぇぉっゃゅょゎ]/g, function (c) { return String.fromCharCode(c.charCodeAt(0) + 1); }).toLowerCase(); }
     var RALLY_KEY = 'loc_rally_bwj2026';
     var rallyBack = 'screen-profile-done';
     function rallyLoad() { try { var v = JSON.parse(localStorage.getItem(RALLY_KEY) || '{}'); return v && typeof v === 'object' ? v : {}; } catch (ignore) { return {}; } }
@@ -237,7 +238,7 @@
       var value = String(raw || '').trim(), no, code, m;
       /* QRの中身は「LOCRALLY-1-TSUB」「1-TSUB」「TSUB」、またはLIFFのURL（?rally=1-TSUB）のどれでも受け付ける */
       try { if (/^https?:\/\//i.test(value)) { var u = new URL(value), r = u.searchParams.get('rally'); if (!r && u.searchParams.get('liff.state')) r = new URLSearchParams(String(u.searchParams.get('liff.state')).replace(/^[^?]*\?/, '')).get('rally'); value = r || ''; } } catch (ignore) { value = ''; }
-      var w = kanaNorm(value); Object.keys(RALLY_WORDS).forEach(function (k) { if (kanaNorm(RALLY_WORDS[k]) === w) { no = k; code = RALLY_CODES[k]; } });
+      var w = kanaNorm(value); Object.keys(RALLY_WORDS).forEach(function (k) { RALLY_WORDS[k].forEach(function (x) { if (w && kanaNorm(x) === w) { no = k; code = RALLY_CODES[k]; } }); });
       if (no) { rallyStamp(Number(no)); return true; }
       value = value.toUpperCase(); m = value.match(/^(?:LOCRALLY-)?([1-3])-([A-Z0-9]{4})$/);
       if (m) { no = m[1]; code = m[2]; }
