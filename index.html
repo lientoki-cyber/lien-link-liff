@@ -320,15 +320,36 @@
       if (value && values.indexOf(value) < 0) values.push(value);
       pendingRallySave(values);
     }
-    function rallyLog(no) {
-      /* 押したスタンプの番号だけを送る。氏名・店舗情報・LINEのトークンは送らない。 */
-      try { var url = new URL(String(cfg.apiUrl || ''), location.href); url.searchParams.set('api', 'liff_rally'); if (navigator.sendBeacon) navigator.sendBeacon(url.toString(), new Blob([JSON.stringify({ sid:state.sid || '', spot:String(no) })], { type:'text/plain;charset=UTF-8' })); } catch (ignore) {}
+    var rallyStampBusy = {}, rallySyncedSid = '';
+    async function rallyRecord(no) {
+      /* スタンプ番号と短命sidだけを送る。サーバーの受領を待ってから画面を「済」にする。 */
+      var url = new URL(String(cfg.apiUrl || ''), location.href); url.searchParams.set('api', 'liff_rally');
+      var res = await fetch(url.toString(), { method:'POST', headers:{'Content-Type':'text/plain;charset=UTF-8'}, body:JSON.stringify({ sid:state.sid || '', spot:String(no) }), redirect:'follow', mode:'cors', credentials:'omit', cache:'no-store' });
+      if (!res.ok) throw new Error('rally_http');
+      var out = await res.json();
+      if (!out || !out.ok) { var rejected = new Error('rally_rejected'); rejected.rallyMessage = String(out && out.error || 'スタンプを確認できませんでした。もう一度お試しください。'); throw rejected; }
+      return out;
+    }
+    async function syncRallyStamps() {
+      /* 旧版で端末だけに残ったスタンプも、受取券の前に同じsidでサーバーへ照合して補完する。 */
+      if (!state.sid || rallySyncedSid === state.sid) return;
+      var saved = rallyLoad();
+      for (var i = 0; i < RALLY_SPOTS.length; i++) if (saved[RALLY_SPOTS[i].no]) await rallyRecord(RALLY_SPOTS[i].no);
+      rallySyncedSid = state.sid;
     }
     function hasInstagram() { return /^https:\/\/www\.instagram\.com\//.test(state.instagramUrl); }
-    function rallyStamp(no) {
+    async function rallyStamp(no) {
       if (state.staffMode && !state.staffJoined) { note('スタッフ参加を確認してから、スタンプを押してください。'); return; }
       var v = rallyLoad(); if (v[no]) { note(no + '番のスタンプは押してあります。', true); return; }
-      v[no] = Date.now(); rallySave(v); rallyLog(no); note(no + '番のスタンプを押しました。', true); drawRally();
+      if (rallyStampBusy[no]) return;
+      rallyStampBusy[no] = true; note(no + '番のスタンプを確認しています…', true);
+      try {
+        await rallyRecord(no);
+        v[no] = Date.now(); rallySave(v); rallySyncedSid = state.sid;
+        note(no + '番のスタンプを押しました。', true); drawRally();
+      } catch (e) {
+        note((e && e.rallyMessage) || 'スタンプを確認できませんでした。もう一度お試しください。', false, logClientError('liff_rally', e));
+      } finally { delete rallyStampBusy[no]; }
     }
     function rallyAccept(raw) {
       var value = String(raw || '').trim(), no, code, m;
@@ -346,7 +367,7 @@
       var v = rallyLoad(), grid = $('rally-grid'), count = 0;
       /* 4番：公式LINEは友だち追加済みでこの画面に来ている。Instagramの案内先が未設定の間は
          LINEの確認だけで押す。この場合もサーバーに記録して、画面表示とタグ付けを一致させる。 */
-      if (!v[4] && !hasInstagram()) { v[4] = Date.now(); rallySave(v); rallyLog(4); }
+      if (!v[4] && !hasInstagram() && !rallyStampBusy[4]) window.setTimeout(function () { rallyStamp(4); }, 0);
       while (grid.firstChild) grid.removeChild(grid.firstChild);
       RALLY_SPOTS.forEach(function (spot) {
         var got = !!v[spot.no], box = document.createElement('div'), no = document.createElement('div'), name = document.createElement('div'), sub = document.createElement('div');
@@ -489,6 +510,7 @@
       if (cached) drawClaim(cached); else drawClaimFallback();
       if (claimBusy || !state.sid) return; claimBusy = true;
       try {
+        await syncRallyStamps();
         var r = await api('liff_rally_claim', { sid:state.sid, stamps:Object.keys(rallyLoad()) });
         if (r && r.ok && r.token) { claimRetryCount = 0; var c = { token:String(r.token), delivered:!!r.delivered }; claimSave(c); drawClaim(c); scheduleClaimRefresh(c); }
         else {
