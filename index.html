@@ -342,7 +342,8 @@
     }
     function drawClaimFallback() {
       $('rally-qr').classList.add('hide');
-      text('rally-claim-lead', 'この画面をブースのスタッフにお見せください。');
+      /* QRが出せないときは、この画面を特典の証明にしない（T01レビュー P1）。スタッフが受付番号でEXPO CONNECTから確認する */
+      text('rally-claim-lead', '受け取り用QRを準備しています。表示されない場合は、スタッフにお声がけください（受付番号で確認します）。');
       text('rally-receipt', state.receiptNo ? '受付番号 ' + state.receiptNo : '');
     }
     async function drawClaim(c) {
