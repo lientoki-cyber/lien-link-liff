@@ -29,6 +29,7 @@
     .rally-spot .cam{display:flex;white-space:nowrap;align-items:center;justify-content:center;gap:6px;width:100%;min-height:44px;margin:0;padding:6px 8px;font-size:13px;border-radius:12px}.rally-spot .cam svg{width:18px;height:18px;flex:none}
     .scan-layer{position:fixed;inset:0;z-index:50;background:#120a0f;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:16px}.scan-layer.hide{display:none}.scan-box{position:relative;width:min(86vw,360px);aspect-ratio:1/1;border-radius:18px;overflow:hidden;background:#000}.scan-box video{width:100%;height:100%;object-fit:cover}.scan-frame{position:absolute;inset:14%;border:3px solid #fff;border-radius:14px;box-shadow:0 0 0 999px rgba(0,0,0,.35)}.scan-title{color:#fff;font-size:17px;font-weight:700;margin:0 0 6px;text-align:center}.scan-hint{color:#f3dbe6;font-size:13px;margin:0 0 14px;text-align:center;line-height:1.6}.scan-layer button{width:min(86vw,360px);margin-top:16px}
     .rally-code{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;margin-top:8px}.rally-code button{width:auto;min-height:48px;margin:0;padding:8px 14px;font-size:14px}
+    .claim-qr{width:216px;height:216px;margin:14px auto 6px;padding:10px;border-radius:14px;background:#fff}.claim-qr svg{display:block;width:100%;height:100%}.claim-qr.hide{display:none}
     .rally-goal{margin:16px 0 0;padding:18px;border-radius:16px;background:linear-gradient(135deg,#c7275f,#8c3164);color:#fff;text-align:center}.rally-goal h3{margin:0 0 6px;font-size:20px}.rally-goal p{margin:0;font-size:13px;line-height:1.6}.rally-goal .receipt{margin:12px 0 4px;font-size:20px;font-weight:700;letter-spacing:.02em;white-space:nowrap}
     /* iOS Safari must receive an explicit 16px size or it zooms the page on focus. */
     input,select,textarea{min-width:0;width:100%;font-size:16px;font-family:inherit;border:1px solid #ddcbd5;border-radius:12px;background:#fff;min-height:48px;padding:10px 12px;color:var(--ink)}
@@ -66,7 +67,7 @@
     <section class="card complete hide" id="screen-done"><div class="mark">✓</div><div class="step">COMPLETE</div><h2 id="done-title">ご登録が完了しました</h2><p class="small" id="done-copy"></p><div id="done-id" class="small"></div><button class="dark hide" id="order-open-button" type="button">LOCの注文画面を開く</button><button class="ghost hide" id="done-alternate-login-button" type="button">別の方法でログインする</button><button class="ghost two-line hide" id="done-rally-button" type="button">スタンプラリーに参加する<small>ブースを4つ回って、ご来場特典を受け取る</small></button><section class="seminar-card hide" id="seminar-card"><h3>後日のオンライン説明会</h3><p class="small">展示会の会場ではなく、後日オンラインで開催します。LOCの使い方と、お店での活かし方をご紹介します（1時間・参加無料）</p><p class="seminar-lead">次の画面で日程をお選びください</p><div class="seminar-options" id="seminar-options"></div></section><button class="dark" id="close-button" type="button">LINEに戻る</button></section>
     <section class="card hide" id="screen-seminar"><div class="step">ONLINE SEMINAR</div><h2>後日のオンライン説明会</h2><p class="small">会場ではなく、後日オンラインで開催します（1時間・無料）。日程をお選びください。</p><div class="seminar-options" id="seminar-only-options"></div><p class="small hide" id="seminar-none">現在ご案内できる日程はありません。公式LINEで次回のご案内をお送りします。</p><button class="ghost" id="seminar-back-button" type="button">前の画面に戻る</button></section>
 
-    <section class="card hide" id="screen-rally"><div class="step">STAMP RALLY</div><h2>4つ回って、ご来場特典を受け取ろう</h2><p class="small">各コーナーで「QRを読む」か、スタッフがお伝えする「合言葉」を入れると、スタンプが押されます。</p><div class="rally-progress"><b id="rally-count">0</b>／4 そろいました</div><div class="rally-grid" id="rally-grid"></div><button class="ghost hide" id="rally-instagram-button" type="button">Instagramを見る（4番のスタンプ）</button><div class="rally-goal hide" id="rally-goal"><h3>4つそろいました</h3><p>この画面をブースのSTAFFにお見せください。</p><div class="receipt" id="rally-receipt"></div><p>特典のお渡しは1店舗1回です。数量限定のため、なくなり次第終了します。</p></div><button class="ghost" id="rally-back-button" type="button">前の画面に戻る</button></section>
+    <section class="card hide" id="screen-rally"><div class="step">STAMP RALLY</div><h2>4つ回って、ご来場特典を受け取ろう</h2><p class="small">各コーナーで「QRを読む」か、スタッフがお伝えする「合言葉」を入れると、スタンプが押されます。</p><div class="rally-progress"><b id="rally-count">0</b>／4 そろいました</div><div class="rally-grid" id="rally-grid"></div><button class="ghost hide" id="rally-instagram-button" type="button">Instagramを見る（4番のスタンプ）</button><div class="rally-goal hide" id="rally-goal"><h3>4つそろいました</h3><p id="rally-claim-lead">このQRをスタッフにお見せください。読み取ったら特典をお渡しします。</p><div class="claim-qr hide" id="rally-qr" role="img" aria-label="特典受け取り用のQRコード"></div><div class="receipt" id="rally-receipt"></div><p>特典のお渡しは1店舗1回です。数量限定のため、なくなり次第終了します。</p></div><button class="ghost" id="rally-back-button" type="button">前の画面に戻る</button></section>
     <div class="word-sheet hide" id="word-sheet" role="dialog" aria-modal="true" aria-labelledby="word-title"><div class="word-box"><h3 id="word-title">合言葉</h3><p>スタッフがお伝えする合言葉を入力してください（漢字・ひらがな・カタカナ、どれでも大丈夫です）。</p><input id="word-input" type="text" autocomplete="off" autocapitalize="off" enterkeyhint="done" maxlength="20" aria-label="合言葉"><button id="word-ok" type="button">スタンプを押す</button><button class="ghost" id="word-close" type="button">閉じる</button></div></div>
     <div class="scan-layer hide" id="scan-layer" role="dialog" aria-modal="true" aria-labelledby="scan-title"><p class="scan-title" id="scan-title">QRを読み取る</p><p class="scan-hint" id="scan-hint">スタッフのQRコードを枠の中に入れてください</p><div class="scan-box"><video id="scan-video" playsinline muted autoplay></video><div class="scan-frame"></div></div><button class="ghost" id="scan-close" type="button">閉じる</button></div>
     <p class="footer">リアン株式会社｜お困りの際は会場スタッフへお声がけください。</p>
@@ -263,8 +264,8 @@
       text('rally-count', String(count));
       $('rally-instagram-button').classList.toggle('hide', !!v[4] || !hasInstagram());
       var complete = count === RALLY_SPOTS.length;
-      text('rally-receipt', state.receiptNo ? '受付番号 ' + state.receiptNo : '');
       $('rally-goal').classList.toggle('hide', !complete);
+      if (complete) ensureClaim();
     }
     var CAMERA_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>';
     var scan = { stream:null, timer:0, detector:null, canvas:null, busy:false };
@@ -328,6 +329,44 @@
       var from = !$('screen-profile-done').classList.contains('hide') ? 'screen-profile-done' : (!$('screen-done').classList.contains('hide') ? 'screen-done' : '');
       if (!from) return;
       openRally(from); rallyAccept(code);
+    }
+    /* 4つそろったら、サーバーに「受け取り用の番号」を発行してもらい、QRで表示する。
+       QRの中身は乱数の番号だけ（氏名・LINEのIDは入れない）。スタッフがEXPO CONNECTで読み取ると、
+       サーバーが特典の受け渡しを記録し、LINEに達成者のタグを付ける（1店舗1回）。 */
+    var CLAIM_KEY = 'loc_rally_claim_bwj2026', claimBusy = false;
+    function claimLoad() { try { var v = JSON.parse(localStorage.getItem(CLAIM_KEY) || 'null'); return v && typeof v.token === 'string' ? v : null; } catch (ignore) { return null; } }
+    function claimSave(v) { try { localStorage.setItem(CLAIM_KEY, JSON.stringify(v)); } catch (ignore) {} }
+    function loadQrLib() {
+      if (window.qrcode) return Promise.resolve();
+      return new Promise(function (ok, ng) { var t = document.createElement('script'); t.src = 'vendor/qrcode.min.js'; t.onload = ok; t.onerror = ng; document.head.appendChild(t); });
+    }
+    function drawClaimFallback() {
+      $('rally-qr').classList.add('hide');
+      text('rally-claim-lead', 'この画面をブースのスタッフにお見せください。');
+      text('rally-receipt', state.receiptNo ? '受付番号 ' + state.receiptNo : '');
+    }
+    async function drawClaim(c) {
+      if (!c || !/^[A-Za-z0-9_-]{8,64}$/.test(c.token)) { drawClaimFallback(); return; }
+      if (c.delivered) { $('rally-qr').classList.add('hide'); text('rally-claim-lead', '特典はお渡し済みです。ご来場ありがとうございました。'); text('rally-receipt', ''); return; }
+      try {
+        await loadQrLib();
+        var q = window.qrcode(0, 'M'); q.addData('LOCCLAIM-' + c.token); q.make();
+        /* 生成元は同梱ライブラリ、中身は上で形式を確かめた番号だけ */
+        $('rally-qr').innerHTML = q.createSvgTag({ cellSize:6, margin:2, scalable:true });
+        $('rally-qr').classList.remove('hide');
+        text('rally-claim-lead', 'このQRをスタッフにお見せください。読み取ったら特典をお渡しします。');
+        text('rally-receipt', state.receiptNo ? '受付番号 ' + state.receiptNo : '');
+      } catch (e) { drawClaimFallback(); }
+    }
+    async function ensureClaim() {
+      var cached = claimLoad();
+      if (cached) drawClaim(cached); else drawClaimFallback();
+      if (claimBusy || !state.sid) return; claimBusy = true;
+      try {
+        var r = await api('liff_rally_claim', { sid:state.sid, stamps:Object.keys(rallyLoad()) });
+        if (r && r.ok && r.token) { var c = { token:String(r.token), delivered:!!r.delivered }; claimSave(c); drawClaim(c); }
+      } catch (ignore) { /* 受け口がまだ無い・通信不良：受付番号の表示のまま */ }
+      finally { claimBusy = false; }
     }
     function openRally(from) { rallyBack = from; drawRally(); show('screen-rally'); note('', true); window.scrollTo(0, 0); }
     function openSeminarScreen(from) {
