@@ -107,6 +107,21 @@
       if (id === 'screen-done') return setSteps(0, 3);
     }
     var currentScreen = 'screen-start', screenTrail = [];
+    /* 再ログイン時に画面名だけを短時間保持する。入力内容・トークン・個人情報は保存しない。 */
+    var RELOGIN_RESUME_KEY = 'lien_liff_resume_v1';
+    function reloginResumeSave() {
+      try {
+        sessionStorage.setItem(RELOGIN_RESUME_KEY, JSON.stringify({ screen:currentScreen, mode:state.mode, at:Date.now() }));
+      } catch (ignore) {}
+    }
+    function reloginResumeLoad() {
+      try {
+        var raw = JSON.parse(sessionStorage.getItem(RELOGIN_RESUME_KEY) || 'null');
+        if (!raw || Date.now() - Number(raw.at || 0) > 15 * 60 * 1000) return null;
+        return ['screen-email','screen-choice','screen-register','screen-profile-done','screen-done','screen-rally'].indexOf(raw.screen) >= 0 ? raw : null;
+      } catch (ignore) { return null; }
+    }
+    function reloginResumeClear() { try { sessionStorage.removeItem(RELOGIN_RESUME_KEY); } catch (ignore) {} }
     function renderScreen(id) {
       currentScreen = id;
       if (id !== 'screen-rally') stopClaimPolling();
@@ -117,6 +132,8 @@
     function show(id) {
       if (id !== currentScreen) screenTrail.push(currentScreen);
       renderScreen(id);
+      /* 前画面の操作結果（例：スタンプを押した案内）を次画面へ残さない。 */
+      note('', true);
     }
     function showBackTo(id) {
       var index = screenTrail.lastIndexOf(id);
@@ -140,10 +157,19 @@
       $('progress').classList.add('active'); $('progress').firstElementChild.style.width = Math.max(4, Math.min(96, Number(progress) || 8)) + '%';
       $('notice').classList.remove('ok'); text('notice', label || '確認しています…');
     }
+    function offerRetry() {
+      if (currentScreen === 'screen-start') { $('retry-button').classList.remove('hide'); return; }
+      var screen = $(currentScreen); if (!screen || screen.classList.contains('hide')) return;
+      var retry = $('inline-retry');
+      if (!retry) { retry = document.createElement('button'); retry.type = 'button'; retry.id = 'inline-retry'; retry.className = 'ghost'; retry.textContent = 'もう一度確認する'; retry.onclick = start; }
+      if (retry.parentNode !== screen) screen.appendChild(retry);
+      retry.classList.remove('hide');
+    }
+    function clearInlineRetry() { var retry = $('inline-retry'); if (retry) retry.classList.add('hide'); }
     function waitStart(label, progress) {
       clearWaitTimers(); waitStage(label, progress);
       state.waitTimers.push(window.setTimeout(function () { $('notice').classList.remove('ok'); text('notice', '通信に時間がかかっています。このままお待ちください。'); }, 3000));
-      state.waitTimers.push(window.setTimeout(function () { $('retry-button').classList.remove('hide'); }, 15000));
+      state.waitTimers.push(window.setTimeout(offerRetry, 15000));
     }
     function waitDone() { clearWaitTimers(); $('progress').firstElementChild.style.width = '100%'; window.setTimeout(function () { $('progress').classList.remove('active'); $('progress').firstElementChild.style.width = '0'; }, 220); }
     function rememberEmail() { state.email = String($('email').value || '').trim(); return state.email; }
@@ -219,7 +245,8 @@
       clearWaitTimers(); $('progress').classList.remove('active');
       var code = error ? logClientError(action, error) : '';
       note(message || '通信を確認できませんでした。もう一度お試しください。', false, code);
-      $('start-button').classList.add('hide'); $('retry-button').classList.remove('hide');
+      if (currentScreen === 'screen-start') { $('start-button').classList.add('hide'); $('retry-button').classList.remove('hide'); }
+      else offerRetry();
     }
     function liffApiUrl() {
       var url = new URL(String(cfg.apiUrl || ''), location.href);
@@ -265,10 +292,28 @@
        漢字・ひらがな・カタカナ、長音「ー」の有無、小さい文字（ょ等）の違いはどれでも通る */
     var RALLY_WORDS = { '1':['比叡山','ひえいざん'], '2':['免疫','めんえき'], '3':['ジョホールバル','ジョホールバール','じょほーるばる'] };
     function kanaNorm(v) { return String(v || '').normalize('NFKC').replace(/[\s\u3000ー－\-・。、.,!！?？]/g, '').replace(/[\u30a1-\u30f6]/g, function (c) { return String.fromCharCode(c.charCodeAt(0) - 0x60); }).replace(/[ぁぃぅぇぉっゃゅょゎ]/g, function (c) { return String.fromCharCode(c.charCodeAt(0) + 1); }).toLowerCase(); }
-    var RALLY_KEY = 'loc_rally_bwj2026';
+    var RALLY_KEY = 'loc_rally_bwj2026', RALLY_PENDING_KEY = 'loc_rally_pending_bwj2026';
     var rallyBack = 'screen-profile-done';
-    function rallyLoad() { try { var v = JSON.parse(localStorage.getItem(RALLY_KEY) || '{}'); return v && typeof v === 'object' ? v : {}; } catch (ignore) { return {}; } }
-    function rallySave(v) { try { localStorage.setItem(RALLY_KEY, JSON.stringify(v)); } catch (ignore) {} }
+    /* 共有端末でも前の利用者のスタンプ／特典QRを見せないよう、LINE本人の値を不可逆な短い識別子にしてキーを分ける。 */
+    function storageScope() {
+      if (state.storageScope) return state.storageScope;
+      var sub = '';
+      try { sub = String((liff.getDecodedIDToken() || {}).sub || ''); } catch (ignore) {}
+      var h = 2166136261;
+      for (var i = 0; i < sub.length; i++) { h ^= sub.charCodeAt(i); h = Math.imul(h, 16777619); }
+      state.storageScope = 'u' + (h >>> 0).toString(36);
+      return state.storageScope;
+    }
+    function scopedStorageKey(key) { return key + ':' + storageScope(); }
+    function rallyLoad() { try { var v = JSON.parse(localStorage.getItem(scopedStorageKey(RALLY_KEY)) || '{}'); return v && typeof v === 'object' ? v : {}; } catch (ignore) { return {}; } }
+    function rallySave(v) { try { localStorage.setItem(scopedStorageKey(RALLY_KEY), JSON.stringify(v)); } catch (ignore) {} }
+    function pendingRallyLoad() { try { var v = JSON.parse(sessionStorage.getItem(scopedStorageKey(RALLY_PENDING_KEY)) || '[]'); return Array.isArray(v) ? v.slice(0, 3) : []; } catch (ignore) { return []; } }
+    function pendingRallySave(values) { try { sessionStorage.setItem(scopedStorageKey(RALLY_PENDING_KEY), JSON.stringify((values || []).map(function (v) { return String(v || '').slice(0, 200); }).filter(Boolean).slice(0, 3))); } catch (ignore) {} }
+    function queueRally(raw) {
+      var values = pendingRallyLoad(), value = String(raw || '').slice(0, 200);
+      if (value && values.indexOf(value) < 0) values.push(value);
+      pendingRallySave(values);
+    }
     function rallyLog(no) {
       /* 押したスタンプの番号だけを送る。氏名・店舗情報・LINEのトークンは送らない。 */
       try { var url = new URL(String(cfg.apiUrl || ''), location.href); url.searchParams.set('api', 'liff_rally'); if (navigator.sendBeacon) navigator.sendBeacon(url.toString(), new Blob([JSON.stringify({ sid:state.sid || '', spot:String(no) })], { type:'text/plain;charset=UTF-8' })); } catch (ignore) {}
@@ -368,17 +413,27 @@
       }
     }
     function openRallyFromLink(code) {
-      /* スマホの標準カメラでQR（LIFFのURL）を読んだとき：登録済みならスタンプを押してラリー画面を開く */
+      /* スマホの標準カメラでQR（LIFFのURL）を読んだとき：未完了なら捨てず、完了後に反映する。 */
+      var from = !$('screen-profile-done').classList.contains('hide') ? 'screen-profile-done' : (!$('screen-done').classList.contains('hide') ? 'screen-done' : '');
+      if (!from) { queueRally(code); note('スタンプをお預かりしました。店舗登録が完了すると反映します。', true); return; }
+      openRally(from); rallyAccept(code);
+    }
+    function applyPendingRally() {
+      var values = pendingRallyLoad(); if (!values.length) return;
       var from = !$('screen-profile-done').classList.contains('hide') ? 'screen-profile-done' : (!$('screen-done').classList.contains('hide') ? 'screen-done' : '');
       if (!from) return;
-      openRally(from); rallyAccept(code);
+      pendingRallySave([]); openRally(from); values.forEach(rallyAccept);
+    }
+    function restoreRallyScreen() {
+      var from = !$('screen-profile-done').classList.contains('hide') ? 'screen-profile-done' : (!$('screen-done').classList.contains('hide') ? 'screen-done' : '');
+      if (from) openRally(from);
     }
     /* 4つそろったら、サーバーに「受け取り用の番号」を発行してもらい、QRで表示する。
        QRの中身は乱数の番号だけ（氏名・LINEのIDは入れない）。スタッフがEXPO CONNECTで読み取ると、
        サーバーが特典の受け渡しを記録し、LINEに達成者のタグを付ける（1店舗1回）。 */
-    var CLAIM_KEY = 'loc_rally_claim_bwj2026', claimBusy = false, claimPollTimer = 0;
-    function claimLoad() { try { var v = JSON.parse(localStorage.getItem(CLAIM_KEY) || 'null'); return v && typeof v.token === 'string' ? v : null; } catch (ignore) { return null; } }
-    function claimSave(v) { try { localStorage.setItem(CLAIM_KEY, JSON.stringify(v)); } catch (ignore) {} }
+    var CLAIM_KEY = 'loc_rally_claim_bwj2026', claimBusy = false, claimPollTimer = 0, claimRetryCount = 0;
+    function claimLoad() { try { var v = JSON.parse(localStorage.getItem(scopedStorageKey(CLAIM_KEY)) || 'null'); return v && typeof v.token === 'string' ? v : null; } catch (ignore) { return null; } }
+    function claimSave(v) { try { localStorage.setItem(scopedStorageKey(CLAIM_KEY), JSON.stringify(v)); } catch (ignore) {} }
     function loadQrLib() {
       if (window.qrcode) return Promise.resolve();
       return new Promise(function (ok, ng) { var t = document.createElement('script'); t.src = 'vendor/qrcode.min.js'; t.onload = ok; t.onerror = ng; document.head.appendChild(t); });
@@ -417,8 +472,15 @@
       if (claimBusy || !state.sid) return; claimBusy = true;
       try {
         var r = await api('liff_rally_claim', { sid:state.sid, stamps:Object.keys(rallyLoad()) });
-        if (r && r.ok && r.token) { var c = { token:String(r.token), delivered:!!r.delivered }; claimSave(c); drawClaim(c); scheduleClaimRefresh(c); }
-      } catch (ignore) { /* 受け口がまだ無い・通信不良：受付番号の表示のまま */ }
+        if (r && r.ok && r.token) { claimRetryCount = 0; var c = { token:String(r.token), delivered:!!r.delivered }; claimSave(c); drawClaim(c); scheduleClaimRefresh(c); }
+        else { var missing = new Error('claim response missing'); missing.locAction = 'liff_rally_claim'; throw missing; }
+      } catch (e) {
+        /* 通信状態だけを記録し、受付番号を特典の証明にはしない。数秒おき、最大3回だけ自動再試行する。 */
+        logClientError('liff_rally_claim', e);
+        if (claimRetryCount < 3 && !$('screen-rally').classList.contains('hide')) {
+          claimRetryCount++; stopClaimPolling(); claimPollTimer = setTimeout(ensureClaim, claimRetryCount * 3000);
+        }
+      }
       finally { claimBusy = false; }
     }
     function refreshRallyButtons() {
@@ -448,7 +510,13 @@
     function reLogin() {
       if (state.relogging) return;
       state.relogging = true; waitStage('LINEをもう一度確認しています…', 16);
-      try { if (liff.isLoggedIn()) liff.logout(); liff.login({ redirectUri:location.href }); } catch (ignore) { location.reload(); }
+      reloginResumeSave();
+      try {
+        /* LINE内は logout/login で別画面へ飛ばさず、同じLIFFを読み直してSDKに新しいセッションを取得させる。 */
+        if (liff.isInClient && liff.isInClient()) { location.reload(); return; }
+        if (liff.isLoggedIn()) liff.logout();
+        liff.login({ redirectUri:location.href });
+      } catch (ignore) { location.reload(); }
     }
     async function api(action, payload) {
       /* 初回にだけLINEへIDトークンを照会する。以降も同じ証明のハッシュとSIDをサーバーで照合する。 */
@@ -717,7 +785,7 @@
       if (r.receiptNo) state.receiptNo = String(r.receiptNo);
       text('profile-done-id', state.receiptNo ? '受付番号：' + state.receiptNo : '');
       $('instagram-button').classList.toggle('hide', !/^https:\/\/www\.instagram\.com\//.test(state.instagramUrl));
-      refreshRallyButtons(); show('screen-profile-done'); note('', true); waitDone();
+      refreshRallyButtons(); show('screen-profile-done'); note('', true); waitDone(); applyPendingRally();
     }
     function drawForm(r) {
       state.fields = r.fields || []; var box = $('register-fields'); while (box.firstChild) box.removeChild(box.firstChild);
@@ -776,7 +844,7 @@
       state.orderUrl = /^https:\/\/[^\s"'<>]+$/.test(String(r.orderUrl || '')) ? String(r.orderUrl) : '';
       $('order-open-button').classList.toggle('hide', !state.orderUrl);
       $('done-alternate-login-button').classList.toggle('hide', !(state.entryKnown && isOrder));
-      renderSeminarCard(); refreshRallyButtons(); show('screen-done'); note('', true); waitDone();
+      renderSeminarCard(); refreshRallyButtons(); show('screen-done'); note('', true); waitDone(); applyPendingRally();
     }
     function showDuplicate() {
       if (state.testNew) {
@@ -866,12 +934,12 @@
       if (state.starting) return;
       state.starting = true;
       try {
-        $('retry-button').classList.add('hide'); $('start-button').classList.remove('hide'); setBusy($('start-button'), true, '確認しています…'); waitStart('LINEを確認しています…', 20);
+        $('retry-button').classList.add('hide'); clearInlineRetry(); $('start-button').classList.remove('hide'); setBusy($('start-button'), true, '確認しています…'); waitStart('LINEを確認しています…', 20);
         var friendship = await liff.getFriendship();
         currentAction = 'liff_start';
         if (state.mode === 'register' || state.mode === 'order') { waitStage('店舗情報を読み込んでいます…', 48); drawFormSkeleton(); }
         var r = await api('liff_start', { friend:!!friendship.friendFlag, mode:state.mode, ref:state.ref, src:state.src, testNew:state.testNew });
-        if (r.needFriend) { show('screen-friend'); note(r.error || '公式LINEの友だち追加をお願いします。'); waitDone(); return; }
+        if (r.needFriend) { show('screen-friend'); setFriendBusy(false); note(r.error || '公式LINEの友だち追加をお願いします。'); waitDone(); return; }
         if (!r.ok) { fail(r.error); return; }
         state.sid = r.sid; state.instagramUrl = String(r.instagramUrl || '');
         if (state.mode === 'entry') return routeEntry(r.registration);
@@ -892,18 +960,47 @@
     }
     async function boot() {
       if (!cfg.liffId || !cfg.apiUrl) { fail('公開準備中です。設定を確認してください。'); return; }
-      try { prewarm(); await liff.init({ liffId:cfg.liffId }); if (!liff.isLoggedIn()) { liff.login({ redirectUri:location.href }); return; } var rallyParam = new URLSearchParams(location.search).get('rally'); await start(); if (rallyParam) openRallyFromLink(rallyParam); }
+      try {
+        var resume = reloginResumeLoad();
+        if (resume && ['entry','link','register','order'].indexOf(resume.mode) >= 0) state.mode = resume.mode;
+        prewarm(); await liff.init({ liffId:cfg.liffId });
+        if (!liff.isLoggedIn()) { liff.login({ redirectUri:location.href }); return; }
+        var rallyParam = new URLSearchParams(location.search).get('rally');
+        await start();
+        if (rallyParam) openRallyFromLink(rallyParam);
+        applyPendingRally();
+        /* start() がサーバーの現在の登録状態を正とする。画面名はラリーだけを復元し、未保存の入力欄は復元しない。 */
+        if (resume && resume.screen === 'screen-rally') restoreRallyScreen();
+        reloginResumeClear(); state.relogging = false;
+      }
       catch (e) { fail('LINEを起動できませんでした。LINEアプリからもう一度お試しください。', 'liff_init', e); }
     }
     $('friend-button').href = String(cfg.oaUrl || '#');
-    $('start-button').onclick = start; $('retry-button').onclick = start; $('friend-check').onclick = start;
+    function setFriendBusy(yes, label) { setBusy($('friend-button'), yes, label || '公式LINEを友だち追加する'); }
+    function openFriend() {
+      var url = String(cfg.oaUrl || '');
+      if (!/^https:\/\/(?:lin\.ee|line\.me)\//.test(url)) { note('公式LINEを開けませんでした。会場スタッフへお声がけください。'); return; }
+      setFriendBusy(true, '公式LINEを開いています…'); note('公式LINEを開いています。追加後、この画面に戻ると自動で確認します。', true);
+      try { liff.openWindow({ url:url, external:true }); } catch (e) { location.href = url; }
+    }
+    async function confirmFriend() {
+      if (state.starting) return;
+      setBusy($('friend-check'), true, '確認しています…'); waitStart('公式LINEを確認しています…', 28);
+      try { await start(); } finally { if (!state.starting) setBusy($('friend-check'), false, '追加しました（確認する）'); }
+    }
+    $('friend-button').onclick = function (e) { if (e) e.preventDefault(); openFriend(); };
+    $('start-button').onclick = start; $('retry-button').onclick = start; $('friend-check').onclick = confirmFriend;
     $('choice-register-button').onclick = function () { return chooseNewRegistration(this); };
     $('choice-link-button').onclick = showExistingLogin;
     $('email-new-button').onclick = function () { return chooseNewRegistration(this); };
     $('login-help-email-button').onclick = loadLoginHelp;
     $('login-help-line-button').onclick = openLineLoginSupport;
     $('duplicate-close-button').onclick = function () { if (liff.isInClient()) liff.closeWindow(); else location.href = 'https://line.me/'; };
-    document.addEventListener('visibilitychange', function () { if (!document.hidden && !$('screen-friend').classList.contains('hide')) window.setTimeout(start, 350); });
+    document.addEventListener('visibilitychange', function () {
+      if (!document.hidden && !$('screen-friend').classList.contains('hide')) {
+        setFriendBusy(false); window.setTimeout(start, 350);
+      }
+    });
     async function requestCode(button) {
       var action = 'liff_request_code';
       try {
@@ -1002,7 +1099,7 @@
       try { setBusy($('order-now-button'), true, '準備しています…'); waitStart('会員登録の準備をしています…', 60); var r = await api('liff_order_load', { sid:state.sid });
         if (!r.ok) { note(r.error || '登録の準備を確認できませんでした。'); return; }
         if (r.state === 'dup') return showDuplicate(); if (r.state === 'form') return drawForm(r); return done(r);
-      } catch (e) { note('通信を確認できませんでした。もう一度お試しください。', false, logClientError('liff_order_load', e)); }
+      } catch (e) { if (!e || !e.locRelogin) note('通信を確認できませんでした。もう一度お試しください。', false, logClientError('liff_order_load', e)); }
       finally { setBusy($('order-now-button'), false, '今すぐ注文する'); if (!state.relogging) waitDone(); }
     }
     $('order-now-button').onclick = startOrder;
