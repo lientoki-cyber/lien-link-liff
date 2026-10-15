@@ -491,7 +491,12 @@
       try {
         var r = await api('liff_rally_claim', { sid:state.sid, stamps:Object.keys(rallyLoad()) });
         if (r && r.ok && r.token) { claimRetryCount = 0; var c = { token:String(r.token), delivered:!!r.delivered }; claimSave(c); drawClaim(c); scheduleClaimRefresh(c); }
-        else { var missing = new Error('claim response missing'); missing.locAction = 'liff_rally_claim'; throw missing; }
+        else {
+          /* サーバーが返すのは個人情報を含まない分類だけ。画面には案内文だけを表示する。 */
+          note((r && r.error) || '受け取り用QRを準備できません。受付でお声がけください。', false);
+          var missing = new Error('claim_' + (/^[a-z_]{3,40}$/.test(String(r && r.code || '')) ? r.code : 'unavailable'));
+          missing.locAction = 'liff_rally_claim'; throw missing;
+        }
       } catch (e) {
         /* 通信状態だけを記録し、受付番号を特典の証明にはしない。数秒おき、最大3回だけ自動再試行する。 */
         logClientError('liff_rally_claim', e);
