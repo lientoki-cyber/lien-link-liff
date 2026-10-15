@@ -226,8 +226,9 @@
     }
     function drawRally() {
       var v = rallyLoad(), grid = $('rally-grid'), count = 0;
-      /* 4番：公式LINEは友だち追加済みでこの画面に来ている。Instagramの案内先が未設定の間はLINEだけで押す。 */
-      if (!v[4] && !hasInstagram()) { v[4] = Date.now(); rallySave(v); }
+      /* 4番：公式LINEは友だち追加済みでこの画面に来ている。Instagramの案内先が未設定の間は
+         LINEの確認だけで押す。この場合もサーバーに記録して、画面表示とタグ付けを一致させる。 */
+      if (!v[4] && !hasInstagram()) { v[4] = Date.now(); rallySave(v); rallyLog(4); }
       while (grid.firstChild) grid.removeChild(grid.firstChild);
       RALLY_SPOTS.forEach(function (spot) {
         var got = !!v[spot.no], box = document.createElement('div'), no = document.createElement('div'), name = document.createElement('div'), sub = document.createElement('div');
