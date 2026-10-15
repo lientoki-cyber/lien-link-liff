@@ -75,7 +75,10 @@
     <section class="card complete hide" id="screen-done"><div class="mark">✓</div><div class="step" id="done-step">登録 完了</div><h2 id="done-title">ご登録が完了しました</h2><p class="small" id="done-copy"></p><p class="welcome hide" id="done-welcome"></p><div id="done-id" class="small"></div><button class="dark hide" id="order-open-button" type="button">ご注文画面を開く</button><button class="ghost hide" id="done-alternate-login-button" type="button">別の方法でログインする</button><button class="ghost two-line hide" id="done-rally-button" type="button">スタンプラリーに参加する<small>ブースを4つ回って、ご来場特典を受け取る</small></button><section class="seminar-card hide" id="seminar-card"><h3>オンライン説明会</h3><p class="small">展示会の会場ではなく、後日オンラインで開催します。ご注文の仕方と、お店での活かし方をご紹介します（1時間・参加無料）</p><p class="seminar-lead">次の画面で日程をお選びください</p><div class="seminar-options" id="seminar-options"></div></section><button class="dark" id="close-button" type="button">LINEに戻る</button></section>
     <section class="card hide" id="screen-seminar"><div class="step">ONLINE SEMINAR</div><h2>オンライン説明会</h2><p class="small">会場ではなく、後日オンラインで開催します（1時間・無料）。日程をお選びください。</p><div class="seminar-options" id="seminar-only-options"></div><p class="small hide" id="seminar-none">現在ご案内できる日程はありません。公式LINEで次回のご案内をお送りします。</p><button class="ghost" id="seminar-back-button" type="button">前の画面に戻る</button></section>
 
-    <section class="card hide" id="screen-rally"><div class="step">STAMP RALLY</div><h2>4つ回って、ご来場特典を受け取ろう</h2><p class="small">各コーナーで「QRを読む」か、スタッフがお伝えする「合言葉」を入れると、スタンプが押されます。</p><div class="rally-progress"><b id="rally-count">0</b>／4 そろいました</div><div class="rally-grid" id="rally-grid"></div><button class="ghost hide" id="rally-instagram-button" type="button">Instagramを見る（4番のスタンプ）</button><div class="rally-goal hide" id="rally-goal"><h3>4つそろいました</h3><p id="rally-claim-lead">このQRをスタッフにお見せください。読み取ったら特典をお渡しします。</p><div class="claim-qr hide" id="rally-qr" role="img" aria-label="特典受け取り用のQRコード"></div><div class="receipt" id="rally-receipt"></div><p>特典のお渡しは1店舗1回です。数量限定のため、なくなり次第終了します。</p></div><button class="ghost" id="rally-back-button" type="button">前の画面に戻る</button></section>
+    <section class="card complete hide" id="screen-staff-code"><div class="mark">★</div><div class="step">STAFF PARTICIPATION</div><h2>スタッフ参加を確認します</h2><p class="small">EXPO CONNECTの画面に表示された10桁の確認コードを入力してください。QRだけではスタッフ参加になりません。</p><div class="fields"><div class="field"><label for="staff-code">確認コード</label><input id="staff-code" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="10" placeholder="10桁の数字"></div></div><button id="staff-code-button" type="button">スタッフ参加を確認する</button></section>
+    <section class="card complete hide" id="screen-staff-experience"><div class="mark">✓</div><div class="step">STEP 2　店舗登録を体験</div><h2>店舗登録の流れを体験できます</h2><p class="small">ここで入力した内容は保存・送信されず、ご注文用の会員登録も作られません。</p><div class="fields"><div class="field"><label for="staff-store">店舗名（体験用）</label><input id="staff-store" type="text" autocomplete="organization"></div><div class="name-row"><div class="field"><label for="staff-last">ご担当者 姓</label><input id="staff-last" type="text" autocomplete="family-name"></div><div class="field"><label for="staff-first">名</label><input id="staff-first" type="text" autocomplete="given-name"></div></div><div class="field"><label for="staff-email">メールアドレス（体験用）</label><input id="staff-email" type="email" inputmode="email" autocomplete="email"></div></div><button id="staff-experience-button" type="button">店舗登録を体験する</button></section>
+    <section class="card complete hide" id="screen-staff-done"><div class="mark">✓</div><div class="step">スタッフ参加</div><h2>参加ありがとうございます</h2><p class="small">スタッフ参加として記録しました。ご注文用の会員登録・来場者数・特典・売上の集計には含まれません。</p><button id="staff-rally-button" type="button">スタンプラリーに参加する</button><button class="ghost" id="staff-close-button" type="button">LINEに戻る</button></section>
+    <section class="card hide" id="screen-rally"><div class="step">STAMP RALLY</div><h2 id="rally-title">4つ回って、ご来場特典を受け取ろう</h2><p class="small">各コーナーで「QRを読む」か、スタッフがお伝えする「合言葉」を入れると、スタンプが押されます。</p><div class="rally-progress"><b id="rally-count">0</b>／4 そろいました</div><div class="rally-grid" id="rally-grid"></div><button class="ghost hide" id="rally-instagram-button" type="button">Instagramを見る（4番のスタンプ）</button><div class="rally-goal hide" id="rally-goal"><h3 id="rally-goal-title">4つそろいました</h3><p id="rally-claim-lead">このQRをスタッフにお見せください。読み取ったら特典をお渡しします。</p><div class="claim-qr hide" id="rally-qr" role="img" aria-label="特典受け取り用のQRコード"></div><div class="receipt" id="rally-receipt"></div><p id="rally-goal-note">特典のお渡しは1店舗1回です。数量限定のため、なくなり次第終了します。</p></div><button class="ghost" id="rally-back-button" type="button">前の画面に戻る</button></section>
     <div class="word-sheet hide" id="word-sheet" role="dialog" aria-modal="true" aria-labelledby="word-title"><div class="word-box"><h3 id="word-title">合言葉</h3><p>スタッフがお伝えする合言葉を入力してください（漢字・ひらがな・カタカナ、どれでも大丈夫です）。</p><input id="word-input" type="text" autocomplete="off" autocapitalize="off" enterkeyhint="done" maxlength="20" aria-label="合言葉"><button id="word-ok" type="button">スタンプを押す</button><button class="ghost" id="word-close" type="button">閉じる</button></div></div>
     <div class="scan-layer hide" id="scan-layer" role="dialog" aria-modal="true" aria-labelledby="scan-title"><p class="scan-title" id="scan-title">QRを読み取る</p><p class="scan-hint" id="scan-hint">スタッフのQRコードを枠の中に入れてください</p><div class="scan-box"><video id="scan-video" playsinline muted autoplay></video><div class="scan-frame"></div></div><button class="ghost" id="scan-close" type="button">閉じる</button></div>
     <p class="footer">リアン株式会社｜お困りの際は会場スタッフへお声がけください。</p>
@@ -91,7 +94,7 @@
     ];
     var SEMINAR_FORM_URL = 'https://liff.line.me/1654464542-Wky3Ay7r?liff_id=1654464542-Wky3Ay7r&group_id=157954';
     var pageMode = qs.get('p');
-    var state = { sid:'', mode: pageMode === 'order' ? 'order' : 'entry', ref: qs.get('ref') || '', src: qs.get('src') || '', testNew:qs.get('test') === 'new', fields:[], busy:false, waitTimers:[], starting:false, email:'', codeTimer:0, codeSendTimer:0, codeExpiresAt:0, resendUntil:0, instagramUrl:'', orderUrl:'', entryKnown:false };
+    var state = { sid:'', mode: pageMode === 'order' ? 'order' : (pageMode === 'staff' ? 'staff' : 'entry'), ref: qs.get('ref') || '', src: qs.get('src') || '', staffTicket:qs.get('staff') || '', staffMode:pageMode === 'staff', staffJoined:false, testNew:qs.get('test') === 'new', fields:[], busy:false, waitTimers:[], starting:false, email:'', codeTimer:0, codeSendTimer:0, codeExpiresAt:0, resendUntil:0, instagramUrl:'', orderUrl:'', entryKnown:false };
     function $(id) { return document.getElementById(id); }
     function text(id, value) { $(id).textContent = String(value || ''); }
     /* 3段階（1 LINE友だち追加／2 店舗登録／3 ご注文用の会員登録）の現在地を表示する */
@@ -102,6 +105,9 @@
       if (id === 'screen-start' || id === 'screen-friend') return setSteps(1, 0);
       if (id === 'screen-choice') return setSteps(2, 1);
       if (id === 'screen-register') return state.step === 'order' ? setSteps(3, 2) : setSteps(2, 1);
+      if (id === 'screen-staff-code') return setSteps(2, 1);
+      if (id === 'screen-staff-experience') return setSteps(2, 1);
+      if (id === 'screen-staff-done') return setSteps(0, 2);
       if (id === 'screen-profile-done') return setSteps(3, 2);
       if (id === 'screen-email') return setSteps(3, 1);
       if (id === 'screen-done') return setSteps(0, 3);
@@ -118,7 +124,7 @@
       try {
         var raw = JSON.parse(sessionStorage.getItem(RELOGIN_RESUME_KEY) || 'null');
         if (!raw || Date.now() - Number(raw.at || 0) > 15 * 60 * 1000) return null;
-        return ['screen-email','screen-choice','screen-register','screen-profile-done','screen-done','screen-rally'].indexOf(raw.screen) >= 0 ? raw : null;
+        return ['screen-email','screen-choice','screen-register','screen-profile-done','screen-done','screen-rally','screen-staff-code','screen-staff-experience','screen-staff-done'].indexOf(raw.screen) >= 0 ? raw : null;
       } catch (ignore) { return null; }
     }
     function reloginResumeClear() { try { sessionStorage.removeItem(RELOGIN_RESUME_KEY); } catch (ignore) {} }
@@ -140,7 +146,7 @@
       if (index >= 0) screenTrail = screenTrail.slice(0, index);
       renderScreen(id || 'screen-start');
     }
-    function _show(id) { ['screen-start','screen-friend','screen-choice','screen-email','screen-duplicate','screen-register','screen-profile-done','screen-done','screen-seminar','screen-rally'].forEach(function (x) { $(x).classList.toggle('hide', x !== id); }); }
+    function _show(id) { ['screen-start','screen-friend','screen-choice','screen-email','screen-duplicate','screen-register','screen-profile-done','screen-done','screen-seminar','screen-staff-code','screen-staff-experience','screen-staff-done','screen-rally'].forEach(function (x) { $(x).classList.toggle('hide', x !== id); }); }
     /* サーバーやブラウザの内部エラー文（英語の例外メッセージ）は画面に出さない */
     function friendlyMessage(message) {
       var m = String(message || '');
@@ -304,7 +310,7 @@
       state.storageScope = 'u' + (h >>> 0).toString(36);
       return state.storageScope;
     }
-    function scopedStorageKey(key) { return key + ':' + storageScope(); }
+    function scopedStorageKey(key) { return key + ':' + storageScope() + (state.staffMode ? ':staff' : ''); }
     function rallyLoad() { try { var v = JSON.parse(localStorage.getItem(scopedStorageKey(RALLY_KEY)) || '{}'); return v && typeof v === 'object' ? v : {}; } catch (ignore) { return {}; } }
     function rallySave(v) { try { localStorage.setItem(scopedStorageKey(RALLY_KEY), JSON.stringify(v)); } catch (ignore) {} }
     function pendingRallyLoad() { try { var v = JSON.parse(sessionStorage.getItem(scopedStorageKey(RALLY_PENDING_KEY)) || '[]'); return Array.isArray(v) ? v.slice(0, 3) : []; } catch (ignore) { return []; } }
@@ -320,6 +326,7 @@
     }
     function hasInstagram() { return /^https:\/\/www\.instagram\.com\//.test(state.instagramUrl); }
     function rallyStamp(no) {
+      if (state.staffMode && !state.staffJoined) { note('スタッフ参加を確認してから、スタンプを押してください。'); return; }
       var v = rallyLoad(); if (v[no]) { note(no + '番のスタンプは押してあります。', true); return; }
       v[no] = Date.now(); rallySave(v); rallyLog(no); note(no + '番のスタンプを押しました。', true); drawRally();
     }
@@ -353,7 +360,18 @@
       $('rally-instagram-button').classList.toggle('hide', !!v[4] || !hasInstagram());
       var complete = count === RALLY_SPOTS.length;
       $('rally-goal').classList.toggle('hide', !complete); refreshRallyButtons();
-      if (complete) ensureClaim();
+      if (state.staffMode) {
+        text('rally-title', '4つ回って、スタッフ参加を楽しもう');
+        text('rally-goal-title', '参加ありがとうございます');
+        text('rally-claim-lead', 'スタッフ参加として、4つのスタンプがそろいました。');
+        text('rally-receipt', ''); $('rally-qr').classList.add('hide');
+        text('rally-goal-note', 'スタッフ参加はご来場特典・来場者数・売上の集計には含まれません。');
+      } else {
+        text('rally-title', '4つ回って、ご来場特典を受け取ろう');
+        text('rally-goal-title', '4つそろいました');
+        text('rally-goal-note', '特典のお渡しは1店舗1回です。数量限定のため、なくなり次第終了します。');
+        if (complete) ensureClaim();
+      }
     }
     var CAMERA_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>';
     var scan = { stream:null, timer:0, detector:null, canvas:null, busy:false };
@@ -488,8 +506,8 @@
       ['rally-button', 'done-rally-button'].forEach(function (id) {
         var b = $(id); if (!b) return; while (b.firstChild) b.removeChild(b.firstChild);
         var small = document.createElement('small');
-        b.appendChild(document.createTextNode(complete ? '✓ スタンプラリー達成済み' : (n > 0 ? 'スタンプラリーの続き（' + n + '／4）' : 'スタンプラリーに参加する')));
-        small.textContent = complete ? '特典の受け取り画面を開く' : 'ブースを4つ回って、ご来場特典を受け取る';
+        b.appendChild(document.createTextNode(complete ? (state.staffMode ? '✓ スタッフ参加 完了' : '✓ スタンプラリー達成済み') : (n > 0 ? 'スタンプラリーの続き（' + n + '／4）' : 'スタンプラリーに参加する')));
+        small.textContent = complete ? (state.staffMode ? '参加ありがとうございます' : '特典の受け取り画面を開く') : (state.staffMode ? 'ブースを4つ回って、スタッフ参加を楽しむ' : 'ブースを4つ回って、ご来場特典を受け取る');
         b.appendChild(small); b.classList.toggle('done-state', complete);
       });
     }
@@ -860,6 +878,37 @@
       $('choice-register-button').disabled = false; $('choice-link-button').disabled = false;
       show('screen-choice'); note('', true); waitDone();
     }
+    function drawStaffCode() {
+      $('staff-code').value = '';
+      show('screen-staff-code'); note('', true); waitDone();
+    }
+    function drawStaffExperience() {
+      show('screen-staff-experience'); note('', true); waitDone();
+    }
+    function drawStaffDone() {
+      refreshRallyButtons(); show('screen-staff-done'); note('', true); waitDone();
+    }
+    function routeStaff(r) {
+      if (!r || !r.ok) { fail((r && r.error) || 'スタッフ参加を確認できませんでした。'); return; }
+      state.staffMode = true; state.staffJoined = r.state === 'staff_done' || r.state === 'staff_joined';
+      if (state.staffJoined) return drawStaffDone();
+      return drawStaffCode();
+    }
+    async function submitStaffCode() {
+      var button = $('staff-code-button'), code = normalizeDigits($('staff-code').value);
+      if (!/^\d{10}$/.test(code)) { note('EXPO CONNECTに表示された10桁の確認コードを入力してください。'); return; }
+      try {
+        setBusy(button, true, '確認しています…'); waitStart('スタッフ参加を確認しています…', 42);
+        var r = await api('liff_staff_join', { sid:state.sid, staffCode:code });
+        if (!r || !r.ok) { note((r && r.error) || 'スタッフ参加を確認できませんでした。'); return; }
+        state.staffJoined = true; $('staff-code').value = ''; drawStaffExperience();
+      } catch (e) { if (!e || !e.locRelogin) note('通信を確認できませんでした。もう一度お試しください。', false, logClientError('liff_staff_join', e)); }
+      finally { setBusy(button, false, 'スタッフ参加を確認する'); if (!state.relogging) waitDone(); }
+    }
+    function finishStaffExperience() {
+      ['staff-store','staff-last','staff-first','staff-email'].forEach(function (id) { if ($(id)) $(id).value = ''; });
+      drawStaffDone();
+    }
     function showExistingLogin() {
       state.mode = 'link'; show('screen-email'); restoreEmail(); $('resume-email-button').classList.remove('hide');
       resetLoginHelp();
@@ -938,10 +987,11 @@
         var friendship = await liff.getFriendship();
         currentAction = 'liff_start';
         if (state.mode === 'register' || state.mode === 'order') { waitStage('店舗情報を読み込んでいます…', 48); drawFormSkeleton(); }
-        var r = await api('liff_start', { friend:!!friendship.friendFlag, mode:state.mode, ref:state.ref, src:state.src, testNew:state.testNew });
+        var r = await api('liff_start', { friend:!!friendship.friendFlag, mode:state.mode, ref:state.ref, src:state.src, staffTicket:state.staffTicket, testNew:state.testNew });
         if (r.needFriend) { show('screen-friend'); setFriendBusy(false); note(r.error || '公式LINEの友だち追加をお願いします。'); waitDone(); return; }
         if (!r.ok) { fail(r.error); return; }
         state.sid = r.sid; state.instagramUrl = String(r.instagramUrl || '');
+        if (state.mode === 'staff') return routeStaff(r.registration);
         if (state.mode === 'entry') return routeEntry(r.registration);
         if (state.mode === 'order') {
           var orderStart = r.registration;
@@ -962,7 +1012,7 @@
       if (!cfg.liffId || !cfg.apiUrl) { fail('公開準備中です。設定を確認してください。'); return; }
       try {
         var resume = reloginResumeLoad();
-        if (resume && ['entry','link','register','order'].indexOf(resume.mode) >= 0) state.mode = resume.mode;
+        if (resume && ['entry','link','register','order','staff'].indexOf(resume.mode) >= 0) state.mode = resume.mode;
         prewarm(); await liff.init({ liffId:cfg.liffId });
         if (!liff.isLoggedIn()) { liff.login({ redirectUri:location.href }); return; }
         var rallyParam = new URLSearchParams(location.search).get('rally');
@@ -1108,6 +1158,11 @@
     $('seminar-button').onclick = function () { openSeminarScreen('screen-profile-done'); };
     $('rally-button').onclick = function () { openRally('screen-profile-done'); };
     $('done-rally-button').onclick = function () { openRally('screen-done'); };
+    $('staff-code-button').onclick = submitStaffCode;
+    $('staff-code').addEventListener('input', function () { this.value = normalizeDigits(this.value).slice(0, 10); });
+    $('staff-experience-button').onclick = finishStaffExperience;
+    $('staff-rally-button').onclick = function () { openRally('screen-staff-done'); };
+    $('staff-close-button').onclick = closeLiff;
     $('rally-back-button').onclick = function () { showBackTo(rallyBack); note('', true); };
     $('screen-back').onclick = function () { renderScreen(screenTrail.pop() || 'screen-start'); note('', true); };
     $('word-ok').onclick = submitWord; $('word-close').onclick = closeWord;
