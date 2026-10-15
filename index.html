@@ -327,8 +327,28 @@
       var res = await fetch(url.toString(), { method:'POST', headers:{'Content-Type':'text/plain;charset=UTF-8'}, body:JSON.stringify({ sid:state.sid || '', spot:String(no) }), redirect:'follow', mode:'cors', credentials:'omit', cache:'no-store' });
       if (!res.ok) throw new Error('rally_http');
       var out = await res.json();
-      if (!out || !out.ok) { var rejected = new Error('rally_rejected'); rejected.rallyMessage = String(out && out.error || 'スタンプを確認できませんでした。もう一度お試しください。'); throw rejected; }
+      if (!out || !out.ok) {
+        var rejected = new Error('rally_rejected'); rejected.rallyMessage = String(out && out.error || 'スタンプを確認できませんでした。もう一度お試しください。');
+        /* sid（30分）が切れたときサーバーは recover:'resume' と「確認の有効時間が切れました…」を返す（QA P1-04） */
+        rejected.sidExpired = !!out && (out.recover === 'resume' || /確認の有効時間が切れました/.test(rejected.rallyMessage));
+        throw rejected;
+      }
       return out;
+    }
+    var sidRefreshing = null;
+    function refreshSid() {
+      /* 開き直したときと同じ liff_start を1回だけ呼び、短命sidだけを取り直す。画面は切り替えない。
+         同時に複数のスタンプが切れても、問い合わせは1回にまとめる。 */
+      if (!sidRefreshing) {
+        sidRefreshing = (async function () {
+          var friendship = await liff.getFriendship();
+          var r = await api('liff_start', startPayload(friendship));
+          if (!r || !r.ok || !r.sid) return false;
+          state.sid = r.sid; state.instagramUrl = String(r.instagramUrl || '');
+          return true;
+        })().finally(function () { sidRefreshing = null; });
+      }
+      return sidRefreshing;
     }
     async function syncRallyStamps() {
       /* 旧版で端末だけに残ったスタンプも、受取券の前に同じsidでサーバーへ照合して補完する。 */
@@ -344,10 +364,22 @@
       if (rallyStampBusy[no]) return false;
       rallyStampBusy[no] = true; note(no + '番のスタンプを確認しています…', true);
       try {
-        await rallyRecord(no);
-        v[no] = Date.now(); rallySave(v); rallySyncedSid = state.sid;
+        try { await rallyRecord(no); }
+        catch (first) {
+          /* sid切れのときだけ、sidを1回取り直して同じスタンプを1回だけ送り直す。再送も失敗したら従来の案内を出す。
+             スタッフ参加・テストモードでは取り直さない（参加記録やテスト用の店舗キーに影響しうるため）。 */
+          if (!first || !first.sidExpired || state.staffMode || state.mode === 'staff' || state.testNew) throw first;
+          var refreshed = false;
+          try { refreshed = await refreshSid(); } catch (refreshError) { if (refreshError && refreshError.locRelogin) throw refreshError; }
+          if (!refreshed) throw first;
+          await rallyRecord(no);
+        }
+        /* 再送で待つ間に別のスタンプが保存されていても消さないよう、保存直前に読み直す */
+        v = rallyLoad(); v[no] = Date.now(); rallySave(v); rallySyncedSid = state.sid;
         note(no + '番のスタンプを押しました。', true); drawRally(); return true;
       } catch (e) {
+        /* LINEの再ログイン（画面の読み直し）に入った場合は、案内を出さずに待つ */
+        if (e && e.locRelogin) return false;
         note((e && e.rallyMessage) || 'スタンプを確認できませんでした。もう一度お試しください。', false, logClientError('liff_rally', e));
         return false;
       } finally { delete rallyStampBusy[no]; }
@@ -1036,6 +1068,9 @@
       if (r.state === 'dup') return showDuplicate();
       return done(r);
     }
+    function startPayload(friendship) {
+      return { friend:!!(friendship && friendship.friendFlag), mode:state.mode, ref:state.ref, src:state.src, staffTicket:state.staffTicket, testNew:state.testNew };
+    }
     async function start() {
       var currentAction = 'liff_friendship';
       if (state.starting) return;
@@ -1045,7 +1080,7 @@
         var friendship = await liff.getFriendship();
         currentAction = 'liff_start';
         if (state.mode === 'register' || state.mode === 'order') { waitStage('店舗情報を読み込んでいます…', 48); drawFormSkeleton(); }
-        var r = await api('liff_start', { friend:!!friendship.friendFlag, mode:state.mode, ref:state.ref, src:state.src, staffTicket:state.staffTicket, testNew:state.testNew });
+        var r = await api('liff_start', startPayload(friendship));
         if (r.needFriend) { show('screen-friend'); setFriendBusy(false); note(r.error || '公式LINEの友だち追加をお願いします。'); waitDone(); return; }
         if (!r.ok) { fail(r.error); return; }
         state.sid = r.sid; state.instagramUrl = String(r.instagramUrl || '');
