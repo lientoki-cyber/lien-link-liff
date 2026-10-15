@@ -24,7 +24,9 @@
     .two-line{flex-direction:column;gap:2px;line-height:1.35}.two-line small{font-size:12px;font-weight:500;opacity:.85}
     .rally-progress{display:flex;align-items:baseline;gap:6px;margin:0 0 12px;font-weight:700;color:var(--plum)}.rally-progress b{font-size:28px;color:var(--pink)}
     .rally-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:0 0 14px}.rally-spot{position:relative;padding:14px 12px 12px;border:1px dashed #e2bcd0;border-radius:14px;background:#fff;min-height:112px}.rally-spot .no{font-size:12px;font-weight:700;color:#c7275f}.rally-spot .name{font-size:14px;font-weight:700;line-height:1.45;margin:4px 0 2px;color:var(--plum)}.rally-spot .sub{font-size:11px;color:var(--muted);line-height:1.45}.rally-spot .seal{position:absolute;right:10px;bottom:10px;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;color:#fff;background:var(--pink);transform:rotate(-12deg)}.rally-spot.got{border-style:solid;border-color:#f0a3c6;background:#fff4f9}
-    .rally-spot .cam{display:flex;white-space:nowrap;align-items:center;justify-content:center;gap:6px;width:100%;min-height:44px;margin:10px 0 0;padding:6px 8px;font-size:13px;border-radius:12px}.rally-spot .cam svg{width:18px;height:18px;flex:none}
+    .rally-spot .acts{display:grid;gap:6px;margin-top:10px}.rally-spot .acts button{margin:0}.rally-spot .word{min-height:40px;padding:6px 8px;font-size:13px;border-radius:12px;white-space:nowrap}
+    .word-sheet{position:fixed;inset:0;z-index:50;background:rgba(30,15,24,.55);display:flex;align-items:flex-end;justify-content:center}.word-sheet.hide{display:none}.word-box{width:100%;max-width:520px;background:#fffcfb;border-radius:20px 20px 0 0;padding:20px 16px calc(20px + env(safe-area-inset-bottom))}.word-box h3{margin:0 0 4px;font-size:17px;color:var(--plum)}.word-box p{margin:0 0 12px;font-size:13px;color:var(--muted);line-height:1.6}.word-box input{font-size:20px;text-align:center;letter-spacing:.08em}.word-box button{margin-top:10px}
+    .rally-spot .cam{display:flex;white-space:nowrap;align-items:center;justify-content:center;gap:6px;width:100%;min-height:44px;margin:0;padding:6px 8px;font-size:13px;border-radius:12px}.rally-spot .cam svg{width:18px;height:18px;flex:none}
     .scan-layer{position:fixed;inset:0;z-index:50;background:#120a0f;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:16px}.scan-layer.hide{display:none}.scan-box{position:relative;width:min(86vw,360px);aspect-ratio:1/1;border-radius:18px;overflow:hidden;background:#000}.scan-box video{width:100%;height:100%;object-fit:cover}.scan-frame{position:absolute;inset:14%;border:3px solid #fff;border-radius:14px;box-shadow:0 0 0 999px rgba(0,0,0,.35)}.scan-title{color:#fff;font-size:17px;font-weight:700;margin:0 0 6px;text-align:center}.scan-hint{color:#f3dbe6;font-size:13px;margin:0 0 14px;text-align:center;line-height:1.6}.scan-layer button{width:min(86vw,360px);margin-top:16px}
     .rally-code{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;margin-top:8px}.rally-code button{width:auto;min-height:48px;margin:0;padding:8px 14px;font-size:14px}
     .rally-goal{margin:16px 0 0;padding:18px;border-radius:16px;background:linear-gradient(135deg,#c7275f,#8c3164);color:#fff;text-align:center}.rally-goal h3{margin:0 0 6px;font-size:20px}.rally-goal p{margin:0;font-size:13px;line-height:1.6}.rally-goal .receipt{margin:12px 0 4px;font-size:20px;font-weight:700;letter-spacing:.02em;white-space:nowrap}
@@ -64,7 +66,8 @@
     <section class="card complete hide" id="screen-done"><div class="mark">✓</div><div class="step">COMPLETE</div><h2 id="done-title">ご登録が完了しました</h2><p class="small" id="done-copy"></p><div id="done-id" class="small"></div><button class="dark hide" id="order-open-button" type="button">LOCの注文画面を開く</button><button class="ghost hide" id="done-alternate-login-button" type="button">別の方法でログインする</button><button class="ghost two-line hide" id="done-rally-button" type="button">スタンプラリーに参加する<small>ブースを4つ回って、ご来場特典を受け取る</small></button><section class="seminar-card hide" id="seminar-card"><h3>後日のオンライン説明会</h3><p class="small">展示会の会場ではなく、後日オンラインで開催します。LOCの使い方と、お店での活かし方をご紹介します（1時間・参加無料）</p><p class="seminar-lead">次の画面で日程をお選びください</p><div class="seminar-options" id="seminar-options"></div></section><button class="dark" id="close-button" type="button">LINEに戻る</button></section>
     <section class="card hide" id="screen-seminar"><div class="step">ONLINE SEMINAR</div><h2>後日のオンライン説明会</h2><p class="small">会場ではなく、後日オンラインで開催します（1時間・無料）。日程をお選びください。</p><div class="seminar-options" id="seminar-only-options"></div><p class="small hide" id="seminar-none">現在ご案内できる日程はありません。公式LINEで次回のご案内をお送りします。</p><button class="ghost" id="seminar-back-button" type="button">前の画面に戻る</button></section>
 
-    <section class="card hide" id="screen-rally"><div class="step">STAMP RALLY</div><h2>4つ回って、ご来場特典を受け取ろう</h2><p class="small">各コーナーでスタッフのQRを読み取ると、スタンプが押されます。</p><div class="rally-progress"><b id="rally-count">0</b>／4 そろいました</div><div class="rally-grid" id="rally-grid"></div><button class="ghost hide" id="rally-instagram-button" type="button">Instagramを見る（4番のスタンプ）</button><div class="field"><p class="field-hint">カメラが使えないときは、スタッフが伝える4文字のコードを入力</p><div class="rally-code"><input id="rally-code" type="text" inputmode="text" autocomplete="off" maxlength="12" aria-label="スタッフのコード"><button id="rally-code-button" type="button">押す</button></div></div><div class="rally-goal hide" id="rally-goal"><h3>4つそろいました</h3><p>この画面をブースのSTAFFにお見せください。</p><div class="receipt" id="rally-receipt"></div><p>特典のお渡しは1店舗1回です。数量限定のため、なくなり次第終了します。</p></div><button class="ghost" id="rally-back-button" type="button">前の画面に戻る</button></section>
+    <section class="card hide" id="screen-rally"><div class="step">STAMP RALLY</div><h2>4つ回って、ご来場特典を受け取ろう</h2><p class="small">各コーナーで「QRを読む」か、スタッフがお伝えする「合言葉」を入れると、スタンプが押されます。</p><div class="rally-progress"><b id="rally-count">0</b>／4 そろいました</div><div class="rally-grid" id="rally-grid"></div><button class="ghost hide" id="rally-instagram-button" type="button">Instagramを見る（4番のスタンプ）</button><div class="rally-goal hide" id="rally-goal"><h3>4つそろいました</h3><p>この画面をブースのSTAFFにお見せください。</p><div class="receipt" id="rally-receipt"></div><p>特典のお渡しは1店舗1回です。数量限定のため、なくなり次第終了します。</p></div><button class="ghost" id="rally-back-button" type="button">前の画面に戻る</button></section>
+    <div class="word-sheet hide" id="word-sheet" role="dialog" aria-modal="true" aria-labelledby="word-title"><div class="word-box"><h3 id="word-title">合言葉</h3><p>スタッフがお伝えする合言葉を、ひらがなで入力してください。</p><input id="word-input" type="text" autocomplete="off" autocapitalize="off" enterkeyhint="done" maxlength="20" aria-label="合言葉"><button id="word-ok" type="button">スタンプを押す</button><button class="ghost" id="word-close" type="button">閉じる</button></div></div>
     <div class="scan-layer hide" id="scan-layer" role="dialog" aria-modal="true" aria-labelledby="scan-title"><p class="scan-title" id="scan-title">QRを読み取る</p><p class="scan-hint" id="scan-hint">スタッフのQRコードを枠の中に入れてください</p><div class="scan-box"><video id="scan-video" playsinline muted autoplay></video><div class="scan-frame"></div></div><button class="ghost" id="scan-close" type="button">閉じる</button></div>
     <p class="footer">リアン株式会社｜お困りの際は会場スタッフへお声がけください。</p>
   </main>
@@ -214,6 +217,9 @@
       { no:4, name:'LINE＋Instagram', sub:'友だち追加とInstagramを見る' }
     ];
     var RALLY_CODES = { '1':'TSUB', '2':'HAKK', '3':'NEST' };
+    /* 合言葉（スタッフが体験のあとに口頭で伝える）。変えるときはここだけ直す。ひらがな・カタカナどちらで入れても通る */
+    var RALLY_WORDS = { '1':'ひかり', '2':'かんぱい', '3':'たからもの' };
+    function kanaNorm(v) { return String(v || '').normalize('NFKC').replace(/[\s\u3000ー－\-・。、.,!！?？]/g, '').replace(/[\u30a1-\u30f6]/g, function (c) { return String.fromCharCode(c.charCodeAt(0) - 0x60); }).toLowerCase(); }
     var RALLY_KEY = 'loc_rally_bwj2026';
     var rallyBack = 'screen-profile-done';
     function rallyLoad() { try { var v = JSON.parse(localStorage.getItem(RALLY_KEY) || '{}'); return v && typeof v === 'object' ? v : {}; } catch (ignore) { return {}; } }
@@ -231,10 +237,12 @@
       var value = String(raw || '').trim(), no, code, m;
       /* QRの中身は「LOCRALLY-1-TSUB」「1-TSUB」「TSUB」、またはLIFFのURL（?rally=1-TSUB）のどれでも受け付ける */
       try { if (/^https?:\/\//i.test(value)) { var u = new URL(value), r = u.searchParams.get('rally'); if (!r && u.searchParams.get('liff.state')) r = new URLSearchParams(String(u.searchParams.get('liff.state')).replace(/^[^?]*\?/, '')).get('rally'); value = r || ''; } } catch (ignore) { value = ''; }
+      var w = kanaNorm(value); Object.keys(RALLY_WORDS).forEach(function (k) { if (kanaNorm(RALLY_WORDS[k]) === w) { no = k; code = RALLY_CODES[k]; } });
+      if (no) { rallyStamp(Number(no)); return true; }
       value = value.toUpperCase(); m = value.match(/^(?:LOCRALLY-)?([1-3])-([A-Z0-9]{4})$/);
       if (m) { no = m[1]; code = m[2]; }
       else { Object.keys(RALLY_CODES).forEach(function (k) { if (RALLY_CODES[k] === value) { no = k; code = value; } }); }
-      if (!no || RALLY_CODES[no] !== code) { note('このQRコード（コード）はスタンプラリー用ではないようです。スタッフにお声がけください。', false); return false; }
+      if (!no || RALLY_CODES[no] !== code) { note('合言葉（またはQR）がちがうようです。もう一度お確かめください。', false); return false; }
       rallyStamp(Number(no)); return true;
     }
     function drawRally() {
@@ -248,7 +256,7 @@
         box.className = 'rally-spot' + (got ? ' got' : ''); no.className = 'no'; no.textContent = String(spot.no); name.className = 'name'; name.textContent = spot.name; sub.className = 'sub'; sub.textContent = got ? 'スタンプ済み' : spot.sub;
         box.appendChild(no); box.appendChild(name); box.appendChild(sub);
         if (got) { var seal = document.createElement('div'); seal.className = 'seal'; seal.textContent = '済'; box.appendChild(seal); count++; }
-        else if (RALLY_CODES[String(spot.no)]) { var cam = document.createElement('button'); cam.type = 'button'; cam.className = 'cam'; cam.setAttribute('aria-label', spot.no + '番のQRをカメラで読み取る'); cam.innerHTML = CAMERA_ICON; cam.appendChild(document.createTextNode('QRを読む')); cam.onclick = function () { openScanner(spot); }; box.appendChild(cam); }
+        else if (RALLY_CODES[String(spot.no)]) { var acts = document.createElement('div'); acts.className = 'acts'; var cam = document.createElement('button'); cam.type = 'button'; cam.className = 'cam'; cam.setAttribute('aria-label', spot.no + '番のQRをカメラで読み取る'); cam.innerHTML = CAMERA_ICON; cam.appendChild(document.createTextNode('QRを読む')); cam.onclick = function () { openScanner(spot); }; var word = document.createElement('button'); word.type = 'button'; word.className = 'ghost word'; word.textContent = '合言葉を入れる'; word.onclick = function () { openWord(spot); }; acts.appendChild(cam); acts.appendChild(word); box.appendChild(acts); }
         grid.appendChild(box);
       });
       text('rally-count', String(count));
@@ -256,7 +264,6 @@
       var complete = count === RALLY_SPOTS.length;
       text('rally-receipt', state.receiptNo ? '受付番号 ' + state.receiptNo : '');
       $('rally-goal').classList.toggle('hide', !complete);
-      $('rally-code').closest('.field').classList.toggle('hide', complete);
     }
     var CAMERA_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>';
     var scan = { stream:null, timer:0, detector:null, canvas:null, busy:false };
@@ -264,6 +271,10 @@
       if (window.jsQR) return Promise.resolve();
       return new Promise(function (ok, ng) { var t = document.createElement('script'); t.src = 'vendor/jsQR.min.js'; t.onload = ok; t.onerror = ng; document.head.appendChild(t); });
     }
+    var wordSpot = null;
+    function openWord(spot) { wordSpot = spot; text('word-title', spot.no + '番　' + spot.name + 'の合言葉'); $('word-input').value = ''; $('word-sheet').classList.remove('hide'); setTimeout(function () { try { $('word-input').focus(); } catch (ignore) {} }, 50); }
+    function closeWord() { $('word-sheet').classList.add('hide'); wordSpot = null; }
+    function submitWord() { var v = $('word-input').value; if (!kanaNorm(v)) { $('word-input').focus(); return; } closeWord(); rallyAccept(v); }
     function closeScanner() {
       clearTimeout(scan.timer); scan.timer = 0;
       if (scan.stream) { scan.stream.getTracks().forEach(function (t) { try { t.stop(); } catch (ignore) {} }); scan.stream = null; }
@@ -296,7 +307,7 @@
         }
       } catch (ignore) {}
       /* 2) この画面の中でカメラを起動して読み取る */
-      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) { note('カメラを起動できませんでした。スタッフが伝える4文字のコードを入力してください。', false); $('rally-code').focus(); return; }
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) { note('この端末ではカメラを起動できませんでした。合言葉でスタンプを押せます。', false); openWord(spot); return; }
       text('scan-title', spot.no + '番　' + spot.name);
       $('scan-layer').classList.remove('hide');
       try {
@@ -308,7 +319,7 @@
         scanTick();
       } catch (e) {
         closeScanner();
-        note(e && e.name === 'NotAllowedError' ? 'カメラの使用が許可されていません。許可してからもう一度押すか、スタッフが伝える4文字のコードを入力してください。' : 'カメラを起動できませんでした。スタッフが伝える4文字のコードを入力してください。', false);
+        note(e && e.name === 'NotAllowedError' ? 'カメラの使用が許可されていません。許可してからもう一度押すか、「合言葉を入れる」からお進みください。' : 'カメラを起動できませんでした。「合言葉を入れる」からお進みください。', false);
       }
     }
     function openRallyFromLink(code) {
@@ -845,7 +856,8 @@
     $('rally-button').onclick = function () { openRally('screen-profile-done'); };
     $('done-rally-button').onclick = function () { openRally('screen-done'); };
     $('rally-back-button').onclick = function () { show(rallyBack); note('', true); };
-    $('rally-code-button').onclick = function () { if (rallyAccept($('rally-code').value)) $('rally-code').value = ''; };
+    $('word-ok').onclick = submitWord; $('word-close').onclick = closeWord;
+    $('word-input').addEventListener('keydown', function (e) { if (e.key === 'Enter' && !e.isComposing) { e.preventDefault(); submitWord(); } });
     $('rally-instagram-button').onclick = function () {
       if (!hasInstagram()) return;
       if (liff && typeof liff.openWindow === 'function') liff.openWindow({ url:state.instagramUrl, external:true }); else window.open(state.instagramUrl, '_blank', 'noopener');
