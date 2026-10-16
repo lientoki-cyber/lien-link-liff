@@ -298,7 +298,7 @@
        漢字・ひらがな・カタカナ、長音「ー」の有無、小さい文字（ょ等）の違いはどれでも通る */
     var RALLY_WORDS = { '1':['比叡山','ひえいざん'], '2':['免疫','めんえき'], '3':['ジョホールバル','ジョホールバール','じょほーるばる'] };
     function kanaNorm(v) { return String(v || '').normalize('NFKC').replace(/[\s\u3000ー－\-・。、.,!！?？]/g, '').replace(/[\u30a1-\u30f6]/g, function (c) { return String.fromCharCode(c.charCodeAt(0) - 0x60); }).replace(/[ぁぃぅぇぉっゃゅょゎ]/g, function (c) { return String.fromCharCode(c.charCodeAt(0) + 1); }).toLowerCase(); }
-    var RALLY_KEY = 'loc_rally_bwj2026', RALLY_PENDING_KEY = 'loc_rally_pending_bwj2026';
+    var RALLY_KEY = 'loc_rally_bwj2026', RALLY_PENDING_KEY = 'loc_rally_pending_bwj2026', RALLY_RETRY_KEY = 'loc_rally_retry_bwj2026';
     var rallyBack = 'screen-profile-done';
     /* 共有端末でも前の利用者のスタンプ／特典QRを見せないよう、LINE本人の値を不可逆な短い識別子にしてキーを分ける。 */
     function storageScope() {
@@ -315,6 +315,10 @@
     function rallySave(v) { try { localStorage.setItem(scopedStorageKey(RALLY_KEY), JSON.stringify(v)); } catch (ignore) {} }
     function pendingRallyLoad() { try { var v = JSON.parse(sessionStorage.getItem(scopedStorageKey(RALLY_PENDING_KEY)) || '[]'); return Array.isArray(v) ? v.slice(0, 3) : []; } catch (ignore) { return []; } }
     function pendingRallySave(values) { try { sessionStorage.setItem(scopedStorageKey(RALLY_PENDING_KEY), JSON.stringify((values || []).map(function (v) { return String(v || '').slice(0, 200); }).filter(Boolean).slice(0, 3))); } catch (ignore) {} }
+    /* 送信中にLINEの再ログインへ入ったスタンプ番号（1〜4）を、開き直した後に1回だけ送り直すために預かる（Codexレビュー P2） */
+    function rallyRetryLoad() { try { var v = JSON.parse(sessionStorage.getItem(scopedStorageKey(RALLY_RETRY_KEY)) || '[]'); return Array.isArray(v) ? v.filter(function (n) { return /^[1-4]$/.test(String(n)); }).map(Number).slice(0, 4) : []; } catch (ignore) { return []; } }
+    function rallyRetrySave(values) { try { sessionStorage.setItem(scopedStorageKey(RALLY_RETRY_KEY), JSON.stringify(values || [])); } catch (ignore) {} }
+    function rallyRetryQueue(no) { var v = rallyRetryLoad(); if (v.indexOf(Number(no)) < 0) v.push(Number(no)); rallyRetrySave(v); }
     function queueRally(raw) {
       var values = pendingRallyLoad(), value = String(raw || '').slice(0, 200);
       if (value && values.indexOf(value) < 0) values.push(value);
@@ -379,7 +383,7 @@
         note(no + '番のスタンプを押しました。', true); drawRally(); return true;
       } catch (e) {
         /* LINEの再ログイン（画面の読み直し）に入った場合は、案内を出さずに待つ */
-        if (e && e.locRelogin) return false;
+        if (e && e.locRelogin) { rallyRetryQueue(no); return false; }
         note((e && e.rallyMessage) || 'スタンプを確認できませんでした。もう一度お試しください。', false, logClientError('liff_rally', e));
         return false;
       } finally { delete rallyStampBusy[no]; }
@@ -506,7 +510,11 @@
     }
     function restoreRallyScreen() {
       var from = !$('screen-profile-done').classList.contains('hide') ? 'screen-profile-done' : (!$('screen-done').classList.contains('hide') ? 'screen-done' : '');
-      if (from) openRally(from);
+      if (!from) return;
+      openRally(from);
+      /* 再ログイン前に送れなかったスタンプを、同じ番号で1回だけ送り直す（済みのものは rallyStamp が飛ばす） */
+      var retry = rallyRetryLoad(); rallyRetrySave([]);
+      retry.forEach(function (no) { rallyStamp(no); });
     }
     /* 4つそろったら、サーバーに「受け取り用の番号」を発行してもらい、QRで表示する。
        QRの中身は乱数の番号だけ（氏名・LINEのIDは入れない）。スタッフがEXPO CONNECTで読み取ると、
@@ -519,7 +527,8 @@
     function claimSave(v) { try { localStorage.setItem(scopedStorageKey(CLAIM_KEY), JSON.stringify(v)); } catch (ignore) {} }
     function loadQrLib() {
       if (window.qrcode) return Promise.resolve();
-      return new Promise(function (ok, ng) { var t = document.createElement('script'); t.src = 'vendor/qrcode.min.js'; t.onload = ok; t.onerror = ng; document.head.appendChild(t); });
+      /* 読み込みが終わらないままだと受け取り画面の確認が止まるため、10秒で打ち切って代わりの案内にする */
+      return new Promise(function (ok, ng) { var t = document.createElement('script'), timer = setTimeout(function () { ng(new Error('qr_lib_timeout')); }, 10000); t.src = 'vendor/qrcode.min.js'; t.onload = function () { clearTimeout(timer); ok(); }; t.onerror = function (e) { clearTimeout(timer); ng(e); }; document.head.appendChild(t); });
     }
     function drawClaimFallback() {
       $('rally-qr').classList.add('hide');
@@ -561,7 +570,8 @@
     }
     async function ensureClaim() {
       var cached = claimLoad();
-      if (cached) drawClaim(cached); else drawClaimFallback();
+      /* キャッシュのQRの描画（ライブラリ読込）を待ってから通信する。待たないと、描画前の失敗を「QRなし」と誤判定して赤字が残る（Codexレビュー P2） */
+      if (cached) await drawClaim(cached); else drawClaimFallback();
       if (claimBusy || !state.sid) return; claimBusy = true;
       try {
         await syncRallyStamps();
