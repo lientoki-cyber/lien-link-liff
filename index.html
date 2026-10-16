@@ -623,7 +623,7 @@
         if (id === 'rally-button' && orderStepPending()) { var orderNote = document.createElement('small'); orderNote.textContent = '特典の受け取りには、ご注文用の会員登録が必要です。'; b.appendChild(orderNote); }
       });
     }
-    function openRally(from) { rallyBack = from; startClaimPollWindow(); drawRally(); show('screen-rally'); note('', true); window.scrollTo(0, 0); }
+    function openRally(from) { rallyBack = from; startClaimPollWindow(); drawRally(); show('screen-rally'); note('', true); window.scrollTo(0, 0); replayRallyRetry(); }
     function openSeminarScreen(from) {
       var options = $('seminar-only-options'), now = Date.now(); while (options.firstChild) options.removeChild(options.firstChild);
       SEMINAR_DATES.filter(function (seminar) { return Date.parse(seminar.startsAt) > now; }).forEach(function (seminar) {
