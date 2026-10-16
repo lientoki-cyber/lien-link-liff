@@ -94,7 +94,7 @@
     ];
     var SEMINAR_FORM_URL = 'https://liff.line.me/1654464542-Wky3Ay7r?liff_id=1654464542-Wky3Ay7r&group_id=157954';
     var pageMode = qs.get('p');
-    var state = { sid:'', mode: pageMode === 'order' ? 'order' : (pageMode === 'staff' ? 'staff' : 'entry'), ref: qs.get('ref') || '', src: qs.get('src') || '', refKind:qs.get('ref_kind') === 'assistant' ? 'assistant' : '', staffTicket:qs.get('staff') || '', staffMode:pageMode === 'staff', staffJoined:false, testNew:qs.get('test') === 'new', fields:[], busy:false, waitTimers:[], starting:false, email:'', codeTimer:0, codeSendTimer:0, codeExpiresAt:0, resendUntil:0, instagramUrl:'', orderUrl:'', entryKnown:false };
+    var state = { sid:'', mode: pageMode === 'order' ? 'order' : (pageMode === 'staff' ? 'staff' : 'entry'), ref: qs.get('ref') || '', src: qs.get('src') || '', refKind:qs.get('ref_kind') === 'assistant' ? 'assistant' : '', refSig:/^[a-f0-9]{64}$/.test(qs.get('ref_sig') || '') ? qs.get('ref_sig') : '', staffTicket:qs.get('staff') || '', staffMode:pageMode === 'staff', staffJoined:false, testNew:qs.get('test') === 'new', fields:[], busy:false, waitTimers:[], starting:false, email:'', codeTimer:0, codeSendTimer:0, codeExpiresAt:0, resendUntil:0, instagramUrl:'', orderUrl:'', entryKnown:false };
     function $(id) { return document.getElementById(id); }
     function text(id, value) { $(id).textContent = String(value || ''); }
     /* 3段階（1 LINE友だち追加／2 店舗登録／3 ご注文用の会員登録）の現在地を表示する */
@@ -1024,7 +1024,7 @@
         var friendship = await liff.getFriendship();
         currentAction = 'liff_start';
         if (state.mode === 'register' || state.mode === 'order') { waitStage('店舗情報を読み込んでいます…', 48); drawFormSkeleton(); }
-        var r = await api('liff_start', { friend:!!friendship.friendFlag, mode:state.mode, ref:state.ref, src:state.src, refKind:state.refKind, staffTicket:state.staffTicket, testNew:state.testNew });
+        var r = await api('liff_start', { friend:!!friendship.friendFlag, mode:state.mode, ref:state.ref, src:state.src, refKind:state.refKind, refSig:state.refSig, staffTicket:state.staffTicket, testNew:state.testNew });
         if (r.needFriend) { show('screen-friend'); setFriendBusy(false); note(r.error || '公式LINEの友だち追加をお願いします。'); waitDone(); return; }
         if (!r.ok) { fail(r.error); return; }
         state.sid = r.sid; state.instagramUrl = String(r.instagramUrl || '');
