@@ -510,10 +510,13 @@
     }
     function restoreRallyScreen() {
       var from = !$('screen-profile-done').classList.contains('hide') ? 'screen-profile-done' : (!$('screen-done').classList.contains('hide') ? 'screen-done' : '');
-      if (!from) return;
-      openRally(from);
-      /* 再ログイン前に送れなかったスタンプを、同じ番号で1回だけ送り直す（済みのものは rallyStamp が飛ばす） */
-      var retry = rallyRetryLoad(); rallyRetrySave([]);
+      if (from) openRally(from);
+    }
+    function replayRallyRetry() {
+      /* 再ログイン前に送れなかったスタンプを、同じ番号で1回だけ送り直す（済みのものは rallyStamp が飛ばす）。
+         ?rally= で先にラリー画面が開いている場合も含め、ラリー画面が出ているときだけ送る。出ていなければ預かったまま。 */
+      if ($('screen-rally').classList.contains('hide')) return;
+      var retry = rallyRetryLoad(); if (!retry.length) return; rallyRetrySave([]);
       retry.forEach(function (no) { rallyStamp(no); });
     }
     /* 4つそろったら、サーバーに「受け取り用の番号」を発行してもらい、QRで表示する。
@@ -1137,6 +1140,7 @@
         applyPendingRally();
         /* start() がサーバーの現在の登録状態を正とする。画面名はラリーだけを復元し、未保存の入力欄は復元しない。 */
         if (resume && resume.screen === 'screen-rally') restoreRallyScreen();
+        replayRallyRetry();
         reloginResumeClear(); state.relogging = false;
       }
       catch (e) { fail('LINEを起動できませんでした。LINEアプリからもう一度お試しください。', 'liff_init', e); }
