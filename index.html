@@ -27,7 +27,7 @@
     .rally-progress{display:flex;align-items:baseline;gap:6px;margin:0 0 12px;font-weight:700;color:var(--plum)}.rally-progress b{font-size:28px;color:var(--pink)}
     .rally-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:0 0 14px}.rally-spot{position:relative;display:flex;flex-direction:column;height:242px;padding:14px 12px 12px;border:1px dashed #cfc6cb;border-radius:14px;background:#f5f2f4;min-width:0}.rally-spot .no{font-size:12px;font-weight:700;color:#c7275f}.rally-spot .name{display:-webkit-box;overflow:hidden;-webkit-box-orient:vertical;-webkit-line-clamp:2;min-height:41px;font-size:14px;font-weight:700;line-height:1.45;margin:4px 0 2px;color:var(--plum)}.rally-spot .sub{min-height:32px;font-size:11px;color:var(--muted);line-height:1.45}.rally-spot .seal{position:absolute;right:10px;bottom:10px;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;color:#fff;background:var(--pink);transform:rotate(-12deg)}.rally-spot.got{border-style:solid;border-color:#f0a3c6;background:#fff0f7}.rally-spot:not(.got) .no{color:#8a7f86}
     button.done-state{background:#fff0f7;border-color:#f0a3c6;color:#8c3164}
-    .rally-spot .acts{display:grid;grid-template-rows:44px 40px;gap:6px;margin-top:auto;padding-top:10px}.rally-spot .acts button{margin:0}.rally-spot .word{min-height:40px;padding:6px 8px;font-size:13px;border-radius:12px;white-space:nowrap}.rally-spot .instagram-hint{display:flex;align-items:center;justify-content:center;padding:6px 8px;border:1px solid #e5d2dd;border-radius:12px;background:#fff;color:var(--muted);font-size:11px;line-height:1.35;text-align:center}
+    .rally-spot .acts{display:grid;grid-template-rows:44px 40px;gap:6px;margin-top:auto;padding-top:10px}.rally-spot .acts button{margin:0}.rally-spot .word{min-height:40px;padding:6px 8px;font-size:13px;border-radius:12px;white-space:nowrap}.rally-spot .insta-follow{grid-row:1 / span 2;min-height:90px;margin:0;padding:8px 10px;font-size:14px;line-height:1.35;white-space:normal;border-radius:14px}.rally-spot .instagram-hint{display:flex;align-items:center;justify-content:center;padding:6px 8px;border:1px solid #e5d2dd;border-radius:12px;background:#fff;color:var(--muted);font-size:11px;line-height:1.35;text-align:center}
     .word-sheet{position:fixed;inset:0;z-index:50;background:rgba(30,15,24,.55);display:flex;align-items:flex-end;justify-content:center}.word-sheet.hide{display:none}.word-box{width:100%;max-width:520px;background:#fffcfb;border-radius:20px 20px 0 0;padding:20px 16px calc(20px + env(safe-area-inset-bottom))}.word-box h3{margin:0 0 4px;font-size:17px;color:var(--plum)}.word-box p{margin:0 0 12px;font-size:13px;color:var(--muted);line-height:1.6}.word-box input{font-size:20px;text-align:center;letter-spacing:.08em}.word-box button{margin-top:10px}
     .rally-spot .cam{display:flex;white-space:nowrap;align-items:center;justify-content:center;gap:6px;width:100%;min-height:44px;margin:0;padding:6px 8px;font-size:13px;border-radius:12px}.rally-spot .cam svg{width:18px;height:18px;flex:none}
     .scan-layer{position:fixed;inset:0;z-index:50;background:#120a0f;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:16px}.scan-layer.hide{display:none}.scan-box{position:relative;width:min(86vw,360px);aspect-ratio:1/1;border-radius:18px;overflow:hidden;background:#000}.scan-box video{width:100%;height:100%;object-fit:cover}.scan-frame{position:absolute;inset:14%;border:3px solid #fff;border-radius:14px;box-shadow:0 0 0 999px rgba(0,0,0,.35)}.scan-title{color:#fff;font-size:17px;font-weight:700;margin:0 0 6px;text-align:center}.scan-hint{color:#f3dbe6;font-size:13px;margin:0 0 14px;text-align:center;line-height:1.6}.scan-layer button{width:min(86vw,360px);margin-top:16px}
@@ -291,7 +291,7 @@
       { no:1, name:'燕の巣ミニセミナー', sub:'ブース内・5分' },
       { no:2, name:'植物発酵エキスを試飲する', sub:'試飲コーナー' },
       { no:3, name:'本物の燕の巣を確認する', sub:'展示コーナー' },
-      { no:4, name:'Instagramを見る', sub:'公式Instagramを開く' }
+      { no:4, name:'Instagram', sub:'リアン公式アカウント' }
     ];
     var RALLY_CODES = { '1':'TSUB', '2':'HAKK', '3':'NEST' };
     /* 合言葉（代表決定 10/15 12:01。スタッフが体験のあとに口頭で伝える）。変えるときはここだけ直す。
@@ -388,15 +388,12 @@
         return false;
       } finally { delete rallyStampBusy[no]; }
     }
-    async function openInstagramStamp() {
-      var stamped = await rallyStamp(4);
-      if (!stamped) return;
-      /* LINEへ戻る方法を先に案内し、サーバー記録の成功後にだけ外部アプリを開く。 */
-      note('Instagramを開きます。見終わったら画面左上の「◀LINE」で戻れます。', true);
-      window.setTimeout(function () {
-        if (liff && typeof liff.openWindow === 'function') liff.openWindow({ url:RALLY_INSTAGRAM_URL, external:true });
-        else window.open(RALLY_INSTAGRAM_URL, '_blank', 'noopener');
-      }, 500);
+    function openInstagramStamp() {
+      /* 代表指示 10/17：タップしたらそのまま公式Instagramへ。開くのはタップ直後（待つとブラウザに止められる）。
+       * スタンプの記録は裏で行い、結果を待たない。 */
+      if (liff && typeof liff.openWindow === 'function') liff.openWindow({ url:RALLY_INSTAGRAM_URL, external:true });
+      else window.open(RALLY_INSTAGRAM_URL, '_blank', 'noopener');
+      rallyStamp(4);
     }
     function rallyAccept(raw) {
       var value = String(raw || '').trim(), no, code, m;
@@ -419,7 +416,7 @@
         box.appendChild(no); box.appendChild(name); box.appendChild(sub);
         if (got) { var seal = document.createElement('div'); seal.className = 'seal'; seal.textContent = '済'; box.appendChild(seal); count++; }
         else if (RALLY_CODES[String(spot.no)]) { var acts = document.createElement('div'); acts.className = 'acts'; var cam = document.createElement('button'); cam.type = 'button'; cam.className = 'cam'; cam.setAttribute('aria-label', spot.no + '番のQRをカメラで読み取る'); cam.innerHTML = CAMERA_ICON; cam.appendChild(document.createTextNode('QRを読む')); cam.onclick = function () { openScanner(spot); }; var word = document.createElement('button'); word.type = 'button'; word.className = 'ghost word'; word.textContent = '合言葉を入れる'; word.onclick = function () { openWord(spot); }; acts.appendChild(cam); acts.appendChild(word); box.appendChild(acts); }
-        else if (spot.no === 4) { var instagramActs = document.createElement('div'); instagramActs.className = 'acts'; var instagramHint = document.createElement('div'); instagramHint.className = 'instagram-hint'; instagramHint.textContent = 'タップするとスタンプが押されます'; var instagram = document.createElement('button'); instagram.type = 'button'; instagram.className = 'ghost word'; instagram.textContent = 'Instagramを見る'; instagram.onclick = openInstagramStamp; instagramActs.appendChild(instagramHint); instagramActs.appendChild(instagram); box.appendChild(instagramActs); }
+        else if (spot.no === 4) { var instagramActs = document.createElement('div'); instagramActs.className = 'acts'; var instagram = document.createElement('button'); instagram.type = 'button'; instagram.className = 'insta-follow'; instagram.textContent = 'リアンInstagramをフォローする'; instagram.onclick = openInstagramStamp; instagramActs.appendChild(instagram); box.appendChild(instagramActs); }
         grid.appendChild(box);
       });
       text('rally-count', String(count));
