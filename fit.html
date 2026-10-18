@@ -158,10 +158,7 @@ table.cmp{border-collapse:collapse;width:100%;font-size:12.5px;font-variant-nume
   var NAVI = 'つばめ';
   var FACE = '<svg viewBox="0 0 40 40" aria-hidden="true"><path d="M6 22c6-1 10-5 14-12 2 6 6 9 14 9-5 3-9 3-13 2l-5 9-1-7c-3 0-6 0-9-1z" fill="currentColor" style="color:var(--plum)"/><circle cx="25" cy="17" r="1.6" fill="var(--surface)"/></svg>';
   var LINKS = {
-    line: 'https://lstep.app/form/11521/pVOpc4/6a546d',
-    liff: 'https://liff.line.me/1654464542-nn1iQBwK?p=register',
-    bcart: 'https://lien-ec.i10.bcart.jp/regist.php',
-    start: 'https://lien-ec.i10.bcart.jp/page/start'
+    liff: 'https://liff.line.me/1654464542-nn1iQBwK?p=register'
   };
 
   /* ---------- 質問 ---------- */
@@ -547,8 +544,7 @@ table.cmp{border-collapse:collapse;width:100%;font-size:12.5px;font-variant-nume
       '<div class="cmp-wrap"><table class="cmp"><thead><tr><th>b-ternal（希望小売・税抜）</th><th>スタンダード</th><th>アドバンス</th></tr></thead><tbody>'+
       rows.map(function(r){ return '<tr><td>'+r[0]+'<br><span class="muted">'+r[1]+'</span></td><td>最大 '+r[2]+'</td><td class="adv">最大 '+r[3]+'</td></tr>'; }).join('')+
       '</tbody></table></div>'+
-      '<div class="example" style="margin-top:12px">たとえば BASE 1本の仕入れは（いちばんお得な掛け率どうしで比べると）<br>スタンダード 8,100円 → アドバンス 6,750円<br><strong>1本あたり 1,350円</strong> お得になります。</div>'+
-      '<p class="note" style="margin-top:8px">※ 掛け率は、ご注文の数量によって変わります。くわしくはスタッフがご案内します。導入費用の差は5万円です。</p></section>';
+            '<p class="note" style="margin-top:8px">※ 掛け率は、ご注文の数量によって変わります。くわしくはスタッフがご案内します。導入費用の差は5万円です。</p></section>';
   }
 
   function result(){
@@ -605,8 +601,8 @@ table.cmp{border-collapse:collapse;width:100%;font-size:12.5px;font-variant-nume
               : 'ご注文用の会員登録へ（住所とパスワード）';
     var guide = !reg ? 'まずLINEでお店を登録します（約3分）。そのあと、住所とパスワードを決めると、ご注文の準備が整います。'
               : ordered ? 'ご登録はお済みです。LINEの店舗登録アプリから、そのままご注文画面を開けます。'
-              : 'お店の登録はお済みです。次の画面で、住所とパスワードを決めるだけで、ご注文の準備が整います。';
-    if (lowFit && isPlan) { label = 'まずはスタッフと話してみる'; }
+              : 'お店の登録はお済みです。次の画面の「今すぐ注文する」から、住所とパスワードを決めるだけで、ご注文の準備が整います。';
+    if (lowFit && isPlan) { label = (reg ? '店舗登録アプリに戻る' : 'LINEでお店を登録する（無料）')+'（取り扱いはスタッフとご相談のうえで）'; }
     html += '<p class="note" style="font-size:13px">'+guide+'</p><a class="btn main" href="'+LINKS.liff+'" rel="noopener">'+label+'</a>'+
 '<button class="btn quiet" id="again">もう一度診断する</button></div>'+
       '<p class="note">※ 金額はすべて税抜です。掛け率は商品と1回の仕入れ数量で決まります。正式な条件は担当者が確認してご案内します。</p>';
