@@ -427,8 +427,9 @@ table.cmp{border-collapse:collapse;width:100%;font-size:12.5px;font-variant-nume
       navi('全部で12問、約3分です。難しく考えず、いつものあなたらしくお答えください。<b>あなたのお店とリアンの想いがどれくらい近いのか</b>、一緒に見つけていきましょう。')+
       '<div class="card"><p class="muted" style="margin-bottom:8px">リアンとのお付き合いは、この道のりで深まっていきます</p>'+
       '<div class="ladder-mini">'+LADDER.map(function(l,i){return '<span class="g'+(i+1)+'">'+l.t+'</span>';}).join('')+'</div></div>'+
-      '<button class="btn main" id="go">診断をはじめる</button>'+
+      '<button class="btn main" id="go">診断をはじめる</button><button class="btn quiet" id="back0">← ひとつ前にもどる</button>'+
       '<p class="note">※ フィット感は、回答から計算した価値観への共感の目安です。人柄や経営の良し悪しを評価するものではありません。関わり方の診断も目安で、正式なプランは担当者とのご相談で決まります。お名前や連絡先の入力は不要です。</p>';
+    document.getElementById('back0').onclick = function(){ if (window.history.length > 1) window.history.back(); else location.href = LINKS.liff; };
     document.getElementById('go').onclick = function(){ A = {}; if (PRESET_STAGE!==null) A.stage = PRESET_STAGE; step = 0; phase = 'fit'; ask(); };
   }
 
