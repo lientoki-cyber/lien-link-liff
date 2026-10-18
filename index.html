@@ -562,7 +562,7 @@
         /* 生成元は同梱ライブラリ、中身は上で形式を確かめた番号だけ */
         $('rally-qr').innerHTML = q.createSvgTag({ cellSize:6, margin:2, scalable:true });
         $('rally-qr').classList.remove('hide');
-        text('rally-claim-lead', 'このQRをスタッフにお見せください。読み取ったら特典をお渡しします。');
+        text('rally-claim-lead', 'この画面をスタッフにお見せください。特典をお渡しします。');
         text('rally-receipt', '');
       } catch (e) { drawClaimFallback(); }
     }
@@ -573,11 +573,10 @@
     function startClaimPollWindow() { claimPollSince = 0; claimRetryCount = 0; $('rally-claim-refresh').classList.add('hide'); $('rally-order-button').classList.add('hide'); }
     function scheduleClaimRefresh(c) {
       stopClaimPolling();
-      /* お渡し操作はスタッフ側で行われるため、この画面を開いたままでも表示を更新する。 */
-      if (!c || c.delivered || $('screen-rally').classList.contains('hide')) { $('rally-claim-refresh').classList.add('hide'); return; }
-      if (!claimPollSince) claimPollSince = Date.now();
-      if (Date.now() - claimPollSince + CLAIM_POLL_MS > CLAIM_POLL_MAX_MS) { $('rally-claim-refresh').classList.remove('hide'); return; }
-      claimPollTimer = setTimeout(function () { ensureClaim(); }, CLAIM_POLL_MS);
+      /* 代表決定 10/18（C）：特典はスタッフが画面を見て渡し、アプリでお渡しを記録しない。
+         QRを出したあとの45秒ごとの自動確認は不要になったため行わない（会期中のサーバー負荷を下げる・10/19 代表指示）。
+         案内の自動送信の再試行は、画面を開き直したとき・スタンプを記録したときにサーバー側で行う。 */
+      $('rally-claim-refresh').classList.add('hide');
     }
     function refreshClaimByHand() {
       /* 連打で回数制限に当たらないよう、押したあと12秒はボタンを無効にする */
