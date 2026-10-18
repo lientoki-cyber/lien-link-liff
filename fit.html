@@ -1,0 +1,622 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#452535">
+  <meta name="robots" content="noindex">
+  <title>リアンとのフィット感診断</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <style>
+/* Layout: スマホ1カラム。1画面1問のカード式 → 結果は縦に「おすすめ→理由→費用→ゴールまでの地図→次の一歩」 */
+:root{
+  --bg:#FBF3F6; --surface:#FFFFFF; --ink:#3A1F2A; --muted:#7A6570; --line:#EBD3DE;
+  --plum:#48222F; --rose:#C2457F; --rose-soft:#F6E1EB; --gold:#B08A4E; --gold-soft:#F5ECDD;
+  --adv:#1F3F8F; --adv-soft:#E4EAF7; --std:#4F86B8; --std-soft:#E3EEF7; --ar:#D2679A; --ar-soft:#FBE6F0;
+  --ok:#2E7D5B;
+  --f:"Noto Sans JP","Hiragino Sans","Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#1E1418; --surface:#2A1D23; --ink:#F6E9EE; --muted:#C2AAB5; --line:#4A3540;
+  --plum:#F3D3E0; --rose:#F08DBB; --rose-soft:#43283A; --gold:#E0BE85; --gold-soft:#3A2F22;
+  --adv:#9DB6F2; --adv-soft:#24304D; --std:#93C0E6; --std-soft:#203243; --ar:#F3A3C8; --ar-soft:#46283A; --ok:#7FD1A9; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#1E1418; --surface:#2A1D23; --ink:#F6E9EE; --muted:#C2AAB5; --line:#4A3540;
+  --plum:#F3D3E0; --rose:#F08DBB; --rose-soft:#43283A; --gold:#E0BE85; --gold-soft:#3A2F22;
+  --adv:#9DB6F2; --adv-soft:#24304D; --std:#93C0E6; --std-soft:#203243; --ar:#F3A3C8; --ar-soft:#46283A; --ok:#7FD1A9; color-scheme:dark}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f);font-size:16px;line-height:1.7;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px 48px}
+.wrap{max-width:520px;margin:0 auto;display:flex;flex-direction:column;gap:16px}
+h1,h2,h3{text-wrap:balance;margin:0;line-height:1.35}
+p{margin:0}
+.eyebrow{font-size:12px;font-weight:700;letter-spacing:.12em;color:var(--rose)}
+.muted{color:var(--muted);font-size:13px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:20px}
+.btn{display:block;width:100%;padding:16px;border-radius:16px;border:0;font:inherit;font-weight:700;font-size:16px;text-align:center;cursor:pointer;text-decoration:none}
+.btn.main{background:var(--plum);color:var(--bg)}
+.btn.sub{background:var(--surface);color:var(--rose);border:1.5px solid var(--rose)}
+.btn.quiet{background:transparent;color:var(--muted);font-weight:500;font-size:14px;padding:10px}
+.btn:focus-visible,.opt:focus-visible{outline:3px solid var(--rose);outline-offset:2px}
+
+/* ナビ（案内役） */
+.navi{display:flex;gap:12px;align-items:flex-start}
+.navi .face{flex:none;width:52px;height:52px;border-radius:50%;background:var(--rose-soft);display:grid;place-items:center}
+.navi .face svg{width:34px;height:34px}
+.bubble{position:relative;min-width:0;flex:1;background:var(--surface);border:1px solid var(--line);border-radius:4px 18px 18px 18px;padding:12px 14px;font-size:15px}
+.bubble b{color:var(--rose)}
+.navi-name{font-size:11px;font-weight:700;color:var(--muted);margin-bottom:2px}
+
+/* トップ */
+.hero{padding:8px 4px 0;display:flex;flex-direction:column;gap:10px}
+.hero h1{font-size:28px;font-weight:900;color:var(--plum)}
+.hero .lead{font-size:15px;color:var(--muted)}
+.ladder-mini{display:flex;gap:6px;flex-wrap:wrap}
+.ladder-mini span{font-size:12px;font-weight:700;padding:4px 10px;border-radius:999px;background:var(--surface);border:1px solid var(--line);color:var(--muted)}
+.ladder-mini span.g1,.rung .lv.g1{background:color-mix(in srgb,var(--rose) 10%,var(--surface));color:var(--plum);border-color:transparent}
+.ladder-mini span.g2,.rung .lv.g2{background:color-mix(in srgb,var(--rose) 22%,var(--surface));color:var(--plum);border-color:transparent}
+.ladder-mini span.g3,.rung .lv.g3{background:color-mix(in srgb,var(--rose) 38%,var(--surface));color:var(--plum);border-color:transparent}
+.ladder-mini span.g4,.rung .lv.g4{background:color-mix(in srgb,var(--rose) 58%,var(--surface));color:var(--surface);border-color:transparent}
+.ladder-mini span.g5,.rung .lv.g5{background:color-mix(in srgb,var(--rose) 80%,var(--surface));color:var(--surface);border-color:transparent}
+
+/* 質問 */
+.progress{display:flex;align-items:center;gap:10px}
+.bar{flex:1;height:8px;background:var(--line);border-radius:999px;overflow:hidden}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--rose),var(--gold));border-radius:999px;transition:width .35s ease}
+.count{font-size:13px;font-weight:700;color:var(--muted);font-variant-numeric:tabular-nums}
+.q h2{font-size:21px;font-weight:900;color:var(--plum)}
+.q .hint{margin-top:6px}
+.opts{display:grid;gap:10px;margin-top:14px}
+.opt{display:flex;gap:12px;align-items:center;width:100%;text-align:left;padding:14px 16px;border-radius:16px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);font:inherit;cursor:pointer;transition:border-color .15s,transform .1s}
+.opt:hover{border-color:var(--rose)}
+.opt:active{transform:scale(.98)}
+.opt .ic{flex:none;width:38px;height:38px;border-radius:12px;background:var(--rose-soft);display:grid;place-items:center;font-size:18px;color:var(--rose);font-weight:900}
+.opt b{display:block;font-size:16px}
+.opt small{display:block;color:var(--muted);font-size:12.5px;line-height:1.5}
+.opt.on{border-color:var(--rose);background:var(--rose-soft)}
+
+/* 結果 */
+.result-head{border-radius:24px;padding:22px 20px;color:var(--surface);display:flex;flex-direction:column;gap:8px}
+.result-head .eyebrow{color:inherit;opacity:.85}
+.result-head h2{font-size:30px;font-weight:900}
+.result-head .catch{font-size:16px;font-weight:700}
+.result-head.adv{background:var(--adv)} .result-head.std{background:var(--std)} .result-head.ar{background:var(--ar)}
+.result-head.trial{background:var(--gold)} .result-head.line{background:var(--rose)}
+.type{display:inline-block;align-self:flex-start;font-size:13px;font-weight:700;padding:4px 12px;border-radius:999px;background:rgba(255,255,255,.22)}
+.sec h3{font-size:17px;font-weight:900;color:var(--plum);margin-bottom:10px}
+.reasons{margin:0;padding:0;list-style:none;display:grid;gap:8px}
+.reasons li{display:flex;gap:10px;font-size:15px}
+.reasons li::before{content:"";flex:none;width:8px;height:8px;margin-top:9px;border-radius:50%;background:var(--rose)}
+.money{display:grid;grid-template-columns:1fr auto;gap:8px 12px;font-variant-numeric:tabular-nums}
+.money dt{color:var(--muted);font-size:14px}
+.money dd{margin:0;text-align:right;font-weight:700}
+.money .total{border-top:1px solid var(--line);padding-top:8px;font-size:18px;color:var(--plum)}
+.money .total dd{font-size:22px;font-weight:900}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{font-size:13px;font-weight:700;padding:6px 12px;border-radius:999px;border:1px solid var(--line);background:var(--surface)}
+.chip.yes{border-color:var(--ok);color:var(--ok)}
+.chip.no{color:var(--muted);text-decoration:line-through}
+.gets{margin:0;padding-left:1.2em;font-size:14.5px;display:grid;gap:4px}
+
+/* ゴールまでの地図 */
+.ladder{display:flex;flex-direction:column-reverse;gap:6px}
+.rung{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:14px;border:1px solid var(--line);background:var(--surface);font-size:14px}
+.rung .lv{flex:none;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font-size:12px;font-weight:900;background:var(--line);color:var(--muted)}
+.rung b{flex:1;min-width:0}
+.rung em{font-style:normal;font-size:11.5px;font-weight:700;padding:3px 8px;border-radius:999px;white-space:nowrap}
+.rung.now em{background:var(--line);color:var(--ink)}
+.rung.rec{border:2px solid var(--rose);background:var(--rose-soft)}
+.rung.rec .lv{background:var(--rose);color:var(--surface)}
+.rung.rec em{background:var(--rose);color:var(--surface)}
+.rung.goal em{background:var(--line);color:var(--muted)}
+
+/* 比較 */
+.cmp-wrap{overflow-x:auto;margin:0 -4px}
+table.cmp{border-collapse:collapse;width:100%;font-size:12.5px;font-variant-numeric:tabular-nums}
+.cmp th,.cmp td{padding:8px 4px;border-bottom:1px solid var(--line);text-align:right;white-space:nowrap}
+.cmp th:first-child,.cmp td:first-child{text-align:left;white-space:normal}
+.cmp thead th{font-size:12px;color:var(--muted)}
+.cmp td.adv{color:var(--adv);font-weight:900}
+.example{background:var(--adv-soft);border-radius:16px;padding:14px 16px;font-size:14.5px}
+.example strong{color:var(--adv);font-size:18px}
+
+.fit{display:flex;flex-direction:column;align-items:center;text-align:center;gap:10px;padding:28px 20px;border-radius:24px;background:var(--surface);border:1px solid var(--line)}
+.fit .ring{position:relative;width:180px;height:180px;max-width:100%}
+.fit .ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+.fit .ring b{position:absolute;inset:0;display:grid;place-items:center;font-size:48px;font-weight:900;color:var(--rose);font-variant-numeric:tabular-nums}
+.fit .ring b small{font-size:20px}
+.fit h2{font-size:21px;font-weight:900;color:var(--plum)}
+.fit p{font-size:15px;text-align:left}
+.fitbadge{display:flex;align-items:center;gap:12px;padding:12px 16px;border-radius:18px;background:var(--rose-soft)}
+.fitbadge b{font-size:28px;font-weight:900;color:var(--rose);font-variant-numeric:tabular-nums}
+.bandname{font-size:13px;font-weight:700;color:var(--muted)}
+.axes{display:grid;gap:10px}
+.axis{display:grid;grid-template-columns:8.5em 1fr 3.4em;align-items:center;gap:10px;font-size:13.5px}
+.axis i{height:8px;background:var(--line);border-radius:999px;overflow:hidden}
+.axis em{display:block;height:100%;background:var(--rose);border-radius:999px}
+.axis small{font-size:12px;font-weight:700;color:var(--muted);text-align:right}
+.phase{font-size:12px;font-weight:700;color:var(--rose);letter-spacing:.06em}
+.staff{border:2px dashed var(--gold);background:var(--gold-soft)}
+.staff dl{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;margin:10px 0 0;font-size:14px}
+.staff dt{color:var(--muted)}
+.staff dd{margin:0;font-weight:700;min-width:0}
+.note{font-size:12px;color:var(--muted);line-height:1.6}
+.actions{display:grid;gap:10px}
+.fade{animation:fade .3s ease}
+@keyframes fade{from{opacity:.4;transform:translateY(6px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.fade{animation:none}.bar i{transition:none}}
+</style>
+</head>
+<body>
+<div class="wrap" id="app"></div>
+
+<script>
+(function(){
+  var NAVI = 'つばめ';
+  var FACE = '<svg viewBox="0 0 40 40" aria-hidden="true"><path d="M6 22c6-1 10-5 14-12 2 6 6 9 14 9-5 3-9 3-13 2l-5 9-1-7c-3 0-6 0-9-1z" fill="currentColor" style="color:var(--plum)"/><circle cx="25" cy="17" r="1.6" fill="var(--surface)"/></svg>';
+  var LINKS = {
+    line: 'https://lstep.app/form/11521/pVOpc4/6a546d',
+    liff: 'https://liff.line.me/1654464542-nn1iQBwK?p=register',
+    bcart: 'https://lien-ec.i10.bcart.jp/regist.php',
+    start: 'https://lien-ec.i10.bcart.jp/page/start'
+  };
+
+  /* ---------- 質問 ---------- */
+  var Q = [
+    { id:'stage', title:'いま、リアンとはどんなご関係ですか？', hint:'今の状態から、次の一歩をご案内します。',
+      say:'ここからは、お店のことを教えてください。あなたに合うリアンとの関わり方を一緒に見つけましょう。',
+      opts:[
+        {v:0,t:'今日はじめて知った',s:'展示会やご紹介で出会ったばかり',ic:'1'},
+        {v:1,t:'LINEの友だちになっている',s:'お店の登録はまだ',ic:'2'},
+        {v:2,t:'LINEでお店を登録した',s:'店舗登録まで済んでいる',ic:'3'},
+        {v:3,t:'ご注文用の会員登録も済んでいる',s:'住所とパスワードまで登録した',ic:'4'},
+        {v:4,t:'トライアル会員になっている',s:'お試し中',ic:'5'}
+      ]},
+    { id:'biz', title:'お店のお仕事を教えてください', hint:'いちばん近いものをお選びください。',
+      say:'どんなお客様を大切にされているお店か、まず知りたいです。',
+      opts:[
+        {v:'エステ・サロン',t:'エステ・サロン',ic:'E'},
+        {v:'美容室',t:'美容室',ic:'H'},
+        {v:'整体・治療院',t:'整体・治療院',ic:'T'},
+        {v:'クリニック',t:'クリニック',ic:'C'},
+        {v:'その他',t:'その他（物販・教室など）',ic:'+'}
+      ]},
+    { id:'use', title:'リアンの商品、どんなふうに使ってみたいですか？',
+      say:'ここ、いちばん大事なところです。今のお気持ちのままで大丈夫ですよ。',
+      opts:[
+        {v:'try',t:'まずは自分で試したい・知りたい',s:'お店に置くかはこれから',ic:'?'},
+        {v:'sell',t:'お客様におすすめして販売したい',s:'店販として取り扱いたい',ic:'¥'},
+        {v:'menu',t:'カウンセリングや施術と組み合わせたい',s:'メニューの一部として提案したい',ic:'♡'},
+        {v:'core',t:'お店の柱のひとつに育てたい',s:'売上の大きな柱にしたい',ic:'★'}
+      ]},
+    { id:'brand', title:'気になるブランドはどれですか？', hint:'ブースやカタログでご覧になった印象でかまいません。',
+      say:'リアンには3つのブランドがあります。',
+      opts:[
+        {v:'bt',t:'b-ternal（ビターナル）',s:'発酵ドリンク・発酵ペースト・発酵サプリなど',ic:'b'},
+        {v:'ar',t:'AID・reality（エイド・リアリティ）',s:'美容とインナーケアのアイテム',ic:'A'},
+        {v:'all',t:'全部気になる',s:'3ブランドとも取り扱ってみたい',ic:'3'},
+        {v:'unknown',t:'まだわからない',s:'スタッフに相談したい',ic:'…'}
+      ]},
+    { id:'heat', title:'商品の販売には、どのくらい力を入れたいですか？',
+      say:'正直なお気持ちでどうぞ。無理のない始め方をご提案します。',
+      opts:[
+        {v:0,t:'まずは情報を集めたい',ic:'1'},
+        {v:1,t:'少しずつ始めてみたい',ic:'2'},
+        {v:2,t:'しっかり取り組みたい',ic:'3'},
+        {v:3,t:'お店の事業の柱にしたい',ic:'4'}
+      ]},
+    { id:'budget', title:'最初にかけられるご予算は、どのくらいですか？', hint:'導入費用と、最初の商品のご購入を合わせた金額（税抜）です。',
+      say:'導入費用は最初の1回だけです。更新料やノルマはありません。',
+      opts:[
+        {v:10,t:'15万円未満',ic:'¥'},
+        {v:15,t:'15万〜20万円',ic:'¥'},
+        {v:20,t:'20万〜25万円',ic:'¥'},
+        {v:25,t:'25万円以上',ic:'¥'},
+        {v:-1,t:'まだ決めていない',s:'スタッフと相談して決めたい',ic:'?'}
+      ]},
+    { id:'vol', title:'気になる商品を、1か月にどれくらいお客様へ届けられそうですか？', hint:'1つの商品あたりの目安です。',
+      say:'リアンの仕入れ値は、1回に仕入れる数が多いほどお得になる仕組みです。',
+      opts:[
+        {v:0,t:'まだわからない',ic:'?'},
+        {v:1,t:'1〜5個くらい',ic:'S'},
+        {v:2,t:'6〜11個くらい',ic:'M'},
+        {v:3,t:'12個以上',ic:'L'}
+      ]},
+    { id:'counsel', title:'お客様へのカウンセリングはされていますか？',
+      say:'商品は「説明して届ける」ほど喜ばれます。',
+      opts:[
+        {v:2,t:'いつもしている',ic:'◎'},
+        {v:1,t:'これから取り入れたい',ic:'○'},
+        {v:0,t:'あまりしていない',ic:'△'}
+      ]},
+    { id:'learn', title:'工場見学や勉強会にも参加してみたいですか？',
+      say:'リアンは、販売店様と一緒に学び合うことを大切にしています。',
+      opts:[
+        {v:2,t:'ぜひ参加したい',s:'現場を見て、学びを深めたい',ic:'◎'},
+        {v:1,t:'動画やオンラインで学べれば十分',ic:'○'},
+        {v:0,t:'今はまだ大丈夫',ic:'△'}
+      ]},
+    { id:'when', title:'いつ頃から始めたいですか？',
+      say:'これで最後の質問です！',
+      opts:[
+        {v:2,t:'今日〜1か月以内',ic:'!'},
+        {v:1,t:'3か月以内',ic:'○'},
+        {v:0,t:'まだ決めていない',ic:'?'}
+      ]}
+  ];
+
+  /* ===== 理念共感型フィット感診断（代表指示 10/19 01:24）=====
+   * 評価軸と配点：大切な人を大切にする25／お客様への誠実さ・愛情25／信頼関係・約束20／三つの健康15／商品への理解と責任10／ともに学ぶ5＝100
+   * 各選択肢は 0〜1 の一致度（s）と、その回答が表す価値観のタグ（tag）を持つ。軸の点＝配点×その軸の設問の一致度の平均。
+   * 補正なし・未回答は0扱い。予算や規模は混ぜない。選択肢の並びは毎回シャッフル（途中で結果が読めないように）。 */
+  var AXES = [
+    {k:'care',  n:'大切な人を大切にする', w:25, lien:'お客様との信頼関係を、何より大切に積み重ねること'},
+    {k:'honest',n:'お客様への誠実さ',     w:25, lien:'売上より、そのお客様にとって本当に良いことを選ぶこと'},
+    {k:'trust', n:'信頼関係・約束',       w:20, lien:'取り決めや約束を大切にし、価格ではなく信頼で応えること'},
+    {k:'health',n:'三つの健康',            w:15, lien:'からだ・こころ・くらしの三つが満たされてこそ健康だという考え方'},
+    {k:'product',n:'商品への理解と責任',  w:10, lien:'自分が納得した商品を、正直な言葉で届けること'},
+    {k:'learn', n:'ともに学び成長する',   w:5,  lien:'商品の背景まで学び、自分の言葉で伝えること'}
+  ];
+  var VQ = [
+    {id:'v1',axis:'care',kind:'共感',theme:'大切にしている想い',
+     title:'「大切な人を、大切にする。」この言葉を聞いて、あなたはどう感じますか？',
+     say:'はじめまして！ナビの<b>つばめ</b>です。難しく考えず、<b>いつものあなたらしく</b>お答えください。',
+     opts:[{t:'とても共感する。普段から大切にしている考え方',pt:1,tag:''},{t:'共感する。想いだけでなく、結果も大切だと思う',pt:.7,tag:''},
+           {t:'素敵な言葉だと思うけれど、仕事では別のことも大切',pt:.5,tag:'仕事と想いを分けて考える'},{t:'あまり意識したことがない',pt:0,tag:'現実的な成果'}]},
+    {id:'v2',axis:'care',kind:'優先順位',theme:'お仕事を続ける理由',
+     title:'お仕事を続けていくうえで、あなたがいちばん大切にしたいことは何ですか？',say:'どれも大切ですよね。いちばん近いものをひとつ。',
+     opts:[{t:'お客様とのご縁を大切にし、長く信頼していただくこと',pt:1,tag:''},{t:'一緒に働くスタッフや、その家族も幸せになること',pt:.9,tag:''},
+           {t:'自分自身や家族が、安心して豊かに暮らせること',pt:.6,tag:'ご自身とご家族の暮らし'},{t:'お店の売上を伸ばし、経営を安定させること',pt:.4,tag:'経営の安定'}]},
+    {id:'v3',axis:'health',kind:'共感',theme:'あなたにとっての健康',
+     title:'あなたが思う「本当の健康」に、いちばん近いものはどれですか？',say:'',
+     opts:[{t:'からだも心も元気で、毎日の暮らしも充実していること',pt:1,tag:''},{t:'気持ちが穏やかで、毎日を楽しく過ごせること',pt:.6,tag:'こころの充実'},
+           {t:'年齢を重ねても、自分らしく好きなことができること',pt:.5,tag:'自分らしい暮らし'},{t:'病気をせず、元気に生活できること',pt:.4,tag:'からだの健康'}]},
+    {id:'v4',axis:'honest',kind:'行動選択',theme:'商品をおすすめするとき',
+     title:'お客様が、少しお値段の高い商品を気に入ってくださいました。でもお話を聞いていると、別の商品か、今は購入されない方がよいように感じます。そんなとき、あなたならどうしますか？',
+     say:'普段のお仕事を、思い浮かべてみてください。',
+     opts:[{t:'今のお客様に本当に合うものを、一緒に考える',pt:1,tag:''},{t:'商品のことをきちんと伝え、お客様に決めていただく',pt:.7,tag:'お客様の意思の尊重'},
+           {t:'まずは少量から試していただき、様子を見る',pt:.7,tag:''},{t:'気に入ってくださっているので、商品の良さを詳しくお伝えする',pt:0,tag:'お客様の「欲しい」気持ち'}]},
+    {id:'v5',axis:'honest',kind:'優先順位',theme:'ご紹介するときに大切なこと',
+     title:'お客様に商品をご紹介するとき、あなたがいちばん大切にしていることは何ですか？',say:'',
+     opts:[{t:'今のお客様に、本当に必要なものかどうか',pt:1,tag:''},{t:'お客様ご自身が、欲しいと思ってくださるかどうか',pt:.5,tag:'お客様の「欲しい」気持ち'},
+           {t:'商品の良さや魅力を、きちんとお伝えできるかどうか',pt:.4,tag:'商品の魅力の伝達'},{t:'お店として、無理なくおすすめし続けられるかどうか',pt:.4,tag:'お店の継続性'}]},
+    {id:'v6',axis:'honest',kind:'行動選択',theme:'売上目標まで、あと少しのとき',
+     title:'今月の売上目標まで、あと少し。そんなとき、いつも来てくださるお客様がご来店されました。ただ、そのお客様は今月すでに十分お買い物をされています。あなたならどうしますか？',say:'',
+     opts:[{t:'売上よりも、お客様に今必要なものかどうかを大切にする',pt:1,tag:''},{t:'次回までに必要なものがないか、一緒に考える',pt:.7,tag:''},
+           {t:'必要そうな商品があればご紹介し、判断はお客様にお任せする',pt:.6,tag:'お客様の意思の尊重'},{t:'今月だけの特典をご案内して、購入をご検討いただく',pt:.2,tag:'売上目標'}]},
+    {id:'v7',axis:'trust',kind:'行動選択',theme:'お取引先とのお約束',
+     title:'商品を販売していると、「もう少し違う売り方ができたらいいのに」と思うこともありますよね。そんなとき、メーカーや仕入先と決めている販売ルールについて、気になることがあったらどうしますか？',say:'',
+     opts:[{t:'まずは相談して、お互いが納得できる方法を考える',pt:1,tag:''},{t:'今のルールを守りながら、改善できないか提案する',pt:.9,tag:''},
+           {t:'お客様のためになると思えば、自分の判断で進める',pt:.2,tag:'ご自身の判断での販売'},{t:'ほかのお店もやっていることなら、同じようにする',pt:.1,tag:'販売の広がり'}]},
+    {id:'v8',axis:'trust',kind:'行動選択',theme:'お値引きをお願いされたら',
+     title:'お客様から「もう少し安くならない？」と聞かれました。あなたなら、どうお答えしますか？',say:'',
+     opts:[{t:'お値段はそのままで、使い方やアフターフォローを丁寧にする',pt:1,tag:''},{t:'なぜこの価格なのか、品質やこだわりをお伝えする',pt:.9,tag:''},
+           {t:'今回だけ、少しお値引きして対応する',pt:.3,tag:'お値引きでの対応'},{t:'ほかのお店に負けないよう、できるだけお値引きする',pt:.1,tag:'価格での競争'}]},
+    {id:'v9',axis:'trust',kind:'行動選択',theme:'「合わなかった」と言われたら',
+     title:'以前おすすめした商品について、お客様から「私には合わなかったみたい」と言われました。そんなとき、あなたならどうしますか？',say:'',
+     opts:[{t:'まずはお気持ちを受け止め、詳しくお話を伺って対応を考える',pt:1,tag:''},{t:'どのように使われたのか確認し、使い方をご案内する',pt:.6,tag:'正しい使い方の説明'},
+           {t:'お客様に合いそうな、別の商品をご紹介する',pt:.5,tag:'次の提案'},{t:'商品の感じ方には個人差があることを、丁寧にお伝えする',pt:.4,tag:'商品の説明'}]},
+    {id:'v10',axis:'product',kind:'優先順位',theme:'新しい商品を選ぶとき',
+     title:'お店に新しい商品を取り入れるとき、あなたがいちばん重視することは何ですか？',say:'',
+     opts:[{t:'自分自身が納得できる品質で、商品の考え方にも共感できること',pt:1,tag:''},{t:'お客様からのご要望や、お問い合わせが多いこと',pt:.6,tag:'お客様の需要'},
+           {t:'お店の売上や利益につながりそうなこと',pt:.3,tag:'売上や利益'},{t:'今、話題になっていて人気があること',pt:.1,tag:'話題性'}]},
+    {id:'v11',axis:'product',kind:'行動選択',theme:'商品の良さを聞かれたとき',
+     title:'お客様から「この商品って、本当にいいの？」と聞かれました。あなたなら、どのようにお伝えしますか？',say:'',
+     opts:[{t:'自分で使って感じたことを、個人差があることも含めて正直に伝える',pt:1,tag:''},{t:'メーカーの資料を確認して、正しい情報を丁寧に伝える',pt:.8,tag:''},
+           {t:'実際に使われた、ほかのお客様の声を中心に伝える',pt:.4,tag:'口コミの力'},{t:'「とてもいい商品ですよ」と、自信を持っておすすめする',pt:.1,tag:'おすすめの勢い'}]},
+    {id:'v12',axis:'learn',kind:'行動選択',theme:'新しい商品について学ぶとき',
+     title:'新しい商品をお店で取り扱うことになりました。あなたは、どんなふうに商品について知りたいですか？',say:'これで最後の質問です。',
+     opts:[{t:'商品が生まれた背景や想いまで知って、自分の言葉で伝えたい',pt:1,tag:''},{t:'実際にお客様にご紹介しながら、少しずつ学びたい',pt:.6,tag:'実践での経験'},
+           {t:'必要な情報を、できるだけ短い時間で知りたい',pt:.5,tag:'効率'},{t:'詳しい説明はメーカーに任せて、お店では販売に集中したい',pt:.1,tag:'販売への集中'}]}
+  ];
+  VQ.forEach(function(q){ // 並びをシャッフル（v を元の番号に）
+    q.opts.forEach(function(o,i){ o.v = i; o.ic = ''; });
+    for (var i=q.opts.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)); var t=q.opts[i]; q.opts[i]=q.opts[j]; q.opts[j]=t; }
+    q.opts.forEach(function(o,i){ o.ic = 'ABCD'.charAt(i); });
+  });
+  var phase = 'fit';
+  function optOf(q){ var v = A[q.id]; return q.opts.filter(function(o){return o.v===v;})[0]; }
+  function fitDetail(){
+    var ax = {}; AXES.forEach(function(a){ ax[a.k] = {sum:0,n:0}; });
+    VQ.forEach(function(q){ var o = optOf(q); ax[q.axis].n++; ax[q.axis].sum += o ? o.pt : 0; });
+    var per = {};
+    AXES.forEach(function(a){ per[a.k] = ax[a.k].n ? ax[a.k].sum/ax[a.k].n : 0; });
+    // 「大切な人を大切にする」は言葉だけでなく行動で測る：共感・優先の2問 4割＋お客様を前にした行動の2問（v4・v6）6割
+    var beh = VQ.filter(function(q){return q.id==='v4'||q.id==='v6';}).map(function(q){ var o = optOf(q); return o ? o.pt : 0; });
+    per.care = .4*per.care + .6*((beh[0]+beh[1])/2);
+    var total = 0; AXES.forEach(function(a){ total += a.w*per[a.k]; });
+    var tags = {}; VQ.forEach(function(q){ var o = optOf(q); if (o && o.tag && o.pt < .6) tags[o.tag] = (tags[o.tag]||0)+1; });
+    var topTags = Object.keys(tags).sort(function(a,b){return tags[b]-tags[a];}).slice(0,2);
+    var c1 = optOf(VQ[0]); var gap = c1 && c1.pt===1 && per.honest < .45; // 理念には共感・判断では売上寄り
+    return { pct: Math.round(total), per: per, tags: topTags, gap: gap };
+  }
+  function band(p){
+    if (p>=90) return {k:5,h:'理念への共感が、とても強い',lead:'同じ想いを、大切にできる仲間かもしれません。'};
+    if (p>=75) return {k:4,h:'理念への共感が強い',lead:'大切にしたいものが、たくさん重なっています。'};
+    if (p>=55) return {k:3,h:'共感できるところが多い',lead:'通じ合うところが、たくさんありました。'};
+    if (p>=35) return {k:2,h:'共感するところと、違うところがある',lead:'重なるところと、違うところがありました。'};
+    if (p>=20) return {k:1,h:'大切にする考え方に違いが見られる',lead:'大切にしていることに、いくつか違いがあるようです。'};
+    return {k:0,h:'いまは、価値観に大きな違いがある',lead:'いまは、大切にしていることがかなり違うようです。'};
+  }
+  function lvl(r){ return r>=.75?'強い':r>=.45?'中程度':'低い'; }
+
+  /* ---------- プラン情報（製品導入プラン 2025.12・掛率表 b-ternal 250930／AID 251201／reality 251202。税抜） ---------- */
+  var PLAN = {
+    adv:{ name:'アドバンス', type:'お店の柱をつくるタイプ', catch:'商品販売を、お店の大きな力に。',
+      fee:150000, buy:100000, brands:{bt:1,aid:1,re:1},
+      gets:['b-ternalの仕入れが最大50%掛け（数量に応じて）','販促物がいちばん充実：b-ternalパンフレット50部・A4ポスター1枚・A3ポスター2枚・カウンセリングセット3部・ショッパー20枚・reality／AIDパンフレット各10部','工場見学が無料','アドバンス限定の勉強会に参加できる','お支払いは末締め25日払い'] },
+    std:{ name:'スタンダード', type:'着実に育てるタイプ', catch:'3ブランドを、お店に合った形で。',
+      fee:100000, buy:100000, brands:{bt:1,aid:1,re:1},
+      gets:['b-ternalの仕入れが最大60%掛け（数量に応じて）','販促物：b-ternalパンフレット20部・A4ポスター1枚・カウンセリングセット1部・ショッパー10枚・reality／AIDパンフレット各10部','工場見学に参加できる（有料）','お支払いは末締め10日払い'] },
+    ar:{ name:'AR販売店', type:'美容とインナーケアから始めるタイプ', catch:'AID・realityから、お店の新しい可能性を。',
+      fee:50000, buy:100000, brands:{bt:0,aid:1,re:1},
+      gets:['AID・realityの全商品を取り扱える（数量に応じて最大50〜60%掛け）','販促物：reality／AIDパンフレット各10部・ショッパー5枚','工場見学に参加できる（有料）','お支払いは末締め10日払い'] },
+    trial:{ name:'トライアル会員', type:'まず試してみるタイプ', catch:'まずは、あなた自身で試してみる。',
+      fee:0, buy:30000, trial:1,
+      gets:['導入費用なしで、2か月間お試しいただけます（展示会期間中に、商品を3万円以上〈税抜〉ご購入の方）','まずはご自身やスタッフで使って、良さを実感してから、お客様へ','お試しのあとは、お店に合うプラン（AR販売店・スタンダード・アドバンス）へ進めます','LINEでお店を登録したあと、住所とパスワードを決めるだけで始められます'] },
+    line:{ name:'LINE店舗登録', type:'ご縁をはじめるタイプ', catch:'まずは、リアンを知るところから。',
+      gets:['お店の情報を登録しておくと、新商品・セミナー・展示会のご案内が届きます','費用はかかりません。導入を決めていなくても大丈夫です','気になったときに、いつでもスタッフへ相談できます'] }
+  };
+  var ORDER = ['line','trial','ar','std','adv'];
+  var LADDER = [
+    {k:'line',t:'LINE店舗登録',d:'お店としてつながる'},
+    {k:'trial',t:'トライアル会員',d:'導入費用なしで、まず試してみる'},
+    {k:'ar',t:'AR販売店',d:'AID・realityを販売'},
+    {k:'std',t:'スタンダード',d:'3ブランドを販売'},
+    {k:'adv',t:'アドバンス',d:'お店の柱として本格展開'}
+  ];
+
+  var A = {}, step = 0, app = document.getElementById('app');
+  var PRESET_STAGE = (function(){ try { var m = /[?&]stage=([0-4])(?:&|$)/.exec(location.search); return m ? +m[1] : null; } catch(e){ return null; } })();
+  function yen(n){ return n.toLocaleString('ja-JP') + '円'; }
+  function navi(html){ return '<div class="navi"><div class="face">'+FACE+'</div><div class="bubble"><div class="navi-name">ナビ '+NAVI+'</div>'+html+'</div></div>'; }
+  function light(){ return A.use==='try' || A.heat===0; }
+
+  function order(){ // 価値観6問 → 関わり方の質問（気軽な方は販売の詳しい質問を飛ばす）
+    if (phase==='fit') return VQ.map(function(q){return q.id;});
+    var ids = light() ? ['stage','biz','use','brand','heat','when'] : Q.map(function(q){return q.id;});
+    return PRESET_STAGE===null ? ids : ids.filter(function(x){ return x!=='stage'; });
+  }
+
+  /* ---------- 判定 ---------- */
+  function judge(){
+    var r = { plan:'', reasons:[], note:'' };
+    var score = (A.heat||0) + (A.vol||0) + (A.counsel===2?1:0) + (A.learn===2?2:0) + (A.when===2?1:0) + (A.use==='core'?2:A.use==='menu'?1:0);
+    r.score = score;
+    if (light()) {
+      r.plan = (A.use==='try' || A.stage>=2) ? 'trial' : 'line';
+      r.reasons.push(A.use==='try' ? 'まずはご自身で試してみたい、というお気持ちを大切に' : 'まずは情報を集めてから、と考えていらっしゃる');
+      if (A.use!=='try' && A.stage>=2) r.reasons.push('店舗登録はお済みなので、次は導入費用なしのお試しから');
+      return r;
+    }
+    var b = A.budget, bt = (A.brand==='bt'||A.brand==='all');
+    if (b===10) {
+      r.plan = 'trial';
+      r.reasons.push('ご予算に合わせて、導入費用なしのお試しから始めるのがおすすめ');
+      r.note = '正規取扱のプランは、導入費用と最初の商品のご購入を合わせて15万円から（税抜）です。お試しで手応えを感じてから、ゆっくり選べます。';
+      return r;
+    }
+    var open = (b===-1);
+    if (A.brand==='ar') {
+      r.plan = (b===25 || open) && score>=8 ? 'adv' : (b>=15 || open) ? 'ar' : 'trial';
+    } else if (bt || A.brand==='unknown') {
+      if ((b===25 || open) && score>=5) r.plan = 'adv';
+      else if (b>=20 || open) r.plan = 'std';
+      else r.plan = bt ? 'trial' : 'ar';
+      if (r.plan==='trial') r.note = 'b-ternalを取り扱えるプランは、導入費用と最初の商品のご購入を合わせて20万円から（税抜）です。まずはトライアルで試してみる方法や、AID・realityから始める方法もあります。';
+    }
+    // 理由
+    var brandTxt = {bt:'b-ternalに関心がある',ar:'AID・realityに関心がある',all:'3ブランドすべてに関心がある',unknown:'これから商品を選びたい'}[A.brand];
+    r.reasons.push(brandTxt);
+    if (A.heat>=2) r.reasons.push(A.heat===3 ? 'お店の事業の柱にしたいという強い想いがある' : 'しっかり販売に取り組みたいお気持ちがある');
+    else r.reasons.push('少しずつ、着実に始めたい');
+    if (A.vol===3) r.reasons.push('1つの商品を月12個以上届けられる見込みがある＝数量割引を活かしやすい');
+    else if (A.vol===2) r.reasons.push('月に6〜11個ほど届けられそう');
+    if (A.counsel===2) r.reasons.push('カウンセリングで、商品の価値をきちんと伝えられる');
+    if (A.learn===2) r.reasons.push('工場見学や勉強会で学びを深めたい');
+    if (open) r.reasons.push('ご予算はこれから。担当者と一緒に決められます');
+    else if (r.plan!=='trial') r.reasons.push('ご予算が、このプランの目安（' + (PLAN[r.plan].fee+PLAN[r.plan].buy)/10000 + '万円〜）に合っている');
+    return r;
+  }
+
+  /* ---------- 画面 ---------- */
+  function top(){
+    app.innerHTML =
+      '<section class="hero fade"><p class="eyebrow">LIEN FIT CHECK｜NEW</p><h1>あなたが大切にしていること、教えてください。</h1>'+
+      '<p class="lead">お店を続けていると、うれしいことも、迷うことも、いろいろありますよね。お客様への想い。商品の選び方。これからのお店のこと。普段のお仕事を思い浮かべながら、あなたのお考えに近いものを選んでください。</p></section>'+
+      navi('全部で12問、約3分です。難しく考えず、いつものあなたらしくお答えください。<b>あなたのお店とリアンの想いがどれくらい近いのか</b>、一緒に見つけていきましょう。')+
+      '<div class="card"><p class="muted" style="margin-bottom:8px">リアンとのお付き合いは、この道のりで深まっていきます</p>'+
+      '<div class="ladder-mini">'+LADDER.map(function(l,i){return '<span class="g'+(i+1)+'">'+l.t+'</span>';}).join('')+'</div></div>'+
+      '<button class="btn main" id="go">診断をはじめる</button>'+
+      '<p class="note">※ フィット感は、回答から計算した価値観への共感の目安です。人柄や経営の良し悪しを評価するものではありません。関わり方の診断も目安で、正式なプランは担当者とのご相談で決まります。お名前や連絡先の入力は不要です。</p>';
+    document.getElementById('go').onclick = function(){ A = {}; if (PRESET_STAGE!==null) A.stage = PRESET_STAGE; step = 0; phase = 'fit'; ask(); };
+  }
+
+  function ask(){
+    var ids = order(), id = ids[step], q = Q.concat(VQ).filter(function(x){return x.id===id;})[0];
+    var pct = Math.round(step/ids.length*100);
+    app.innerHTML =
+      '<p class="phase">'+(phase==='fit'?'STEP 1｜想いの重なり・'+q.theme:'STEP 2｜あなたに合う関わり方')+'</p><div class="progress"><div class="bar"><i style="width:'+pct+'%"></i></div><span class="count">'+(step+1)+' / '+ids.length+'</span></div>'+
+      (q.say?navi(q.say):'')+
+      '<section class="card q fade"><h2>'+q.title+'</h2>'+(q.hint?'<p class="muted hint">'+q.hint+'</p>':'')+
+      '<div class="opts">'+q.opts.map(function(o,i){
+        return '<button class="opt'+(A[id]===o.v?' on':'')+'" data-i="'+i+'" data-v="'+o.v+'"><span class="ic" aria-hidden="true">'+o.ic+'</span><span><b>'+o.t+'</b>'+(o.s?'<small>'+o.s+'</small>':'')+'</span></button>';
+      }).join('')+'</div></section>'+
+      (step>0?'<button class="btn quiet" id="back">← ひとつ前にもどる</button>':'<button class="btn quiet" id="back">はじめの画面へ</button>');
+    Array.prototype.forEach.call(app.querySelectorAll('.opt'), function(el){
+      el.onclick = function(){
+        A[id] = q.opts[+el.getAttribute('data-i')].v; el.classList.add('on');
+        setTimeout(function(){ var ids2 = order(); if (step < ids2.length-1){ step++; ask(); } else if (phase==='fit') thanks(); else result(); }, 180);
+      };
+    });
+    document.getElementById('back').onclick = function(){ if (step>0){ step--; ask(); } else if (phase==='plan'){ fitResult(); } else top(); };
+    window.scrollTo(0,0);
+  }
+
+  function thanks(){
+    app.innerHTML = '<section class="fit fade" style="text-align:left;align-items:stretch"><p class="eyebrow">THANK YOU</p><h2>12の質問にお答えいただき、ありがとうございました。</h2>'+
+      '<p>お仕事に対する想いを、少しだけ知ることができました。</p>'+
+      '<p>私たちリアンも、「大切な人を、大切にする。」という考え方を大切にしています。</p>'+
+      '<p>お客様も、お店の皆さまも、そして私たちも。ご縁のある皆さまが、ともに豊かになっていけたら。そんな想いで、商品づくりや販売店様のサポートに取り組んでいます。</p>'+
+      '<p><b>それでは、あなたのお店とリアンの想いの重なりを見てみましょう。</b></p></section>'+
+      '<button class="btn main" id="see">診断結果を見る</button><button class="btn quiet" id="back3">← ひとつ前にもどる</button>';
+    document.getElementById('see').onclick = fitResult;
+    document.getElementById('back3').onclick = function(){ step = VQ.length-1; ask(); };
+    window.scrollTo(0,0);
+  }
+
+  function fitResult(){
+    var d = fitDetail(), p = d.pct, b = band(p), C = 2*Math.PI*80;
+    var strong = AXES.filter(function(a){return d.per[a.k]>=.75;}), weak = AXES.filter(function(a){return d.per[a.k]<.45;});
+    var body;
+    if (b.k>=4) {
+      body = '「大切な人を、大切にする。」この言葉に込めた想いと、あなたが日々のお仕事で大切にされていることには、多くの共通点があるようです。'+
+        (strong.length?'とくに<b>'+strong.slice(0,3).map(function(a){return a.n;}).join('・')+'</b>への考え方が重なっていました。':'')+
+        '私たちは、そんな価値観を共有できる方と一緒に仕事ができることを、うれしく思います。';
+    } else if (b.k>=2) {
+      body = (strong.length?'<b>'+strong.slice(0,2).map(function(a){return a.n;}).join('・')+'</b>では、リアンと通じる考え方をお持ちです。':'リアンと通じるところがありました。')+
+        (weak.length?'一方で、<b>'+weak.slice(0,2).map(function(a){return a.n;}).join('・')+'</b>では、大切にする順番が少し違うようです。':'')+
+        'お互いの考え方を、もう少し知り合えたらうれしいです。';
+    } else {
+      body = 'リアンでは、'+(weak.length?weak.slice(0,2).map(function(a){return a.lien;}).join('、そして'):AXES[0].lien)+'を大切にしています。'+
+        (d.tags.length?'一方で、あなたは<b>'+d.tags.join('</b>や<b>')+'</b>を重視されているようです。':'')+
+        'どちらが正しいということではありません。ただ、いまは、お互いが大切にしていることを知るところから始めるのがよいかもしれません。';
+    }
+    app.innerHTML = '<section class="fit fade"><p class="eyebrow">あなたのお店とリアンの、想いの重なりは…</p>'+
+      '<div class="ring"><svg viewBox="0 0 180 180" aria-hidden="true"><circle cx="90" cy="90" r="80" fill="none" stroke="var(--line)" stroke-width="14"/>'+
+      '<circle id="arc" cx="90" cy="90" r="80" fill="none" stroke="var(--rose)" stroke-width="14" stroke-linecap="round" stroke-dasharray="'+C+'" stroke-dashoffset="'+C+'" style="transition:stroke-dashoffset 1.4s ease"/></svg>'+
+      '<b><span><span id="pct">0</span><small>%</small></span></b></div>'+
+      '<p class="bandname">'+b.h+'</p><h2>'+b.lead+'</h2><p>'+body+'</p></section>'+
+      '<section class="card sec"><h3>6つの価値観、それぞれの重なり</h3><div class="axes">'+
+      AXES.map(function(a){ var r = d.per[a.k]; return '<div class="axis"><span>'+a.n+'</span><i><em style="width:'+Math.round(r*100)+'%"></em></i><small>'+lvl(r)+'</small></div>'; }).join('')+
+      '</div><p class="note" style="margin-top:10px">フィット感は、リアンが大切にしている価値観と、今回のご回答がどれくらい重なっているかの目安です。人柄や経営者としての力を評価するものではありません。</p></section>'+
+      (b.k>=3
+        ? navi('リアンの商品を、あなたのお店でも取り扱ってみませんか？<b>あと少しだけ</b>、お店のことを教えてください。')+
+          '<button class="btn main" id="next">リアンの取扱プランを見る</button><button class="btn sub" id="mind">リアンが大切にしている想いを見る</button>'
+        : navi('この数字をきっかけに、ぜひスタッフと話してみてください。「どうしてこの数字なんだろう？」から始まる会話も、大歓迎です。')+
+          '<button class="btn main" id="mind">リアンが大切にしている想いを見る</button><button class="btn sub" id="next">それでも取り扱いについて聞いてみる</button>')+
+      '<button class="btn quiet" id="redo">もう一度診断する</button>';
+    var arc = document.getElementById('arc'), el = document.getElementById('pct'), reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduce){ arc.style.transition='none'; arc.setAttribute('stroke-dashoffset', C*(1-p/100)); el.textContent = p; }
+    else {
+      requestAnimationFrame(function(){ requestAnimationFrame(function(){ arc.setAttribute('stroke-dashoffset', C*(1-p/100)); }); });
+      var t0 = null; (function tick(ts){ if(!t0) t0=ts; var k=Math.min(1,(ts-t0)/1400); el.textContent = Math.round(p*k); if(k<1) requestAnimationFrame(tick); })(performance.now());
+    }
+    document.getElementById('next').onclick = function(){ phase = 'plan'; step = 0; ask(); };
+    document.getElementById('mind').onclick = mind;
+    document.getElementById('redo').onclick = top;
+    window.scrollTo(0,0);
+  }
+  function mind(){
+    app.innerHTML = '<section class="hero fade"><p class="eyebrow">LIEN PHILOSOPHY</p><h1>大切な人を、大切にする。</h1>'+
+      '<p class="lead">リアンが、いちばん大切にしている言葉です。</p></section>'+
+      '<section class="card sec"><h3>めざす社会</h3><p>からだ・こころ・くらし。「三つの健康」が満たされた社会。</p></section>'+
+      '<section class="card sec"><h3>大切にしている3つのこと</h3><ul class="reasons">'+
+      '<li><span><b>愛</b>　可能性を信じ、誠意を尽くす</span></li><li><span><b>絆</b>　ご縁に感謝し、ご縁を紡ぐ</span></li><li><span><b>真心</b>　大切な人を大切にする</span></li></ul></section>'+
+      '<section class="card sec"><h3>リアンの約束</h3><ul class="reasons">'+
+      '<li>短期的な売上よりも、長期的な信頼関係を大切にします。</li>'+
+      '<li>店舗様が自信を持って推薦できる商品をお届けします。</li>'+
+      '<li>価格競争ではなく、信頼競争で応えます。</li>'+
+      '<li>お客様の「今」だけでなく、「これから」の健康まで見据えます。</li>'+
+      '<li>商品で選ばれる会社ではなく、人で選ばれる会社に。</li></ul></section>'+
+      '<section class="card sec"><h3>販売店様と、こんな関係でいたい</h3><p>誰にでも扱っていただきたいのではなく、商品の価値を正しく理解し、責任を持ってご提案いただけるお店と、長くお付き合いしたいと考えています。取扱店様の価値を守り、成功をともにめざすパートナーとして、継続してサポートします。</p></section>'+
+      '<button class="btn main" id="back2">結果にもどる</button>';
+    document.getElementById('back2').onclick = fitResult;
+    window.scrollTo(0,0);
+  }
+
+  function ladderHtml(rec){
+    var nowIdx = A.stage===4 ? 1 : A.stage>=2 ? 0 : -1;
+    return '<div class="ladder">'+LADDER.map(function(l,i){
+      var cls = 'rung', tag = '';
+      if (l.k===rec){ cls+=' rec'; tag='<em>おすすめ</em>'; }
+      else if (i===nowIdx){ cls+=' now'; tag='<em>いまここ</em>'; }
+      if (l.k==='adv' && rec!=='adv'){ cls+=' goal'; tag='<em>その先に</em>'; }
+      
+      return '<div class="'+cls+'"><span class="lv g'+(i+1)+'">'+(i+1)+'</span><b>'+l.t+'<br><span class="muted">'+l.d+'</span></b>'+tag+'</div>';
+    }).join('')+'</div>';
+  }
+
+  function advCompare(){
+    var rows = [['BASE','13,500円','60%','50%'],['PASTE','15,000円','60%','50%'],['SUPPLEMENT','8,000円','60%','50%'],['SEED','8,000円','60%','50%'],['PLUM','6,500円','60%','55%']];
+    return '<section class="card sec"><h3>アドバンスになると、仕入れはどう変わる？</h3>'+
+      '<p class="muted" style="margin-bottom:10px">b-ternalの仕入れ（掛け率）は、アドバンスがいちばんお得です。</p>'+
+      '<div class="cmp-wrap"><table class="cmp"><thead><tr><th>b-ternal（希望小売・税抜）</th><th>スタンダード</th><th>アドバンス</th></tr></thead><tbody>'+
+      rows.map(function(r){ return '<tr><td>'+r[0]+'<br><span class="muted">'+r[1]+'</span></td><td>最大 '+r[2]+'</td><td class="adv">最大 '+r[3]+'</td></tr>'; }).join('')+
+      '</tbody></table></div>'+
+      '<div class="example" style="margin-top:12px">たとえば BASE 1本の仕入れは（いちばんお得な掛け率どうしで比べると）<br>スタンダード 8,100円 → アドバンス 6,750円<br><strong>1本あたり 1,350円</strong> お得になります。</div>'+
+      '<p class="note" style="margin-top:8px">※ 掛け率は、ご注文の数量によって変わります。くわしくはスタッフがご案内します。導入費用の差は5万円です。</p></section>';
+  }
+
+  function result(){
+    var r = judge(), P = PLAN[r.plan], isPlan = (r.plan==='adv'||r.plan==='std'||r.plan==='ar'), lowFit = fitDetail().pct < 35;
+    if (lowFit && isPlan) r.note = (r.note?r.note+' ':'')+'今回はフィット感がまだ低めでした。お取り扱いについては、まずスタッフと一度お話ししてから、お互いに決めさせてください。';
+    var fd = fitDetail(), fp = fd.pct, fb = band(fp);
+    var html = '<div class="fitbadge fade"><b>'+fp+'%</b><span><span class="muted">あなたのお店とリアンの想いの重なり</span><br><strong>'+fb.lead+'</strong></span></div>'+
+      '<section class="result-head '+r.plan+' fade"><p class="eyebrow">あなたに合うリアンとの関わり方は</p>'+
+      '<h2>'+P.name+'</h2><p class="catch">'+P.catch+'</p><span class="type">'+P.type+'</span></section>';
+    html += navi({
+      adv:'お店の柱として、リアンの商品を本格的に育てていける準備が整っています。<b>一緒に、アドバンスを目指しましょう！</b>',
+      std:'3ブランドを、お店に合った形で着実に。販売が育ってきたら、<b>アドバンス</b>への道も開けています。',
+      ar:'AID・realityから始めて、お客様の喜ぶ声を増やしていきましょう。その先に<b>スタンダード・アドバンス</b>があります。',
+      trial:'まずは、あなた自身で試してみてください。<b>実感した良さ</b>は、きっとお客様にも伝わります。その先に、お店に合うプランがあります。',
+      line:'焦らなくて大丈夫です。まずはリアンを知っていただくところから。<b>ご縁</b>を大切にお付き合いさせてください。'
+    }[r.plan]);
+    html += '<section class="card sec"><h3>この結果になった理由</h3><ul class="reasons">'+r.reasons.map(function(t){return '<li>'+t+'</li>';}).join('')+'</ul>'+
+      (r.note?'<p class="note" style="margin-top:10px">'+r.note+'</p>':'')+'</section>';
+    if (P.trial) {
+      html += '<section class="card sec"><h3>はじめるときの費用（税抜）</h3><dl class="money">'+
+        '<dt>導入費用</dt><dd>0円</dd>'+
+        '<dt>商品のご購入（展示会期間中）</dt><dd>'+yen(P.buy)+'〜</dd>'+
+        '<dt class="total">お試し期間</dt><dd class="total">2か月</dd></dl>'+
+        '<p class="note" style="margin-top:8px">展示会期間中に、商品を3万円以上（税抜）ご購入いただいた方が対象です。仕入れ総額3万円（税抜）以上のご発注で送料無料。くわしい条件はスタッフがご案内します。</p></section>';
+    }
+    if (isPlan) {
+      html += '<section class="card sec"><h3>はじめるときの費用（税抜）</h3><dl class="money">'+
+        '<dt>導入費用（最初の1回だけ）</dt><dd>'+yen(P.fee)+'</dd>'+
+        '<dt>最初の商品のご購入</dt><dd>'+yen(P.buy)+'〜</dd>'+
+        '<dt class="total">合計</dt><dd class="total">'+yen(P.fee+P.buy)+'〜</dd></dl>'+
+        '<p class="note" style="margin-top:8px">更新料やノルマはありません。商品のご購入分は、お店で販売していただく商品です。仕入れ総額3万円（税抜）以上のご発注で送料無料。</p></section>';
+      html += '<section class="card sec"><h3>取り扱えるブランド</h3><div class="chips">'+
+        '<span class="chip '+(P.brands.bt?'yes':'no')+'">b-ternal</span><span class="chip yes">AID</span><span class="chip yes">reality</span></div></section>';
+    }
+    html += '<section class="card sec"><h3>'+(isPlan||P.trial?'このプランでできること':'このステップでできること')+'</h3><ul class="gets">'+P.gets.map(function(t){return '<li>'+t+'</li>';}).join('')+'</ul></section>';
+    html += '<section class="card sec"><h3>あなたのお店の、これからの道のり</h3>'+ladderHtml(r.plan)+
+      '<p class="note" style="margin-top:10px">順番に上がる必要はありません。最初からアドバンスで始めることもできます。</p></section>';
+    if (r.plan!=='adv' && r.plan!=='line') html += advCompare();
+    // スタッフ用
+    var labels = {stage:['はじめて','LINE友だち','LINE店舗登録済','Bカート登録済','トライアル中'],
+      brand:{bt:'b-ternal',ar:'AID・reality',all:'3ブランド',unknown:'未定'},
+      heat:['情報収集','少しずつ','しっかり','事業の柱'], vol:['未定','1〜5個','6〜11個','12個以上'],
+      when:['未定','3か月以内','1か月以内'], use:{try:'まず試したい',sell:'店販',menu:'施術・カウンセリングと組み合わせ',core:'お店の柱'}};
+    var bud = {10:'15万円未満',15:'15〜20万円',20:'20〜25万円',25:'25万円以上','-1':'未定'}[String(A.budget)] || '—';
+    var rows = [['フィット感',fp+'%（'+fb.h+'）'],['理念への共感',lvl(fd.per.care)],['お客様への誠実さ',lvl(fd.per.honest)],['信頼関係・約束',lvl(fd.per.trust)],['三つの健康',lvl(fd.per.health)],['確認したいこと',fd.gap?'理念には共感／場面の判断では売上寄り。会話で確かめる':(fp<35?'まず理念を知っていただく。取引は担当者が確認':'—')],['おすすめ',P.name],['現在',labels.stage[A.stage]],['業態',A.biz],['使い方',labels.use[A.use]],['ブランド',labels.brand[A.brand]],['熱量',labels.heat[A.heat]],
+      ['予算',bud],['月の数量',A.vol===undefined?'—':labels.vol[A.vol]],['開始',labels.when[A.when]]];
+    html += '<section class="card staff" id="staff"><h3 style="font-size:16px">スタッフ確認用メモ</h3><p class="muted">この画面をスタッフにお見せください。</p><dl>'+
+      rows.map(function(x){return '<dt>'+x[0]+'</dt><dd>'+x[1]+'</dd>';}).join('')+'</dl></section>';
+    html += '<div class="actions">';
+    // 次の一歩はすべて「LINEの店舗登録アプリ」へ。未登録なら店舗登録から、登録済みなら次の画面（住所・パスワード＝ご注文用の会員登録）から始まる。
+    var reg = A.stage>=2, ordered = A.stage>=3;
+    var label = !reg ? (r.plan==='trial' ? 'LINEでお店を登録して、トライアルを始める' : 'LINEでお店を登録する（無料）')
+              : ordered ? 'LINEの店舗登録アプリから、ご注文画面へ'
+              : 'ご注文用の会員登録へ（住所とパスワード）';
+    var guide = !reg ? 'まずLINEでお店を登録します（約3分）。そのあと、住所とパスワードを決めると、ご注文の準備が整います。'
+              : ordered ? 'ご登録はお済みです。LINEの店舗登録アプリから、そのままご注文画面を開けます。'
+              : 'お店の登録はお済みです。次の画面で、住所とパスワードを決めるだけで、ご注文の準備が整います。';
+    if (lowFit && isPlan) { label = 'まずはスタッフと話してみる'; }
+    html += '<p class="note" style="font-size:13px">'+guide+'</p><a class="btn main" href="'+LINKS.liff+'" rel="noopener">'+label+'</a>'+
+'<button class="btn quiet" id="again">もう一度診断する</button></div>'+
+      '<p class="note">※ 金額はすべて税抜です。掛け率は商品と1回の仕入れ数量で決まります。正式な条件は担当者が確認してご案内します。</p>';
+    app.innerHTML = html;
+    document.getElementById('again').onclick = top;
+    window.scrollTo(0,0);
+  }
+
+  top();
+})();
+</script>
+</body>
+</html>
