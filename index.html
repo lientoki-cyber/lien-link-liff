@@ -973,7 +973,9 @@
       var number = r.memberNumber ? '会員番号：' + r.memberNumber : '';
       $('done-rally-button').classList.remove('hide');
       text('done-id', number || (r.loginId ? 'ログインID：' + r.loginId : ''));
-      state.orderUrl = /^https:\/\/[^\s"'<>]+$/.test(String(r.orderUrl || '')) ? String(r.orderUrl) : '';
+      /* 新規登録の完了（サーバー regDone_）は注文画面のURLを bcartUrl で返し、既存会員の連携は orderUrl で返す。どちらでも「ご注文画面を開く」を出す。 */
+      var orderUrl = String((r && (r.orderUrl || r.bcartUrl)) || '');
+      state.orderUrl = /^https:\/\/[^\s"'<>]+$/.test(orderUrl) ? orderUrl : '';
       $('order-open-button').classList.toggle('hide', !state.orderUrl);
       $('done-alternate-login-button').classList.toggle('hide', !(state.entryKnown && isOrder));
       renderSeminarCard(); refreshRallyButtons(); show('screen-done'); note('', true); waitDone(); applyPendingRally();
