@@ -580,7 +580,8 @@
           /* 代表決定 10/18：受け取り条件は店舗登録まで。ここは達成をまだ確認できないときの落ち着いた案内にする（会員登録は条件にしない）。再試行しない。 */
           claimRetryCount = 0; $('rally-qr').classList.add('hide');
           text('rally-claim-lead', '4つのスタンプを確認しています。そろっているのに表示されない場合は、スタッフにお声がけください。');
-          $('rally-order-button').classList.remove('hide'); return;
+          /* ここでは会員登録ボタンを出さない（スタッフ対応が要る場面で、無関係な手続きへ誘導しない。Codex P2）。 */
+          $('rally-order-button').classList.add('hide'); return;
         }
         $('rally-order-button').classList.add('hide');
         if (r && r.ok && r.token) { claimRetryCount = 0; var c = { token:String(r.token), delivered:!!r.delivered }; claimSave(c); drawClaim(c); scheduleClaimRefresh(c); }
