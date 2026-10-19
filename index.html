@@ -203,6 +203,8 @@
       clearWaitTimers(); waitStage(label, progress); showNotice();
       state.waitTimers.push(window.setTimeout(function () { $('notice').classList.remove('ok'); text('notice', '通信に時間がかかっています。このままお待ちください。'); }, 3000));
       if (opts && opts.register) {
+        /* 前の画面で出た「もう一度確認する」（最初からやり直す）が残っていたら、送信中は隠す（Codex P1） */
+        clearInlineRetry(); if ($('retry-button')) $('retry-button').classList.add('hide');
         /* 現場の要望（10/20）：会員登録の送信中は、最初からやり直すボタン（offerRetry）を出さない。
            15秒で通信状況の確認、30秒で「入力はそのまま・もう一度押しても二重登録にならない」と別の方法を案内する。 */
         state.waitTimers.push(window.setTimeout(function () { $('notice').classList.remove('ok'); text('notice', '登録中です。通信に時間がかかっています。電波のよい場所で、画面を閉じずにお待ちください。'); }, 15000));
