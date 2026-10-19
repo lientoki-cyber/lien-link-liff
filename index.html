@@ -173,7 +173,9 @@
     /* 10/19 会期中の報告「登録ボタンを押しても画面が変わらない」：案内は画面いちばん上に出るため、
        長い入力画面の下でボタンを押した方には見えていなかった。案内（特にエラー）が出たら、そこまで画面を戻す。
        住所検索のように、その欄のそばに結果を出す案内は stay で画面を動かさない（Codex P2）。 */
-    function showNotice() { try { var el = $('notice'); if (el && el.textContent && el.scrollIntoView) el.scrollIntoView({ block:'center', behavior:'smooth' }); } catch (ignore) {} }
+    /* 同じ案内が続けて出ても（自動の再試行など）、画面を何度も引き戻さない（Codex P2） */
+    var lastShownNotice = '';
+    function showNotice() { try { var el = $('notice'); if (!el || !el.textContent || el.textContent === lastShownNotice || !el.scrollIntoView) return; lastShownNotice = el.textContent; el.scrollIntoView({ block:'center', behavior:'smooth' }); } catch (ignore) {} }
     function note(message, ok, errorCode, stay) {
       var el = $('notice'); el.textContent = friendlyMessage(message); el.classList.toggle('ok', !!ok);
       if (errorCode) { var code = document.createElement('span'); code.className = 'error-code'; code.textContent = 'エラー番号：' + errorCode; el.appendChild(code); }
@@ -611,7 +613,7 @@
           /* サーバーが返すのは個人情報を含まない分類だけ。画面には案内文だけを表示する。
              すでにQRを表示している間は赤字を出さず、QRを出したまま落ち着いた案内にする（QA P1-03）。 */
           if (cached && !cached.delivered && !$('rally-qr').classList.contains('hide')) text('rally-claim-lead', 'スタッフにこの画面をお見せください。');
-          else note((r && r.error) || '受け取り用QRを準備できません。受付でお声がけください。', false);
+          else note((r && r.error) || '受け取り用QRを準備できません。受付でお声がけください。', false, '', true);
           var missing = new Error('claim_' + (/^[a-z_]{3,40}$/.test(String(r && r.code || '')) ? r.code : 'unavailable'));
           missing.locAction = 'liff_rally_claim'; throw missing;
         }
