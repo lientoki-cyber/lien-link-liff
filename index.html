@@ -698,7 +698,21 @@
         liff.login({ redirectUri:location.href });
       } catch (ignore) { location.reload(); }
     }
+    /* 10/20 代表 08:32：サーバーが混雑（busy＝鍵を待てなかった）と返したら、画面は止めずに自動で送り直す（最大3回・2→4→7秒）。
+       busy は処理を始める前の順番待ちで返るため、送り直しても二重登録にはならない。 */
     async function api(action, payload) {
+      var waits = [2000, 4000, 7000];
+      for (var attempt = 0; ; attempt++) {
+        var out = await apiOnce(action, payload);
+        /* 送り直しで通ったら「送り直しています」の案内を消す（#156 Codex P2） */
+        if (!(out && out.busy) || attempt >= waits.length) { if (attempt > 0 && !(out && out.busy) && /自動で送り直しています/.test($('notice').textContent)) note('', true); return out; }
+        /* 全体の待機表示（タイマー）は新しく作らず、案内だけを出す（#156 Codex P2）。呼び出し元の待機タイマーが動いていれば止める（再送中に「時間がかかっています」や start() の再試行ボタンが出ないように） */
+        if (state.waitTimers && state.waitTimers.length) clearWaitTimers();
+        note('ただいま混み合っています。自動で送り直しています（' + (attempt + 1) + '／' + waits.length + '）…', true, '', true);
+        await new Promise(function (ok) { setTimeout(ok, waits[attempt]); });
+      }
+    }
+    async function apiOnce(action, payload) {
       /* 初回にだけLINEへIDトークンを照会する。以降も同じ証明のハッシュとSIDをサーバーで照合する。 */
       if (tokenNeedsRefresh()) { reLogin(); var fresh = new Error('LINEセッションを更新しています'); fresh.locRelogin = true; throw fresh; }
       var body = Object.assign({ action: action, idToken: liff.getIDToken(), clientStartedAt:Date.now() }, payload || {});
