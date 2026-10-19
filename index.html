@@ -704,7 +704,8 @@
       var waits = [2000, 4000, 7000];
       for (var attempt = 0; ; attempt++) {
         var out = await apiOnce(action, payload);
-        if (!(out && out.busy) || attempt >= waits.length) return out;
+        /* 送り直しで通ったら「送り直しています」の案内を消す（#156 Codex P2） */
+        if (!(out && out.busy) || attempt >= waits.length) { if (attempt > 0 && !(out && out.busy) && /自動で送り直しています/.test($('notice').textContent)) note('', true); return out; }
         /* 全体の待機表示（タイマー）は新しく作らず、案内だけを出す（#156 Codex P2）。呼び出し元の待機タイマーが動いていれば止める（再送中に「時間がかかっています」や start() の再試行ボタンが出ないように） */
         if (state.waitTimers && state.waitTimers.length) clearWaitTimers();
         note('ただいま混み合っています。自動で送り直しています（' + (attempt + 1) + '／' + waits.length + '）…', true, '', true);
