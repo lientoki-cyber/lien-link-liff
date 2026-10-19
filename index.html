@@ -705,7 +705,8 @@
       for (var attempt = 0; ; attempt++) {
         var out = await apiOnce(action, payload);
         if (!(out && out.busy) || attempt >= waits.length) return out;
-        /* 全体の待機表示（タイマー）は使わず、案内だけを出す（#156 Codex P2） */
+        /* 全体の待機表示（タイマー）は新しく作らず、案内だけを出す（#156 Codex P2）。呼び出し元の待機タイマーが動いていれば止める（再送中に「時間がかかっています」や start() の再試行ボタンが出ないように） */
+        if (state.waitTimers && state.waitTimers.length) clearWaitTimers();
         note('ただいま混み合っています。自動で送り直しています（' + (attempt + 1) + '／' + waits.length + '）…', true, '', true);
         await new Promise(function (ok) { setTimeout(ok, waits[attempt]); });
       }
