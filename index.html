@@ -170,15 +170,25 @@
       if (/[A-Za-z]{3,}Error|Cannot read|undefined|is not a function|Exception|null|NaN|\bat\s+\w+\s*\(|^[\x00-\x7F\s'".,:;()\[\]{}=_\-\/]+$/.test(m) && !/[ぁ-んァ-ヶ一-龠]/.test(m)) return '通信がうまくいきませんでした。少し待ってから、もう一度お試しください。';
       return m;
     }
-    function note(message, ok, errorCode) {
-      var el = $('notice'); el.textContent = friendlyMessage(message); el.classList.toggle('ok', !!ok);
+    /* 10/19 会期中の報告「登録ボタンを押しても画面が変わらない」：案内は画面いちばん上に出るため、
+       長い入力画面の下でボタンを押した方には見えていなかった。案内（特にエラー）が出たら、そこまで画面を戻す。
+       住所検索のように、その欄のそばに結果を出す案内は stay で画面を動かさない（Codex P2）。 */
+    /* 同じ案内が続けて出ても（自動の再試行など）画面を何度も引き戻さない。
+       別の案内を挟んだら、次は新しい操作として扱う（Codex P2）。比べるのは案内の文言だけ（エラー番号は含めない）。 */
+    var lastNoticeText = '', lastShownNotice = null;
+    function setNoticeKey(textValue) { if (textValue !== lastNoticeText) { lastNoticeText = textValue; lastShownNotice = null; } }
+    function showNotice() { try { var el = $('notice'); if (!el || !lastNoticeText || lastShownNotice === lastNoticeText || !el.scrollIntoView) return; lastShownNotice = lastNoticeText; el.scrollIntoView({ block:'center', behavior:'smooth' }); } catch (ignore) {} }
+    function note(message, ok, errorCode, stay) {
+      var el = $('notice'), nextText = friendlyMessage(message); setNoticeKey(nextText); el.textContent = nextText; el.classList.toggle('ok', !!ok);
       if (errorCode) { var code = document.createElement('span'); code.className = 'error-code'; code.textContent = 'エラー番号：' + errorCode; el.appendChild(code); }
+      if (!ok && message && !stay) showNotice();
     }
     function setBusy(button, yes, label) { button.disabled = !!yes; button.classList.toggle('busy', !!yes); if (label) button.textContent = label; }
     function clearWaitTimers() { state.waitTimers.forEach(function (id) { clearTimeout(id); }); state.waitTimers = []; }
     function waitStage(label, progress) {
       $('progress').classList.add('active'); $('progress').firstElementChild.style.width = Math.max(4, Math.min(96, Number(progress) || 8)) + '%';
-      $('notice').classList.remove('ok'); text('notice', label || '確認しています…');
+      var nextLabel = label || '確認しています…'; setNoticeKey(nextLabel);
+      $('notice').classList.remove('ok'); text('notice', nextLabel);
     }
     function offerRetry() {
       if (currentScreen === 'screen-start') { $('retry-button').classList.remove('hide'); return; }
@@ -190,7 +200,7 @@
     }
     function clearInlineRetry() { var retry = $('inline-retry'); if (retry) retry.classList.add('hide'); }
     function waitStart(label, progress) {
-      clearWaitTimers(); waitStage(label, progress);
+      clearWaitTimers(); waitStage(label, progress); showNotice();
       state.waitTimers.push(window.setTimeout(function () { $('notice').classList.remove('ok'); text('notice', '通信に時間がかかっています。このままお待ちください。'); }, 3000));
       state.waitTimers.push(window.setTimeout(offerRetry, 15000));
     }
@@ -605,7 +615,7 @@
           /* サーバーが返すのは個人情報を含まない分類だけ。画面には案内文だけを表示する。
              すでにQRを表示している間は赤字を出さず、QRを出したまま落ち着いた案内にする（QA P1-03）。 */
           if (cached && !cached.delivered && !$('rally-qr').classList.contains('hide')) text('rally-claim-lead', 'スタッフにこの画面をお見せください。');
-          else note((r && r.error) || '受け取り用QRを準備できません。受付でお声がけください。', false);
+          else note((r && r.error) || '受け取り用QRを準備できません。受付でお声がけください。', false, '', true);
           var missing = new Error('claim_' + (/^[a-z_]{3,40}$/.test(String(r && r.code || '')) ? r.code : 'unavailable'));
           missing.locAction = 'liff_rally_claim'; throw missing;
         }
@@ -785,9 +795,9 @@
       var zip = String(input.value || '');
       if (!state.sid) return;
       try {
-        setBusy(button, true, '検索中…'); note('住所を検索しています…');
+        setBusy(button, true, '検索中…'); note('住所を検索しています…', false, '', true);
         var r = await api('liff_zip_lookup', { sid:state.sid, zip:zip });
-        if (!r.ok) { appendProblem(input.closest('.field'), r.error || '住所を自動で入れられませんでした。都道府県と住所を手入力してください。もう一度検索することもできます。'); note('住所は手入力でも登録できます。郵便番号をご確認のうえ、もう一度検索できます。'); return; }
+        if (!r.ok) { appendProblem(input.closest('.field'), r.error || '住所を自動で入れられませんでした。都道府県と住所を手入力してください。もう一度検索することもできます。'); note('住所は手入力でも登録できます。郵便番号をご確認のうえ、もう一度検索できます。', false, '', true); return; }
         input.value = String(r.zip || '').replace(/-/g, '');
         if ($('field-pref')) $('field-pref').value = r.pref || '';
         if ($('field-address1')) $('field-address1').value = String(r.city || '');
@@ -795,7 +805,7 @@
         ['zip','pref','address1','address2'].forEach(function (key) { clearProblem($('field-' + key) && $('field-' + key).closest('.field')); });
         refreshFormProgress();
         note('都道府県・市区町村・町名を入力しました。番地・建物名をご入力ください。', true);
-      } catch (e) { appendProblem(input.closest('.field'), '住所を自動で入れられませんでした。都道府県と住所を手入力してください。もう一度検索することもできます。'); note('住所は手入力でも登録できます。郵便番号をご確認のうえ、もう一度検索できます。'); }
+      } catch (e) { appendProblem(input.closest('.field'), '住所を自動で入れられませんでした。都道府県と住所を手入力してください。もう一度検索することもできます。'); note('住所は手入力でも登録できます。郵便番号をご確認のうえ、もう一度検索できます。', false, '', true); }
       finally { setBusy(button, false, '住所を検索'); }
     }
     function setPasswordLabel(field, textValue) {
