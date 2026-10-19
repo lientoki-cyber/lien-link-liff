@@ -357,6 +357,10 @@ table.cmp{border-collapse:collapse;width:100%;font-size:12.5px;font-variant-nume
       return liff.init({ liffId: cfg.liffId }).then(function(){ return liff.isLoggedIn(); }).catch(function(){ return false; });
     } catch (e) { return Promise.resolve(false); }
   })();
+  /* ホーム（LINEの店舗登録の画面）へ戻る。診断は1ページの中で画面を切り替えているので、ひとつ前＝店舗登録の画面（代表 10/20 07:16） */
+  function goHome(){ if (window.history.length > 1) window.history.back(); else location.href = LINKS.liff; }
+  var HOME_BTN = '<button class="btn quiet home-btn" type="button">← ホームに戻る</button>';
+  function bindHome(){ Array.prototype.forEach.call(document.querySelectorAll('.home-btn'), function(b){ b.onclick = goHome; }); }
   function dxCode(plan){
     var v = VQ.map(function(q){ var x = A[q.id]; return (x===undefined)?'x':String(x); }).join('');
     var r = Q.map(function(q){ var i = -1; q.opts.forEach(function(o,k){ if (o.v===A[q.id]) i = k; }); return i<0?'x':String(i); }).join('');
@@ -464,7 +468,7 @@ table.cmp{border-collapse:collapse;width:100%;font-size:12.5px;font-variant-nume
       '<div class="ladder-mini">'+LADDER.map(function(l,i){return '<span class="g'+(i+1)+'">'+l.t+'</span>';}).join('')+'</div></div>'+
       '<button class="btn main" id="go">診断をはじめる</button><button class="btn quiet" id="back0">← ひとつ前にもどる</button>'+
       '<p class="note">※ フィット感は、回答から計算した価値観への共感の目安です。人柄や経営の良し悪しを評価するものではありません。関わり方の診断も目安で、正式なプランは担当者とのご相談で決まります。お名前や連絡先の入力は不要です。</p>';
-    document.getElementById('back0').onclick = function(){ if (window.history.length > 1) window.history.back(); else location.href = LINKS.liff; };
+    document.getElementById('back0').onclick = goHome;
     document.getElementById('go').onclick = function(){ A = {}; if (PRESET_STAGE!==null) A.stage = PRESET_STAGE; step = 0; phase = 'fit'; ask(); };
   }
 
@@ -532,7 +536,7 @@ table.cmp{border-collapse:collapse;width:100%;font-size:12.5px;font-variant-nume
           '<button class="btn main" id="next">リアンの取扱プランを見る</button><button class="btn sub" id="mind">リアンが大切にしている想いを見る</button>'
         : navi('この数字をきっかけに、ぜひスタッフと話してみてください。「どうしてこの数字なんだろう？」から始まる会話も、大歓迎です。')+
           '<button class="btn main" id="mind">リアンが大切にしている想いを見る</button><button class="btn sub" id="next">それでも取り扱いについて聞いてみる</button>')+
-      '<button class="btn quiet" id="redo">もう一度診断する</button>';
+      '<button class="btn quiet" id="redo">もう一度診断する</button>'+HOME_BTN;
     var arc = document.getElementById('arc'), el = document.getElementById('pct'), reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (reduce){ arc.style.transition='none'; arc.setAttribute('stroke-dashoffset', C*(1-p/100)); el.textContent = p; }
     else {
@@ -541,7 +545,7 @@ table.cmp{border-collapse:collapse;width:100%;font-size:12.5px;font-variant-nume
     }
     document.getElementById('next').onclick = function(){ phase = 'plan'; step = 0; ask(); };
     document.getElementById('mind').onclick = mind;
-    document.getElementById('redo').onclick = top;
+    document.getElementById('redo').onclick = top; bindHome();
     window.scrollTo(0,0);
   }
   function mind(){
@@ -557,8 +561,8 @@ table.cmp{border-collapse:collapse;width:100%;font-size:12.5px;font-variant-nume
       '<li>お客様の「今」だけでなく、「これから」の健康まで見据えます。</li>'+
       '<li>商品で選ばれる会社ではなく、人で選ばれる会社に。</li></ul></section>'+
       '<section class="card sec"><h3>販売店様と、こんな関係でいたい</h3><p>誰にでも扱っていただきたいのではなく、商品の価値を正しく理解し、責任を持ってご提案いただけるお店と、長くお付き合いしたいと考えています。取扱店様の価値を守り、成功をともにめざすパートナーとして、継続してサポートします。</p></section>'+
-      '<button class="btn main" id="back2">結果にもどる</button>';
-    document.getElementById('back2').onclick = fitResult;
+      '<button class="btn main" id="back2">結果にもどる</button>'+HOME_BTN;
+    document.getElementById('back2').onclick = fitResult; bindHome();
     window.scrollTo(0,0);
   }
 
@@ -643,10 +647,10 @@ table.cmp{border-collapse:collapse;width:100%;font-size:12.5px;font-variant-nume
               : 'お店の登録はお済みです。次の画面の「今すぐ注文する」から、住所とパスワードを決めるだけで、ご注文の準備が整います。';
     if (lowFit && isPlan) { label = (reg ? '店舗登録アプリに戻る' : 'LINEでお店を登録する（無料）')+'（取り扱いはスタッフとご相談のうえで）'; }
     html += '<p class="note" style="font-size:13px">'+guide+'</p><a class="btn main" href="'+LINKS.liff+'" rel="noopener">'+label+'</a>'+
-'<button class="btn quiet" id="again">もう一度診断する</button></div>'+
+'<button class="btn quiet" id="again">もう一度診断する</button>'+HOME_BTN+'</div>'+
       '<p class="note">※ 金額はすべて税抜です。掛け率は商品と1回の仕入れ数量で決まります。正式な条件は担当者が確認してご案内します。</p>';
     app.innerHTML = html;
-    document.getElementById('again').onclick = top;
+    document.getElementById('again').onclick = top; bindHome();
     window.scrollTo(0,0);
   }
 
