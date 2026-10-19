@@ -171,12 +171,13 @@
       return m;
     }
     /* 10/19 会期中の報告「登録ボタンを押しても画面が変わらない」：案内は画面いちばん上に出るため、
-       長い入力画面の下でボタンを押した方には見えていなかった。案内（特にエラー）が出たら、そこまで画面を戻す。 */
+       長い入力画面の下でボタンを押した方には見えていなかった。案内（特にエラー）が出たら、そこまで画面を戻す。
+       住所検索のように、その欄のそばに結果を出す案内は stay で画面を動かさない（Codex P2）。 */
     function showNotice() { try { var el = $('notice'); if (el && el.textContent && el.scrollIntoView) el.scrollIntoView({ block:'center', behavior:'smooth' }); } catch (ignore) {} }
-    function note(message, ok, errorCode) {
+    function note(message, ok, errorCode, stay) {
       var el = $('notice'); el.textContent = friendlyMessage(message); el.classList.toggle('ok', !!ok);
       if (errorCode) { var code = document.createElement('span'); code.className = 'error-code'; code.textContent = 'エラー番号：' + errorCode; el.appendChild(code); }
-      if (!ok && message) showNotice();
+      if (!ok && message && !stay) showNotice();
     }
     function setBusy(button, yes, label) { button.disabled = !!yes; button.classList.toggle('busy', !!yes); if (label) button.textContent = label; }
     function clearWaitTimers() { state.waitTimers.forEach(function (id) { clearTimeout(id); }); state.waitTimers = []; }
@@ -790,9 +791,9 @@
       var zip = String(input.value || '');
       if (!state.sid) return;
       try {
-        setBusy(button, true, '検索中…'); note('住所を検索しています…');
+        setBusy(button, true, '検索中…'); note('住所を検索しています…', false, '', true);
         var r = await api('liff_zip_lookup', { sid:state.sid, zip:zip });
-        if (!r.ok) { appendProblem(input.closest('.field'), r.error || '住所を自動で入れられませんでした。都道府県と住所を手入力してください。もう一度検索することもできます。'); note('住所は手入力でも登録できます。郵便番号をご確認のうえ、もう一度検索できます。'); return; }
+        if (!r.ok) { appendProblem(input.closest('.field'), r.error || '住所を自動で入れられませんでした。都道府県と住所を手入力してください。もう一度検索することもできます。'); note('住所は手入力でも登録できます。郵便番号をご確認のうえ、もう一度検索できます。', false, '', true); return; }
         input.value = String(r.zip || '').replace(/-/g, '');
         if ($('field-pref')) $('field-pref').value = r.pref || '';
         if ($('field-address1')) $('field-address1').value = String(r.city || '');
@@ -800,7 +801,7 @@
         ['zip','pref','address1','address2'].forEach(function (key) { clearProblem($('field-' + key) && $('field-' + key).closest('.field')); });
         refreshFormProgress();
         note('都道府県・市区町村・町名を入力しました。番地・建物名をご入力ください。', true);
-      } catch (e) { appendProblem(input.closest('.field'), '住所を自動で入れられませんでした。都道府県と住所を手入力してください。もう一度検索することもできます。'); note('住所は手入力でも登録できます。郵便番号をご確認のうえ、もう一度検索できます。'); }
+      } catch (e) { appendProblem(input.closest('.field'), '住所を自動で入れられませんでした。都道府県と住所を手入力してください。もう一度検索することもできます。'); note('住所は手入力でも登録できます。郵便番号をご確認のうえ、もう一度検索できます。', false, '', true); }
       finally { setBusy(button, false, '住所を検索'); }
     }
     function setPasswordLabel(field, textValue) {
