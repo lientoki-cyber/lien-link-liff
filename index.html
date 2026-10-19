@@ -111,7 +111,7 @@
     ];
     var SEMINAR_FORM_URL = 'https://liff.line.me/1654464542-Wky3Ay7r?liff_id=1654464542-Wky3Ay7r&group_id=157954';
     var pageMode = qs.get('p');
-    var state = { sid:'', mode: pageMode === 'order' ? 'order' : (pageMode === 'staff' ? 'staff' : 'entry'), ref: qs.get('ref') || '', src: qs.get('src') || '', staffTicket:qs.get('staff') || '', staffMode:pageMode === 'staff', staffJoined:false, testNew:qs.get('test') === 'new', fields:[], busy:false, waitTimers:[], starting:false, email:'', codeTimer:0, codeSendTimer:0, codeExpiresAt:0, resendUntil:0, instagramUrl:'', orderUrl:'', entryKnown:false };
+    var state = { sid:'', mode: pageMode === 'order' ? 'order' : (pageMode === 'staff' ? 'staff' : 'entry'), ref: qs.get('ref') || '', src: qs.get('src') || '', dx: /^\d{1,3}-(adv|std|ar|trial|line|none)-[0-3x]{12}-[0-4x]{10}$/.test(qs.get('dx') || '') ? qs.get('dx') : '', staffTicket:qs.get('staff') || '', staffMode:pageMode === 'staff', staffJoined:false, testNew:qs.get('test') === 'new', fields:[], busy:false, waitTimers:[], starting:false, email:'', codeTimer:0, codeSendTimer:0, codeExpiresAt:0, resendUntil:0, instagramUrl:'', orderUrl:'', entryKnown:false };
     function $(id) { return document.getElementById(id); }
     function text(id, value) { $(id).textContent = String(value || ''); }
     /* 3段階（1 LINE友だち追加／2 店舗登録／3 ご注文用の会員登録）の現在地を表示する */
@@ -1130,7 +1130,7 @@
       return done(r);
     }
     function startPayload(friendship) {
-      return { friend:!!(friendship && friendship.friendFlag), mode:state.mode, ref:state.ref, src:state.src, staffTicket:state.staffTicket, testNew:state.testNew };
+      return { friend:!!(friendship && friendship.friendFlag), mode:state.mode, ref:state.ref, src:state.src, dx:state.dx, staffTicket:state.staffTicket, testNew:state.testNew };
     }
     async function start() {
       var currentAction = 'liff_friendship';
