@@ -351,7 +351,11 @@
       if (value && values.indexOf(value) < 0) values.push(value);
       pendingRallySave(values);
     }
-    var rallyStampBusy = {}, rallySyncedSid = '', rallyToRegisterTried = {};
+    var rallyStampBusy = {}, rallySyncedSid = '';
+    /* 店舗登録の確認へ移したスタンプ番号（番号ごとに1回だけ）。再ログインで読み直しても続くよう sessionStorage に置く（#151 Codex P2） */
+    var RALLY_TO_REG_KEY = 'loc_rally_to_register_bwj2026';
+    function rallyToRegisterTried(no) { try { return (JSON.parse(sessionStorage.getItem(scopedStorageKey(RALLY_TO_REG_KEY)) || '[]') || []).indexOf(Number(no)) >= 0; } catch (ignore) { return false; } }
+    function rallyToRegisterMark(no) { try { var v = JSON.parse(sessionStorage.getItem(scopedStorageKey(RALLY_TO_REG_KEY)) || '[]') || []; if (v.indexOf(Number(no)) < 0) v.push(Number(no)); sessionStorage.setItem(scopedStorageKey(RALLY_TO_REG_KEY), JSON.stringify(v.slice(0, 4))); } catch (ignore) {} }
     async function rallyRecord(no) {
       /* スタンプ番号と短命sidだけを送る。サーバーの受領を待ってから画面を「済」にする。 */
       var url = new URL(String(cfg.apiUrl || ''), location.href); url.searchParams.set('api', 'liff_rally');
@@ -413,8 +417,8 @@
         if (e && e.locRelogin) { rallyRetryQueue(no); return false; }
         /* 代表 10/20 07:43：「店舗登録を完了してから」で止めず、店舗登録の確認画面へそのまま進める。
            登録が終わって完了画面に戻ると、預かったスタンプを自動で押し直す（1回だけ。2回目も断られたらスタッフ案内）。 */
-        if (e && /店舗登録を完了してから/.test(String(e.rallyMessage || '')) && !rallyToRegisterTried[no] && !state.staffMode && !state.testNew) {
-          rallyToRegisterTried[no] = true; rallyRetryQueue(no); logClientError('liff_rally_to_register', e);
+        if (e && /店舗登録を完了してから/.test(String(e.rallyMessage || '')) && !rallyToRegisterTried(no) && !state.staffMode && !state.testNew) {
+          rallyToRegisterMark(no); rallyRetryQueue(no); logClientError('liff_rally_to_register', e);
           note('店舗登録の確認画面へ移ります。登録が終わると、このスタンプは自動で押されます。', true);
           setTimeout(function () { continueFlow(null, true).catch(function (err) { if (!err || !err.locRelogin) fail('店舗情報を確認できませんでした。もう一度お試しください。', 'liff_profile_load', err); }); }, 600);
           return false;
