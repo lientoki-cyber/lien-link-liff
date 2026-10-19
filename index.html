@@ -170,9 +170,13 @@
       if (/[A-Za-z]{3,}Error|Cannot read|undefined|is not a function|Exception|null|NaN|\bat\s+\w+\s*\(|^[\x00-\x7F\s'".,:;()\[\]{}=_\-\/]+$/.test(m) && !/[ぁ-んァ-ヶ一-龠]/.test(m)) return '通信がうまくいきませんでした。少し待ってから、もう一度お試しください。';
       return m;
     }
+    /* 10/19 会期中の報告「登録ボタンを押しても画面が変わらない」：案内は画面いちばん上に出るため、
+       長い入力画面の下でボタンを押した方には見えていなかった。案内（特にエラー）が出たら、そこまで画面を戻す。 */
+    function showNotice() { try { var el = $('notice'); if (el && el.textContent && el.scrollIntoView) el.scrollIntoView({ block:'center', behavior:'smooth' }); } catch (ignore) {} }
     function note(message, ok, errorCode) {
       var el = $('notice'); el.textContent = friendlyMessage(message); el.classList.toggle('ok', !!ok);
       if (errorCode) { var code = document.createElement('span'); code.className = 'error-code'; code.textContent = 'エラー番号：' + errorCode; el.appendChild(code); }
+      if (!ok && message) showNotice();
     }
     function setBusy(button, yes, label) { button.disabled = !!yes; button.classList.toggle('busy', !!yes); if (label) button.textContent = label; }
     function clearWaitTimers() { state.waitTimers.forEach(function (id) { clearTimeout(id); }); state.waitTimers = []; }
@@ -190,7 +194,7 @@
     }
     function clearInlineRetry() { var retry = $('inline-retry'); if (retry) retry.classList.add('hide'); }
     function waitStart(label, progress) {
-      clearWaitTimers(); waitStage(label, progress);
+      clearWaitTimers(); waitStage(label, progress); showNotice();
       state.waitTimers.push(window.setTimeout(function () { $('notice').classList.remove('ok'); text('notice', '通信に時間がかかっています。このままお待ちください。'); }, 3000));
       state.waitTimers.push(window.setTimeout(offerRetry, 15000));
     }
