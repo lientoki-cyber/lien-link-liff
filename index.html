@@ -1321,9 +1321,11 @@
     $('seminar-button').onclick = function () { openSeminarScreen('screen-profile-done'); };
     $('rally-button').onclick = function () { openRally('screen-profile-done'); };
     $('done-rally-button').onclick = function () { openRally('screen-done'); };
-    /* フィット感診断（静的ページ・サーバー通信なし）。店舗登録済み＝stage 2、ご注文用会員登録済み＝stage 3 で最初の関係質問を省く。 */
-    $('fit-button').onclick = function () { location.href = 'fit.html?stage=2'; };
-    $('done-fit-button').onclick = function () { location.href = 'fit.html?stage=3'; };
+    /* フィット感診断（fit.html）。店舗登録済み＝stage 2、ご注文用会員登録済み＝stage 3 で最初の関係質問を省く。結果は fit.html が api=liff_diag へ送る。 */
+    /* 診断結果の自動記録用に、LINEの本人確認トークンを同じタブの間だけ渡す（fit.html で LIFF が使えない場合の予備）。 */
+    function openFit(stage) { try { sessionStorage.setItem('lien_fit_idt', String(liff.getIDToken() || '')); } catch (ignore) {} location.href = 'fit.html?stage=' + stage; }
+    $('fit-button').onclick = function () { openFit(2); };
+    $('done-fit-button').onclick = function () { openFit(3); };
     $('staff-code-button').onclick = submitStaffCode;
     $('staff-code').addEventListener('input', function () { this.value = normalizeDigits(this.value).slice(0, 10); });
     $('staff-experience-button').onclick = finishStaffExperience;

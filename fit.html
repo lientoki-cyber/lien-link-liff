@@ -149,6 +149,14 @@ table.cmp{border-collapse:collapse;width:100%;font-size:12.5px;font-variant-nume
 @keyframes fade{from{opacity:.4;transform:translateY(6px)}to{opacity:1;transform:none}}
 @media (prefers-reduced-motion:reduce){.fade{animation:none}.bar i{transition:none}}
 </style>
+<script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+<script>
+  /* 診断結果の送り先（index.html の LOC_CONFIG と同じ値。config.js に頼らない：#146 Codex P1） */
+  window.LOC_CONFIG = window.LOC_CONFIG || {
+    liffId: '1654464542-nn1iQBwK',
+    apiUrl: 'https://script.google.com/macros/s/AKfycbxWeayUASpi4cociq1BlGg7QHX77Akg5M77Cgfmzrb4m4njyq24-qQn-mRqdZrXDf05JQ/exec'
+  };
+</script>
 </head>
 <body>
 <div class="wrap" id="app"></div>
@@ -339,6 +347,33 @@ table.cmp{border-collapse:collapse;width:100%;font-size:12.5px;font-variant-nume
     return {k:0,h:'いまは、価値観に大きな違いがある',lead:'いまは、大切にしていることがかなり違うようです。'};
   }
   function lvl(r){ return r>=.75?'強い':r>=.45?'中程度':'低い'; }
+  /* 診断結果の自動記録（代表 10/20 06:54：スタッフは何もしない・お客様だけで完結）。
+     LINEの中で開いたときだけ、本人のIDトークンと結果コード（回答・フィット感・おすすめ。氏名や連絡先は含まない）を LIEN LINK へ送る。
+     失敗しても画面は止めない。 */
+  var liffReady = (function(){
+    try {
+      var cfg = window.LOC_CONFIG || {};
+      if (!window.liff || !cfg.liffId || !cfg.apiUrl) return Promise.resolve(false);
+      return liff.init({ liffId: cfg.liffId }).then(function(){ return liff.isLoggedIn(); }).catch(function(){ return false; });
+    } catch (e) { return Promise.resolve(false); }
+  })();
+  function dxCode(plan){
+    var v = VQ.map(function(q){ var x = A[q.id]; return (x===undefined)?'x':String(x); }).join('');
+    var r = Q.map(function(q){ var i = -1; q.opts.forEach(function(o,k){ if (o.v===A[q.id]) i = k; }); return i<0?'x':String(i); }).join('');
+    return fitDetail().pct + '-' + (plan||'none') + '-' + v + '-' + r;
+  }
+  var sentDx = {};
+  function sendDx(plan){
+    var code = dxCode(plan); if (sentDx[code]) return; sentDx[code] = 1;
+    liffReady.then(function(ok){
+      var token = '';
+      if (ok) { try { token = liff.getIDToken() || ''; } catch (e) {} }
+      if (!token) { try { token = sessionStorage.getItem('lien_fit_idt') || ''; } catch (e) {} }
+      if (!token || !window.LOC_CONFIG || !window.LOC_CONFIG.apiUrl) return;
+      var url = new URL(String(window.LOC_CONFIG.apiUrl)); url.searchParams.set('api', 'liff_diag');
+      return fetch(url.toString(), { method:'POST', headers:{ 'Content-Type':'text/plain;charset=utf-8' }, body: JSON.stringify({ idToken: token, dx: code }), credentials:'omit', keepalive:true });
+    }).catch(function(){});
+  }
 
   /* ---------- プラン情報（製品導入プラン 2025.12・掛率表 b-ternal 250930／AID 251201／reality 251202。税抜） ---------- */
   var PLAN = {
@@ -467,6 +502,7 @@ table.cmp{border-collapse:collapse;width:100%;font-size:12.5px;font-variant-nume
   }
 
   function fitResult(){
+    sendDx('none');
     var d = fitDetail(), p = d.pct, b = band(p), C = 2*Math.PI*80;
     var strong = AXES.filter(function(a){return d.per[a.k]>=.75;}), weak = AXES.filter(function(a){return d.per[a.k]<.45;});
     var body;
@@ -549,7 +585,9 @@ table.cmp{border-collapse:collapse;width:100%;font-size:12.5px;font-variant-nume
   }
 
   function result(){
-    var r = judge(), P = PLAN[r.plan], isPlan = (r.plan==='adv'||r.plan==='std'||r.plan==='ar'), lowFit = fitDetail().pct < 35;
+    var r = judge();
+    sendDx(r.plan);
+    var P = PLAN[r.plan], isPlan = (r.plan==='adv'||r.plan==='std'||r.plan==='ar'), lowFit = fitDetail().pct < 35;
     if (lowFit && isPlan) r.note = (r.note?r.note+' ':'')+'今回はフィット感がまだ低めでした。お取り扱いについては、まずスタッフと一度お話ししてから、お互いに決めさせてください。';
     var fd = fitDetail(), fp = fd.pct, fb = band(fp);
     var html = '<div class="fitbadge fade"><b>'+fp+'%</b><span><span class="muted">あなたのお店とリアンの想いの重なり</span><br><strong>'+fb.lead+'</strong></span></div>'+
