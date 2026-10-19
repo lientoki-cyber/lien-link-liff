@@ -1295,8 +1295,9 @@
         waitStart('登録の結果を確認しています…（' + (i + 1) + '／6）', 60 + i * 6);
         await new Promise(function (ok) { setTimeout(ok, i === 0 ? 3000 : 5000); });
         try {
-          var r = await api('liff_profile_load', { sid:state.sid });
+          var r = await api('liff_order_entry', { sid:state.sid });
           if (r && r.ok && (r.state === 'order_existing' || r.state === 'done' || r.memberNumber)) { done(r); return; }
+          if (r && r.ok && r.token) state.token = r.token;
         } catch (ignore) {}
       }
       waitDone();
@@ -1369,7 +1370,19 @@
       if (orderProblems.length) { showProblems(orderProblems); return; }
       try { setBusy(button, true, '登録しています…'); waitStart('会員登録しています（10秒ほど）…', 72); var r = await api('liff_order_submit', { sid:state.sid, token:state.token, edits:edits, password:password, password2:passwordConfirm, emailConfirm:profileEmail(), registration:registration });
         if (!r.ok) {
+          /* 10/20 代表最優先：失敗のたびにサーバーが出す新しい送信トークンを必ず取り込む（取り込まないと押し直すたびに「時間がたったため」で進めなかった） */
+          if (r.token) state.token = r.token;
           if (/確認できませんでした|確認中|pending/.test(String(r.error || '')) || r.pending) { await recheckRegistration(); return; }
+          if (r.reload) {
+            /* 送信トークン・sid の期限切れ：入力はそのままで、裏で取り直して「もう一度押す」だけにする */
+            try {
+              await refreshSid();
+              var again = await api('liff_order_load', { sid:state.sid });
+              if (again && again.ok && again.token) { state.token = again.token; note('準備ができました。入力内容はそのままです。もう一度「会員登録する」を押してください。', true); return; }
+              if (again && again.ok && (again.state === 'order_existing' || again.state === 'done' || again.already)) { done(again); return; }
+            } catch (e3) { if (e3 && e3.locRelogin) return; }
+            note('通信を確認できませんでした。入力内容はそのままです。もう一度「会員登録する」を押してください。', false, logClientError('liff_order_submit_reload', new Error('reload'))); return;
+          }
           note(r.error);
           if (r.fix) {
             drawForm({ state:'form', fields:r.fix, token:r.token || state.token, testMode:state.testMode, profileEmail:r.profileEmail || profileEmail() });
@@ -1383,7 +1396,11 @@
           if (/規約/.test(String(r.error || ''))) { appendProblem($('terms-field'), r.error); focusFirstProblem(); }
           return;
         }
-        if (r.state === 'dup') { showDuplicate(); return; } done(r);
+        if (r.state === 'dup') { showDuplicate(); return; }
+        /* 結果が確定していない（pending）・受付準備中（notready）は「完了」と出さない */
+        if (r.state === 'pending' || r.pending) { await recheckRegistration(); return; }
+        if (r.state === 'notready') { note(r.message || 'ただいま会員登録の受付を準備しています。少し時間をおいて、もう一度お試しください。'); return; }
+        done(r);
       } catch (e2) { if (!e2 || !e2.locRelogin) { logClientError('liff_order_submit', e2); await recheckRegistration(); } } finally { button.disabled = false; button.classList.remove('busy'); button.textContent = '会員登録する'; if (!state.relogging) waitDone(); }
     };
     $('close-button').onclick = closeLiff;
