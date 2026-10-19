@@ -351,7 +351,7 @@
       if (value && values.indexOf(value) < 0) values.push(value);
       pendingRallySave(values);
     }
-    var rallyStampBusy = {}, rallySyncedSid = '';
+    var rallyStampBusy = {}, rallySyncedSid = '', rallyToRegisterTried = {};
     async function rallyRecord(no) {
       /* スタンプ番号と短命sidだけを送る。サーバーの受領を待ってから画面を「済」にする。 */
       var url = new URL(String(cfg.apiUrl || ''), location.href); url.searchParams.set('api', 'liff_rally');
@@ -411,6 +411,15 @@
       } catch (e) {
         /* LINEの再ログイン（画面の読み直し）に入った場合は、案内を出さずに待つ */
         if (e && e.locRelogin) { rallyRetryQueue(no); return false; }
+        /* 代表 10/20 07:43：「店舗登録を完了してから」で止めず、店舗登録の確認画面へそのまま進める。
+           登録が終わって完了画面に戻ると、預かったスタンプを自動で押し直す（1回だけ。2回目も断られたらスタッフ案内）。 */
+        if (e && /店舗登録を完了してから/.test(String(e.rallyMessage || '')) && !rallyToRegisterTried[no] && !state.staffMode && !state.testNew) {
+          rallyToRegisterTried[no] = true; rallyRetryQueue(no); logClientError('liff_rally_to_register', e);
+          note('店舗登録の確認画面へ移ります。登録が終わると、このスタンプは自動で押されます。', true);
+          setTimeout(function () { continueFlow().catch(function (err) { if (!err || !err.locRelogin) fail('店舗情報を確認できませんでした。もう一度お試しください。', 'liff_profile_load', err); }); }, 600);
+          return false;
+        }
+        if (e && /店舗登録を完了してから/.test(String(e.rallyMessage || ''))) { note('スタンプを押せませんでした。お手数ですが、会場スタッフへこの画面をお見せください。', false, logClientError('liff_rally', e)); return false; }
         note((e && e.rallyMessage) || 'スタンプを確認できませんでした。もう一度お試しください。', false, logClientError('liff_rally', e));
         return false;
       } finally { delete rallyStampBusy[no]; }
@@ -527,7 +536,7 @@
       openRally(from); rallyAccept(code);
     }
     function applyPendingRally() {
-      var values = pendingRallyLoad(); if (!values.length) return;
+      var values = pendingRallyLoad(); if (!values.length && !rallyRetryLoad().length) return;
       var from = !$('screen-profile-done').classList.contains('hide') ? 'screen-profile-done' : (!$('screen-done').classList.contains('hide') ? 'screen-done' : '');
       if (!from) return;
       pendingRallySave([]); openRally(from); values.forEach(rallyAccept);
