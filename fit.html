@@ -358,7 +358,12 @@ table.cmp{border-collapse:collapse;width:100%;font-size:12.5px;font-variant-nume
     } catch (e) { return Promise.resolve(false); }
   })();
   /* ホーム（LINEの店舗登録の画面）へ戻る。診断は1ページの中で画面を切り替えているので、ひとつ前＝店舗登録の画面（代表 10/20 07:16） */
-  function goHome(){ if (window.history.length > 1) window.history.back(); else location.href = LINKS.liff; }
+  function goHome(){
+    // ひとつ前が同じサイトの店舗登録画面（index.html）のときだけ戻る。それ以外は店舗登録画面を直接開く（#149 Codex P2）
+    var fromHome = false;
+    try { var r = new URL(document.referrer); fromHome = r.origin === location.origin && /\/(index\.html)?$/.test(r.pathname) && r.pathname.replace(/index\.html$/, '') === location.pathname.replace(/fit\.html$/, ''); } catch (e) {}
+    if (fromHome && window.history.length > 1) window.history.back(); else location.href = LINKS.liff;
+  }
   var HOME_BTN = '<button class="btn quiet home-btn" type="button">← ホームに戻る</button>';
   function bindHome(){ Array.prototype.forEach.call(document.querySelectorAll('.home-btn'), function(b){ b.onclick = goHome; }); }
   function dxCode(plan){
