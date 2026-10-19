@@ -416,7 +416,7 @@
         if (e && /店舗登録を完了してから/.test(String(e.rallyMessage || '')) && !rallyToRegisterTried[no] && !state.staffMode && !state.testNew) {
           rallyToRegisterTried[no] = true; rallyRetryQueue(no); logClientError('liff_rally_to_register', e);
           note('店舗登録の確認画面へ移ります。登録が終わると、このスタンプは自動で押されます。', true);
-          setTimeout(function () { continueFlow().catch(function (err) { if (!err || !err.locRelogin) fail('店舗情報を確認できませんでした。もう一度お試しください。', 'liff_profile_load', err); }); }, 600);
+          setTimeout(function () { continueFlow(null, true).catch(function (err) { if (!err || !err.locRelogin) fail('店舗情報を確認できませんでした。もう一度お試しください。', 'liff_profile_load', err); }); }, 600);
           return false;
         }
         if (e && /店舗登録を完了してから/.test(String(e.rallyMessage || ''))) { note('スタンプを押せませんでした。お手数ですが、会場スタッフへこの画面をお見せください。', false, logClientError('liff_rally', e)); return false; }
@@ -1128,8 +1128,9 @@
       if (r.state === 'dup') return showDuplicate();
       return done(r);
     }
-    async function continueFlow(preloaded) {
-      if (state.mode === 'link') { show('screen-email'); return; }
+    async function continueFlow(preloaded, fromRally) {
+      /* ラリーからの店舗登録の確認（fromRally）は、メール連携のモードでも店舗情報を読み直す（#151 Codex P2） */
+      if (state.mode === 'link' && !fromRally) { show('screen-email'); return; }
       var r = preloaded || await api('liff_profile_load', { sid:state.sid });
       if (!r.ok) throw tagError(new Error('server response'), 'liff_profile_load');
       if (r.state === 'order_existing') return done(r);
