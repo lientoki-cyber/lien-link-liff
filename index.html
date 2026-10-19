@@ -1040,6 +1040,7 @@
     }
     function showChoice() {
       $('choice-register-button').disabled = false; $('choice-link-button').disabled = false;
+      refreshRallyButtons(); /* 保存済みのスタンプ数をボタンに反映（#154 Codex P2） */
       show('screen-choice'); note('', true); waitDone();
     }
     function drawStaffCode() {
