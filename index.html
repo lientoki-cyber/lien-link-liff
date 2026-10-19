@@ -199,9 +199,16 @@
       retry.classList.remove('hide');
     }
     function clearInlineRetry() { var retry = $('inline-retry'); if (retry) retry.classList.add('hide'); }
-    function waitStart(label, progress) {
+    function waitStart(label, progress, opts) {
       clearWaitTimers(); waitStage(label, progress); showNotice();
       state.waitTimers.push(window.setTimeout(function () { $('notice').classList.remove('ok'); text('notice', '通信に時間がかかっています。このままお待ちください。'); }, 3000));
+      if (opts && opts.register) {
+        /* 現場の要望（10/20）：会員登録の送信中は、最初からやり直すボタン（offerRetry）を出さない。
+           15秒で通信状況の確認、30秒で「入力はそのまま・もう一度押しても二重登録にならない」と別の方法を案内する。 */
+        state.waitTimers.push(window.setTimeout(function () { $('notice').classList.remove('ok'); text('notice', '登録中です。通信に時間がかかっています。電波のよい場所で、画面を閉じずにお待ちください。'); }, 15000));
+        state.waitTimers.push(window.setTimeout(function () { $('notice').classList.remove('ok'); text('notice', 'まだ登録の完了を確認できていません。入力内容はそのまま残っています。このままお待ちいただくか、画面が戻ったらもう一度「会員登録する」を押してください（二重に登録されることはありません）。進まない場合はスタッフにお声がけください。'); }, 30000));
+        return;
+      }
       state.waitTimers.push(window.setTimeout(offerRetry, 15000));
     }
     function waitDone() { clearWaitTimers(); $('progress').firstElementChild.style.width = '100%'; window.setTimeout(function () { $('progress').classList.remove('active'); $('progress').firstElementChild.style.width = '0'; }, 220); }
@@ -1365,7 +1372,7 @@
       var orderProblems = visibleFieldProblems().concat(passwordProblems(password, passwordConfirm));
       if (!registration.termsAccepted) orderProblems.push({ key:'terms', message:'会員規約に同意してください。' });
       if (orderProblems.length) { showProblems(orderProblems); return; }
-      try { setBusy(button, true, '登録しています…'); waitStart('会員登録しています（10秒ほど）…', 72); var r = await api('liff_order_submit', { sid:state.sid, token:state.token, edits:edits, password:password, password2:passwordConfirm, emailConfirm:profileEmail(), registration:registration });
+      try { setBusy(button, true, '登録しています…'); waitStart('登録中です。会員登録しています（10秒ほど）…', 72, { register:true }); var r = await api('liff_order_submit', { sid:state.sid, token:state.token, edits:edits, password:password, password2:passwordConfirm, emailConfirm:profileEmail(), registration:registration });
         if (!r.ok) {
           if (/確認できませんでした|確認中|pending/.test(String(r.error || '')) || r.pending) { await recheckRegistration(); return; }
           note(r.error);
