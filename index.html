@@ -95,7 +95,7 @@
     <section class="card complete hide" id="screen-staff-code"><div class="mark">★</div><div class="step">STAFF PARTICIPATION</div><h2>スタッフ参加を確認します</h2><p class="small">EXPO CONNECTの画面に表示された10桁の確認コードを入力してください。QRだけではスタッフ参加になりません。</p><div class="fields"><div class="field"><label for="staff-code">確認コード</label><input id="staff-code" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="10" placeholder="10桁の数字"></div></div><button id="staff-code-button" type="button">スタッフ参加を確認する</button></section>
     <section class="card complete hide" id="screen-staff-experience"><div class="mark">✓</div><div class="step">STEP 2　店舗登録を体験</div><h2>店舗登録の流れを体験できます</h2><p class="small">ここで入力した内容は保存・送信されず、ご注文用の会員登録も作られません。</p><div class="fields"><div class="field"><label for="staff-store">店舗名（体験用）</label><input id="staff-store" type="text" autocomplete="organization"></div><div class="name-row"><div class="field"><label for="staff-last">ご担当者 姓</label><input id="staff-last" type="text" autocomplete="family-name"></div><div class="field"><label for="staff-first">名</label><input id="staff-first" type="text" autocomplete="given-name"></div></div><div class="field"><label for="staff-email">メールアドレス（体験用）</label><input id="staff-email" type="email" inputmode="email" autocomplete="email"></div></div><button id="staff-experience-button" type="button">店舗登録を体験する</button></section>
     <section class="card complete hide" id="screen-staff-done"><div class="mark">✓</div><div class="step">スタッフ参加</div><h2>参加ありがとうございます</h2><p class="small">スタッフ参加として記録しました。ご注文用の会員登録・来場者数・特典・売上の集計には含まれません。</p><button id="staff-rally-button" type="button">スタンプラリーに参加する</button><button class="ghost" id="staff-close-button" type="button">LINEに戻る</button></section>
-    <section class="card hide" id="screen-rally"><div class="step">STAMP RALLY</div><h2 id="rally-title">4つ回って、ご来場特典を受け取ろう</h2><p class="small">各コーナーで「QRを読む」か、スタッフがお伝えする「合言葉」を入れると、スタンプが押されます。</p><p class="small hide" id="rally-order-note">ご注文をご希望の方は、ひとつ前の画面の「今すぐ注文する」から会員登録へ進めます。</p><div class="rally-progress"><b id="rally-count">0</b>／4 そろいました</div><div class="rally-grid" id="rally-grid"></div><div class="rally-goal hide" id="rally-goal"><h3 id="rally-goal-title">4つそろいました</h3><p id="rally-claim-lead">このQRをスタッフにお見せください。読み取ったら特典をお渡しします。</p><div class="claim-qr hide" id="rally-qr" role="img" aria-label="特典受け取り用のQRコード"></div><div class="receipt" id="rally-receipt"></div><button class="hide" id="rally-order-button" type="button">会員登録へ進む</button><p id="rally-goal-note">特典のお渡しは1店舗1回です。数量限定のため、なくなり次第終了します。</p><button class="ghost hide" id="rally-claim-refresh" type="button">表示を更新する</button></div><button class="ghost" id="rally-back-button" type="button">前の画面に戻る</button></section>
+    <section class="card hide" id="screen-rally"><div class="step">STAMP RALLY</div><h2 id="rally-title">4つ回って、ご来場特典を受け取ろう</h2><p class="small">各コーナーで「QRを読む」か、スタッフがお伝えする「合言葉」を入れると、スタンプが押されます。</p><p class="small hide" id="rally-order-note">ご注文をご希望の方は、ひとつ前の画面の「今すぐ注文する」から会員登録へ進めます。</p><div class="rally-progress"><b id="rally-count">0</b>／4 そろいました</div><div class="rally-grid" id="rally-grid"></div><div class="rally-goal hide" id="rally-goal"><h3 id="rally-goal-title">4つそろいました</h3><p id="rally-claim-lead">この画面をスタッフにお見せください。特典をお渡しします。</p><div class="claim-qr hide" id="rally-qr" role="img" aria-label="特典受け取り用のQRコード"></div><div class="receipt" id="rally-receipt"></div><button class="hide" id="rally-order-button" type="button">会員登録へ進む</button><p id="rally-goal-note">特典のお渡しは1店舗1回です。数量限定のため、なくなり次第終了します。</p><button class="ghost hide" id="rally-claim-refresh" type="button">表示を更新する</button></div><button class="ghost" id="rally-back-button" type="button">前の画面に戻る</button></section>
     <div class="word-sheet hide" id="word-sheet" role="dialog" aria-modal="true" aria-labelledby="word-title"><div class="word-box"><h3 id="word-title">合言葉</h3><p>スタッフがお伝えする合言葉を入力してください（漢字・ひらがな・カタカナ、どれでも大丈夫です）。</p><input id="word-input" type="text" autocomplete="off" autocapitalize="off" enterkeyhint="done" maxlength="20" aria-label="合言葉"><button id="word-ok" type="button">スタンプを押す</button><button class="ghost" id="word-close" type="button">閉じる</button></div></div>
     <div class="scan-layer hide" id="scan-layer" role="dialog" aria-modal="true" aria-labelledby="scan-title"><p class="scan-title" id="scan-title">QRを読み取る</p><p class="scan-hint" id="scan-hint">スタッフのQRコードを枠の中に入れてください</p><div class="scan-box"><video id="scan-video" playsinline muted autoplay></video><div class="scan-frame"></div></div><button class="ghost" id="scan-close" type="button">閉じる</button></div>
     <p class="footer">リアン株式会社｜お困りの際は会場スタッフへお声がけください。</p>
@@ -562,7 +562,7 @@
         /* 生成元は同梱ライブラリ、中身は上で形式を確かめた番号だけ */
         $('rally-qr').innerHTML = q.createSvgTag({ cellSize:6, margin:2, scalable:true });
         $('rally-qr').classList.remove('hide');
-        text('rally-claim-lead', 'このQRをスタッフにお見せください。読み取ったら特典をお渡しします。');
+        text('rally-claim-lead', 'この画面をスタッフにお見せください。特典をお渡しします。');
         text('rally-receipt', '');
       } catch (e) { drawClaimFallback(); }
     }
@@ -573,11 +573,10 @@
     function startClaimPollWindow() { claimPollSince = 0; claimRetryCount = 0; $('rally-claim-refresh').classList.add('hide'); $('rally-order-button').classList.add('hide'); }
     function scheduleClaimRefresh(c) {
       stopClaimPolling();
-      /* お渡し操作はスタッフ側で行われるため、この画面を開いたままでも表示を更新する。 */
-      if (!c || c.delivered || $('screen-rally').classList.contains('hide')) { $('rally-claim-refresh').classList.add('hide'); return; }
-      if (!claimPollSince) claimPollSince = Date.now();
-      if (Date.now() - claimPollSince + CLAIM_POLL_MS > CLAIM_POLL_MAX_MS) { $('rally-claim-refresh').classList.remove('hide'); return; }
-      claimPollTimer = setTimeout(function () { ensureClaim(); }, CLAIM_POLL_MS);
+      /* 代表決定 10/18（C）：特典はスタッフが画面を見て渡し、アプリでお渡しを記録しない。
+         QRを出したあとの45秒ごとの自動確認は不要になったため行わない（会期中のサーバー負荷を下げる・10/19 代表指示）。
+         案内の自動送信の再試行は、画面を開き直したとき・スタンプを記録したときにサーバー側で行う。 */
+      $('rally-claim-refresh').classList.add('hide');
     }
     function refreshClaimByHand() {
       /* 連打で回数制限に当たらないよう、押したあと12秒はボタンを無効にする */
