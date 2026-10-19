@@ -79,7 +79,7 @@
 
     <section class="card hide" id="screen-friend"><div class="step">STEP 1　LINE友だち追加</div><h2>公式LINEを友だち追加してください</h2><p class="small">追加後、この画面に戻ると自動で確認して次へ進みます。LINEログインをやり直す必要はありません。</p><a class="button dark" id="friend-button" href="#">公式LINEを友だち追加する</a><button class="ghost" id="friend-check" type="button">追加しました（確認する）</button></section>
 
-    <section class="card hide" id="screen-choice"><div class="step">STEP 2　店舗登録</div><h2>ご利用方法をお選びください</h2><p class="small">はじめての方は店舗情報をご登録ください。すでにリアンの会員登録がある方は、ご登録のメールアドレスでLINEとつなげられます。</p><div class="seminar-card"><p class="seminar-lead">BEAUTYWORLD OSAKA 2026</p><p class="small">展示会のご来場特典をご用意しています。</p></div><button id="choice-register-button" type="button">はじめての方（新規店舗登録）</button><button class="ghost" id="choice-link-button" type="button">会員登録済みの方（メールアドレスで確認）</button></section>
+    <section class="card hide" id="screen-choice"><div class="step">STEP 2　店舗登録</div><h2>ご利用方法をお選びください</h2><p class="small">はじめての方は店舗情報をご登録ください。すでにリアンの会員登録がある方は、ご登録のメールアドレスでLINEとつなげられます。</p><div class="seminar-card"><p class="seminar-lead">BEAUTYWORLD OSAKA 2026</p><p class="small">展示会のご来場特典をご用意しています。</p></div><button id="choice-register-button" type="button">はじめての方（新規店舗登録）</button><button class="ghost" id="choice-link-button" type="button">会員登録済みの方（メールアドレスで確認）</button><button class="fun fun-rally" id="choice-rally-button" type="button"><span class="fun-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="8.5" width="17" height="4" rx="1"/><path d="M5.2 12.5v7.5h13.6v-7.5"/><path d="M12 8.5V20"/><path d="M12 8.5C10.6 5.6 7.4 5 7.4 7.1c0 1.2 1.9 1.4 4.6 1.4z"/><path d="M12 8.5c1.4-2.9 4.6-3.5 4.6-1.4 0 1.2-1.9 1.4-4.6 1.4z"/></svg></span><span class="fun-tx"><span class="fun-ttl"><span class="nb">ブースを巡って、</span><span class="nb"><em>豪華プレゼント</em>をGET！</span></span><small><span class="nb">4つのスタンプを集めて、</span><span class="nb">特別なプレゼントを手に入れよう！</span></small><span class="fun-dots" aria-hidden="true"><i></i><i></i><i></i><i></i></span></span><span class="fun-go" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span></button></section>
 
     <section class="card hide" id="screen-email"><div class="step">STEP 3　ご注文用の会員登録</div><h2>ご登録済みの方</h2><p class="small">メールアドレスへ確認コードをお送りします。</p><div class="fields"><div class="field"><label for="email">メールアドレス</label><input id="email" type="email" inputmode="email" autocomplete="email"></div><div class="field hide" id="code-wrap"><label for="code">確認コード</label><input id="code" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6"></div></div><div class="hide" id="code-support"><p class="small" id="code-expiry" aria-live="polite"></p><p class="small">メールが届くまで、1〜2分ほどかかることがあります。届かない場合は、迷惑メールフォルダもご確認ください。</p><p class="small">わからないときは会場スタッフへお声がけください。</p></div><button id="email-button" type="button">確認コードを送る</button><button class="ghost hide" id="resend-button" type="button">新しいコードを送る</button><button class="ghost hide" id="resume-email-button" type="button">続きから再開する</button><button class="ghost" id="email-new-button" type="button">はじめての方はこちら</button><details class="login-help" id="login-help"><summary>メールアドレス・パスワードを忘れたとき</summary><div class="login-help-body"><div class="login-help-email hide" id="login-help-email"><b>ご登録のメールアドレス</b><p id="login-help-email-value"></p><p>上のメールアドレスで確認コードをお送りください。</p></div><button class="ghost" id="login-help-email-button" type="button">登録済みのメールアドレスを確認する</button><a class="button ghost" id="login-help-password" href="https://lien-ec.i10.bcart.jp/password.php">パスワードを再設定する</a><button class="ghost" id="login-help-line-button" type="button">公式LINEに「ログインできません」と送る</button></div></details></section>
 
@@ -95,7 +95,7 @@
     <section class="card complete hide" id="screen-staff-code"><div class="mark">★</div><div class="step">STAFF PARTICIPATION</div><h2>スタッフ参加を確認します</h2><p class="small">EXPO CONNECTの画面に表示された10桁の確認コードを入力してください。QRだけではスタッフ参加になりません。</p><div class="fields"><div class="field"><label for="staff-code">確認コード</label><input id="staff-code" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="10" placeholder="10桁の数字"></div></div><button id="staff-code-button" type="button">スタッフ参加を確認する</button></section>
     <section class="card complete hide" id="screen-staff-experience"><div class="mark">✓</div><div class="step">STEP 2　店舗登録を体験</div><h2>店舗登録の流れを体験できます</h2><p class="small">ここで入力した内容は保存・送信されず、ご注文用の会員登録も作られません。</p><div class="fields"><div class="field"><label for="staff-store">店舗名（体験用）</label><input id="staff-store" type="text" autocomplete="organization"></div><div class="name-row"><div class="field"><label for="staff-last">ご担当者 姓</label><input id="staff-last" type="text" autocomplete="family-name"></div><div class="field"><label for="staff-first">名</label><input id="staff-first" type="text" autocomplete="given-name"></div></div><div class="field"><label for="staff-email">メールアドレス（体験用）</label><input id="staff-email" type="email" inputmode="email" autocomplete="email"></div></div><button id="staff-experience-button" type="button">店舗登録を体験する</button></section>
     <section class="card complete hide" id="screen-staff-done"><div class="mark">✓</div><div class="step">スタッフ参加</div><h2>参加ありがとうございます</h2><p class="small">スタッフ参加として記録しました。ご注文用の会員登録・来場者数・特典・売上の集計には含まれません。</p><button id="staff-rally-button" type="button">スタンプラリーに参加する</button><button class="ghost" id="staff-close-button" type="button">LINEに戻る</button></section>
-    <section class="card hide" id="screen-rally"><div class="step">STAMP RALLY</div><h2 id="rally-title">4つ回って、ご来場特典を受け取ろう</h2><p class="small">各コーナーで「QRを読む」か、スタッフがお伝えする「合言葉」を入れると、スタンプが押されます。</p><p class="small hide" id="rally-order-note">ご注文をご希望の方は、ひとつ前の画面の「今すぐ注文する」から会員登録へ進めます。</p><div class="rally-progress"><b id="rally-count">0</b>／4 そろいました</div><div class="rally-grid" id="rally-grid"></div><div class="rally-goal hide" id="rally-goal"><h3 id="rally-goal-title">4つそろいました</h3><p id="rally-claim-lead">この画面をスタッフにお見せください。特典をお渡しします。</p><div class="claim-qr hide" id="rally-qr" role="img" aria-label="特典受け取り用のQRコード"></div><div class="receipt" id="rally-receipt"></div><button class="hide" id="rally-order-button" type="button">会員登録へ進む</button><p id="rally-goal-note">特典のお渡しは1店舗1回です。数量限定のため、なくなり次第終了します。</p><button class="ghost hide" id="rally-claim-refresh" type="button">表示を更新する</button></div><button class="ghost" id="rally-back-button" type="button">前の画面に戻る</button></section>
+    <section class="card hide" id="screen-rally"><div class="step">STAMP RALLY</div><h2 id="rally-title">4つ回って、ご来場特典を受け取ろう</h2><p class="small">各コーナーで「QRを読む」か、スタッフがお伝えする「合言葉」を入れると、スタンプが押されます。</p><p class="small hide" id="rally-order-note">ご注文をご希望の方は、ひとつ前の画面の「今すぐ注文する」から会員登録へ進めます。</p><div class="rally-progress"><b id="rally-count">0</b>／4 そろいました</div><div class="rally-grid" id="rally-grid"></div><div class="rally-goal hide" id="rally-goal"><h3 id="rally-goal-title">4つそろいました</h3><p id="rally-claim-lead">この画面をスタッフにお見せください。特典をお渡しします。</p><div class="claim-qr hide" id="rally-qr" role="img" aria-label="特典受け取り用のQRコード"></div><div class="receipt" id="rally-receipt"></div><button class="hide" id="rally-order-button" type="button">会員登録へ進む</button><button class="hide" id="rally-register-button" type="button">店舗登録をして、プレゼントを受け取る（約1分）</button><p id="rally-goal-note">特典のお渡しは1店舗1回です。数量限定のため、なくなり次第終了します。</p><button class="ghost hide" id="rally-claim-refresh" type="button">表示を更新する</button></div><button class="ghost" id="rally-back-button" type="button">前の画面に戻る</button></section>
     <div class="word-sheet hide" id="word-sheet" role="dialog" aria-modal="true" aria-labelledby="word-title"><div class="word-box"><h3 id="word-title">合言葉</h3><p>スタッフがお伝えする合言葉を入力してください（漢字・ひらがな・カタカナ、どれでも大丈夫です）。</p><input id="word-input" type="text" autocomplete="off" autocapitalize="off" enterkeyhint="done" maxlength="20" aria-label="合言葉"><button id="word-ok" type="button">スタンプを押す</button><button class="ghost" id="word-close" type="button">閉じる</button></div></div>
     <div class="scan-layer hide" id="scan-layer" role="dialog" aria-modal="true" aria-labelledby="scan-title"><p class="scan-title" id="scan-title">QRを読み取る</p><p class="scan-hint" id="scan-hint">スタッフのQRコードを枠の中に入れてください</p><div class="scan-box"><video id="scan-video" playsinline muted autoplay></video><div class="scan-frame"></div></div><button class="ghost" id="scan-close" type="button">閉じる</button></div>
     <p class="footer">リアン株式会社｜お困りの際は会場スタッフへお声がけください。</p>
@@ -522,11 +522,17 @@
     }
     function openRallyFromLink(code) {
       /* スマホの標準カメラでQR（LIFFのURL）を読んだとき：未完了なら捨てず、完了後に反映する。 */
-      var from = !$('screen-profile-done').classList.contains('hide') ? 'screen-profile-done' : (!$('screen-done').classList.contains('hide') ? 'screen-done' : '');
+      var from = !$('screen-profile-done').classList.contains('hide') ? 'screen-profile-done' : (!$('screen-done').classList.contains('hide') ? 'screen-done' : (!$('screen-choice').classList.contains('hide') ? 'screen-choice' : ''));
       if (!from) { queueRally(code); note('スタンプをお預かりしました。店舗登録が完了すると反映します。', true); return; }
       openRally(from); rallyAccept(code);
     }
+    var CLAIM_AFTER_REG_KEY = 'loc_claim_after_register_bwj2026';
     function applyPendingRally() {
+      var claimAfter = false; try { claimAfter = sessionStorage.getItem(scopedStorageKey(CLAIM_AFTER_REG_KEY)) === '1'; } catch (ignore) {}
+      if (claimAfter) {
+        var back = !$('screen-profile-done').classList.contains('hide') ? 'screen-profile-done' : (!$('screen-done').classList.contains('hide') ? 'screen-done' : '');
+        if (back) { try { sessionStorage.removeItem(scopedStorageKey(CLAIM_AFTER_REG_KEY)); } catch (ignore) {} openRally(back); }
+      }
       var values = pendingRallyLoad(); if (!values.length) return;
       var from = !$('screen-profile-done').classList.contains('hide') ? 'screen-profile-done' : (!$('screen-done').classList.contains('hide') ? 'screen-done' : '');
       if (!from) return;
@@ -580,7 +586,7 @@
       if (claimPollTimer) { clearTimeout(claimPollTimer); claimPollTimer = 0; }
     }
     /* 5分の数え始めは、画面を開いた（または手動更新した）あと最初にQRの状態を確認できた時点。 */
-    function startClaimPollWindow() { claimPollSince = 0; claimRetryCount = 0; $('rally-claim-refresh').classList.add('hide'); $('rally-order-button').classList.add('hide'); }
+    function startClaimPollWindow() { claimPollSince = 0; claimRetryCount = 0; $('rally-claim-refresh').classList.add('hide'); $('rally-order-button').classList.add('hide'); $('rally-register-button').classList.add('hide'); }
     function scheduleClaimRefresh(c) {
       stopClaimPolling();
       /* 代表決定 10/18（C）：特典はスタッフが画面を見て渡し、アプリでお渡しを記録しない。
@@ -610,6 +616,13 @@
           $('rally-order-button').classList.add('hide'); return;
         }
         $('rally-order-button').classList.add('hide');
+        if (r && !r.ok && r.code === 'needs_registration') {
+          /* 4つそろったが店舗登録がまだ：赤字にせず、店舗登録へ進むボタンを出す（代表 10/20 08:02） */
+          claimRetryCount = 0; $('rally-qr').classList.add('hide');
+          text('rally-claim-lead', '4つそろいました！プレゼントを受け取るには、店舗登録（約1分）をお願いします。');
+          $('rally-register-button').classList.remove('hide'); return;
+        }
+        $('rally-register-button').classList.add('hide');
         if (r && r.ok && r.token) { claimRetryCount = 0; var c = { token:String(r.token), delivered:!!r.delivered }; claimSave(c); drawClaim(c); scheduleClaimRefresh(c); }
         else {
           /* サーバーが返すのは個人情報を含まない分類だけ。画面には案内文だけを表示する。
@@ -638,7 +651,7 @@
     function orderStepPending() { return state.needOrder === true && !state.staffMode; }
     function refreshRallyButtons() {
       var v = rallyLoad(), n = RALLY_SPOTS.filter(function (s) { return v[s.no]; }).length, complete = n === RALLY_SPOTS.length;
-      ['rally-button', 'done-rally-button'].forEach(function (id) {
+      ['rally-button', 'done-rally-button', 'choice-rally-button'].forEach(function (id) {
         var b = $(id); if (!b) return;
         /* アイコンと矢印は残し、文言部分（.fun-tx）だけを書き換える */
         var box = b.querySelector('.fun-tx') || b; while (box.firstChild) box.removeChild(box.firstChild);
@@ -1320,6 +1333,12 @@
     $('order-alternate-login-button').onclick = showExistingLogin;
     $('seminar-button').onclick = function () { openSeminarScreen('screen-profile-done'); };
     $('rally-button').onclick = function () { openRally('screen-profile-done'); };
+    /* 代表 10/20 08:02：店舗登録の前に、すぐスタンプラリーへ参加できる。プレゼントを受け取るときに店舗登録をお願いする。 */
+    $('choice-rally-button').onclick = function () { openRally('screen-choice'); };
+    $('rally-register-button').onclick = function () {
+      try { sessionStorage.setItem(scopedStorageKey(CLAIM_AFTER_REG_KEY), '1'); } catch (ignore) {}
+      $('rally-register-button').classList.add('hide'); show('screen-choice'); note('店舗登録が終わると、プレゼントの受け取り画面に戻ります。', true); window.scrollTo(0, 0);
+    };
     $('done-rally-button').onclick = function () { openRally('screen-done'); };
     /* フィット感診断（fit.html）。店舗登録済み＝stage 2、ご注文用会員登録済み＝stage 3 で最初の関係質問を省く。結果は fit.html が api=liff_diag へ送る。 */
     /* 診断結果の自動記録用に、LINEの本人確認トークンを同じタブの間だけ渡す（fit.html で LIFF が使えない場合の予備）。 */
