@@ -1165,7 +1165,8 @@
           if (orderStart.state === 'profile_done') return startOrder();
           return done(orderStart);
         }
-        await continueFlow(r.registration);
+        /* ラリーから店舗登録の確認へ移る途中でLINEの再ログインが入った場合も、預かったスタンプがあれば同じ道へ戻す（#151 Codex P2） */
+        await continueFlow(r.registration, rallyRetryLoad().length > 0);
       } catch (e) { if (!e || !e.locRelogin) fail('LINEの確認に時間がかかっています。もう一度お試しください。', currentAction, e); }
       finally { state.starting = false; setBusy($('start-button'), false, '確認を開始する'); }
     }
