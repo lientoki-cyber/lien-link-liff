@@ -526,7 +526,7 @@
       if (!from) { queueRally(code); note('スタンプをお預かりしました。店舗登録が完了すると反映します。', true); return; }
       openRally(from); rallyAccept(code);
     }
-    var CLAIM_AFTER_REG_KEY = 'loc_claim_after_register_bwj2026';
+    var CLAIM_AFTER_REG_KEY = 'loc_claim_after_register_bwj2026', rallyAutoToRegisterDone = false;
     function applyPendingRally() {
       var claimAfter = false; try { claimAfter = sessionStorage.getItem(scopedStorageKey(CLAIM_AFTER_REG_KEY)) === '1'; } catch (ignore) {}
       if (claimAfter) {
@@ -566,21 +566,17 @@
     function drawClaimFallback() {
       $('rally-qr').classList.add('hide');
       /* QRが出せないときは、この画面を特典の証明にしない（T01レビュー P1）。スタッフが受付番号でEXPO CONNECTから確認する */
-      text('rally-claim-lead', '受け取り用QRを準備しています。表示されない場合は、スタッフにお声がけください（受付番号で確認します）。');
+      text('rally-claim-lead', '達成を確認しています…。表示が変わらない場合は、会場スタッフにお声がけください（受付番号で確認します）。');
       text('rally-receipt', state.receiptNo ? '受付番号 ' + state.receiptNo : '');
     }
     async function drawClaim(c) {
       if (!c || !/^[A-Za-z0-9_-]{8,64}$/.test(c.token)) { drawClaimFallback(); return; }
       if (c.delivered) { $('rally-qr').classList.add('hide'); text('rally-claim-lead', '特典はお渡し済みです。ご来場ありがとうございました。'); text('rally-receipt', ''); return; }
-      try {
-        await loadQrLib();
-        var q = window.qrcode(0, 'M'); q.addData('LOCCLAIM-' + c.token); q.make();
-        /* 生成元は同梱ライブラリ、中身は上で形式を確かめた番号だけ */
-        $('rally-qr').innerHTML = q.createSvgTag({ cellSize:6, margin:2, scalable:true });
-        $('rally-qr').classList.remove('hide');
-        text('rally-claim-lead', 'この画面をスタッフにお見せください。特典をお渡しします。');
-        text('rally-receipt', '');
-      } catch (e) { drawClaimFallback(); }
+      /* 代表 10/20 08:17：達成後のQR表示は廃止（読み取りの操作をなくす）。達成のお祝いと、スタッフに見せる案内だけ。 */
+      $('rally-qr').classList.add('hide');
+      text('rally-claim-lead', '🎉 スタンプラリー達成、おめでとうございます！この画面を会場スタッフにお見せください。プレゼントをお渡しします。');
+      text('rally-receipt', state.receiptNo ? '受付番号：' + state.receiptNo : '');
+      if (orderStepPending()) $('rally-order-button').classList.remove('hide');
     }
     function stopClaimPolling() {
       if (claimPollTimer) { clearTimeout(claimPollTimer); claimPollTimer = 0; }
@@ -617,10 +613,16 @@
         }
         $('rally-order-button').classList.add('hide');
         if (r && !r.ok && r.code === 'needs_registration') {
-          /* 4つそろったが店舗登録がまだ：赤字にせず、店舗登録へ進むボタンを出す（代表 10/20 08:02） */
+          /* 4つそろったが店舗登録がまだ：達成をお祝いして、そのまま店舗登録の画面へ自動で進める（代表 10/20 08:17）。
+             登録が終わると applyPendingRally がラリー画面に戻し、達成の画面を出す。 */
           claimRetryCount = 0; $('rally-qr').classList.add('hide');
-          text('rally-claim-lead', '4つそろいました！プレゼントを受け取るには、店舗登録（約1分）をお願いします。');
-          $('rally-register-button').classList.remove('hide'); return;
+          text('rally-claim-lead', '🎉 4つそろいました！続けて店舗登録（約1分）へ進みます。登録が終わるとプレゼントを受け取れます。');
+          $('rally-register-button').classList.remove('hide');
+          if (!rallyAutoToRegisterDone) {
+            rallyAutoToRegisterDone = true;
+            setTimeout(function () { if (!$('screen-rally').classList.contains('hide')) $('rally-register-button').click(); }, 1800);
+          }
+          return;
         }
         $('rally-register-button').classList.add('hide');
         if (r && r.ok && r.token) { claimRetryCount = 0; var c = { token:String(r.token), delivered:!!r.delivered }; claimSave(c); drawClaim(c); scheduleClaimRefresh(c); }
@@ -1338,7 +1340,7 @@
     $('choice-rally-button').onclick = function () { openRally('screen-choice'); };
     $('rally-register-button').onclick = function () {
       try { sessionStorage.setItem(scopedStorageKey(CLAIM_AFTER_REG_KEY), '1'); } catch (ignore) {}
-      $('rally-register-button').classList.add('hide'); show('screen-choice'); note('店舗登録が終わると、プレゼントの受け取り画面に戻ります。', true); window.scrollTo(0, 0);
+      $('rally-register-button').classList.add('hide'); refreshRallyButtons(); show('screen-choice'); note('🎉 スタンプラリー達成！続けて店舗登録をお願いします。終わるとプレゼントの受け取り画面に戻ります。', true); window.scrollTo(0, 0);
     };
     $('done-rally-button').onclick = function () { openRally('screen-done'); };
     /* フィット感診断（fit.html）。店舗登録済み＝stage 2、ご注文用会員登録済み＝stage 3 で最初の関係質問を省く。結果は fit.html が api=liff_diag へ送る。 */
