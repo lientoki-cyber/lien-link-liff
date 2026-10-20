@@ -1236,7 +1236,12 @@
           var orderStart = r.registration;
           if (!orderStart || !orderStart.ok) throw tagError(new Error('server response'), 'liff_order_entry');
           if (orderStart.state === 'profile_form' || orderStart.state === 'form') { returnToMeetingIfNeeded(); return drawForm(orderStart); }
-          if (orderStart.state === 'profile_done') { returnToMeetingIfNeeded(); return startOrder(); }
+          if (orderStart.state === 'profile_done') {
+            /* 診断から戻った（目印あり）ときは、注文フォームを先に開かず店舗登録済みの画面＋商談案内に戻す（#164 Codex P2） */
+            var backToMeeting = false; try { backToMeeting = sessionStorage.getItem('lien_return_meeting') === '1'; } catch (ignore) {}
+            if (backToMeeting) { await drawProfileDone(orderStart); returnToMeetingIfNeeded(); return; }
+            return startOrder();
+          }
           await done(orderStart);
           returnToMeetingIfNeeded();
           return;
