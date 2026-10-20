@@ -96,7 +96,7 @@
     <section class="card complete hide" id="screen-staff-code"><div class="mark">★</div><div class="step">STAFF PARTICIPATION</div><h2>スタッフ参加を確認します</h2><p class="small">EXPO CONNECTの画面に表示された10桁の確認コードを入力してください。QRだけではスタッフ参加になりません。</p><div class="fields"><div class="field"><label for="staff-code">確認コード</label><input id="staff-code" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="10" placeholder="10桁の数字"></div></div><button id="staff-code-button" type="button">スタッフ参加を確認する</button></section>
     <section class="card complete hide" id="screen-staff-experience"><div class="mark">✓</div><div class="step">STEP 2　店舗登録を体験</div><h2>店舗登録の流れを体験できます</h2><p class="small">ここで入力した内容は保存・送信されず、ご注文用の会員登録も作られません。</p><div class="fields"><div class="field"><label for="staff-store">店舗名（体験用）</label><input id="staff-store" type="text" autocomplete="organization"></div><div class="name-row"><div class="field"><label for="staff-last">ご担当者 姓</label><input id="staff-last" type="text" autocomplete="family-name"></div><div class="field"><label for="staff-first">名</label><input id="staff-first" type="text" autocomplete="given-name"></div></div><div class="field"><label for="staff-email">メールアドレス（体験用）</label><input id="staff-email" type="email" inputmode="email" autocomplete="email"></div></div><button id="staff-experience-button" type="button">店舗登録を体験する</button></section>
     <section class="card complete hide" id="screen-staff-done"><div class="mark">✓</div><div class="step">スタッフ参加</div><h2>参加ありがとうございます</h2><p class="small">スタッフ参加として記録しました。ご注文用の会員登録・来場者数・特典・売上の集計には含まれません。</p><button id="staff-rally-button" type="button">スタンプラリーに参加する</button><button class="ghost" id="staff-close-button" type="button">LINEに戻る</button></section>
-<section class="card complete hide" id="screen-meeting"><div class="mark">☕</div><div class="step">BWJ OSAKA 2026</div><h2>まずは、商談テーブルへどうぞ</h2><p class="small">セミナーへのご参加、ありがとうございました。燕の巣・商品・導入プランについて、商談テーブルでスタッフがゆっくりご説明します。スタッフがご案内しますので、そのままお待ちください。</p><button id="meeting-register-button" type="button">商談のあとに：店舗登録・ご注文用の会員登録へ進む</button><button class="ghost" id="meeting-rally-button" type="button">スタンプラリーを見る（任意）</button></section><section class="card hide" id="screen-rally"><div class="step">STAMP RALLY</div><h2 id="rally-title">4つ回って、ご来場特典を受け取ろう</h2><p class="small">各コーナーで「QRを読む」か、スタッフがお伝えする「合言葉」を入れると、スタンプが押されます。</p><p class="small hide" id="rally-order-note">ご注文をご希望の方は、ひとつ前の画面の「住所・パスワードを登録して注文へ進む」から会員登録へ進めます。</p><div class="rally-progress"><b id="rally-count">0</b>／4 そろいました</div><div class="rally-grid" id="rally-grid"></div><div class="rally-goal hide" id="rally-goal"><h3 id="rally-goal-title">4つそろいました</h3><p id="rally-claim-lead">この画面をスタッフにお見せください。特典をお渡しします。</p><div class="claim-qr hide" id="rally-qr" role="img" aria-label="特典受け取り用のQRコード"></div><div class="receipt" id="rally-receipt"></div><button class="hide" id="rally-order-button" type="button">会員登録へ進む</button><button class="hide" id="rally-register-button" type="button">店舗登録をして、プレゼントを受け取る（約1分）</button><p id="rally-goal-note">特典のお渡しは1店舗1回です。数量限定のため、なくなり次第終了します。</p><button class="ghost hide" id="rally-claim-refresh" type="button">表示を更新する</button></div><button class="ghost" id="rally-back-button" type="button">前の画面に戻る</button></section>
+<section class="card complete hide" id="screen-meeting"><div class="mark">☕</div><div class="step">BWJ OSAKA 2026</div><h2>まずは、商談テーブルへどうぞ</h2><p class="small">セミナーへのご参加、ありがとうございました。燕の巣・商品・導入プランについて、商談テーブルでスタッフがゆっくりご説明します。スタッフがご案内しますので、そのままお待ちください。</p><button id="meeting-register-button" type="button">商談のあとに：店舗登録・ご注文用の会員登録へ進む</button><button class="ghost" id="meeting-fit-button" type="button">お待ちの間に：かんたん診断（約3分）</button><button class="ghost" id="meeting-rally-button" type="button">スタンプラリーを見る（任意）</button></section><section class="card hide" id="screen-rally"><div class="step">STAMP RALLY</div><h2 id="rally-title">4つ回って、ご来場特典を受け取ろう</h2><p class="small">各コーナーで「QRを読む」か、スタッフがお伝えする「合言葉」を入れると、スタンプが押されます。</p><p class="small hide" id="rally-order-note">ご注文をご希望の方は、ひとつ前の画面の「住所・パスワードを登録して注文へ進む」から会員登録へ進めます。</p><div class="rally-progress"><b id="rally-count">0</b>／4 そろいました</div><div class="rally-grid" id="rally-grid"></div><div class="rally-goal hide" id="rally-goal"><h3 id="rally-goal-title">4つそろいました</h3><p id="rally-claim-lead">この画面をスタッフにお見せください。特典をお渡しします。</p><div class="claim-qr hide" id="rally-qr" role="img" aria-label="特典受け取り用のQRコード"></div><div class="receipt" id="rally-receipt"></div><button class="hide" id="rally-order-button" type="button">会員登録へ進む</button><button class="hide" id="rally-register-button" type="button">店舗登録をして、プレゼントを受け取る（約1分）</button><p id="rally-goal-note">特典のお渡しは1店舗1回です。数量限定のため、なくなり次第終了します。</p><button class="ghost hide" id="rally-claim-refresh" type="button">表示を更新する</button></div><button class="ghost" id="rally-back-button" type="button">前の画面に戻る</button></section>
     <div class="word-sheet hide" id="word-sheet" role="dialog" aria-modal="true" aria-labelledby="word-title"><div class="word-box"><h3 id="word-title">合言葉</h3><p>スタッフがお伝えする合言葉を入力してください（漢字・ひらがな・カタカナ、どれでも大丈夫です）。</p><input id="word-input" type="text" autocomplete="off" autocapitalize="off" enterkeyhint="done" maxlength="20" aria-label="合言葉"><button id="word-ok" type="button">スタンプを押す</button><button class="ghost" id="word-close" type="button">閉じる</button></div></div>
     <div class="scan-layer hide" id="scan-layer" role="dialog" aria-modal="true" aria-labelledby="scan-title"><p class="scan-title" id="scan-title">QRを読み取る</p><p class="scan-hint" id="scan-hint">スタッフのQRコードを枠の中に入れてください</p><div class="scan-box"><video id="scan-video" playsinline muted autoplay></video><div class="scan-frame"></div></div><button class="ghost" id="scan-close" type="button">閉じる</button></div>
     <p class="footer">リアン株式会社｜お困りの際は会場スタッフへお声がけください。</p>
@@ -1210,6 +1210,13 @@
     function startPayload(friendship) {
       return { friend:!!(friendship && friendship.friendFlag), mode:state.mode, ref:state.ref, src:state.src, dx:state.dx, staffTicket:state.staffTicket, testNew:state.testNew };
     }
+    /* 診断（fit.html）から戻ったときは、商談テーブルの案内に戻す（1回だけ・代表 10/21 A） */
+    /* fit.html から history.back で BFCache 復元されたときは start() が走らない。画面はそのまま商談案内なので、目印だけ消す。 */
+    window.addEventListener('pageshow', function (ev) { if (ev && ev.persisted) { try { sessionStorage.removeItem('lien_return_meeting'); } catch (ignore) {} } });
+    function returnToMeetingIfNeeded() {
+      var back = false; try { back = sessionStorage.getItem('lien_return_meeting') === '1'; sessionStorage.removeItem('lien_return_meeting'); } catch (ignore) {}
+      if (back && ['screen-choice', 'screen-profile-done', 'screen-done'].indexOf(currentScreen) >= 0) { rallyBack = currentScreen; showMeeting(); }
+    }
     async function start() {
       var currentAction = 'liff_friendship';
       if (state.starting) return;
@@ -1224,16 +1231,18 @@
         if (!r.ok) { fail(r.error); return; }
         state.sid = r.sid; state.instagramUrl = String(r.instagramUrl || '');
         if (state.mode === 'staff') return routeStaff(r.registration);
-        if (state.mode === 'entry') return routeEntry(r.registration);
+        if (state.mode === 'entry') { await routeEntry(r.registration); returnToMeetingIfNeeded(); return; }
         if (state.mode === 'order') {
           var orderStart = r.registration;
           if (!orderStart || !orderStart.ok) throw tagError(new Error('server response'), 'liff_order_entry');
-          if (orderStart.state === 'order_existing') return done(orderStart);
-          if (orderStart.state === 'profile_form' || orderStart.state === 'form') return drawForm(orderStart);
-          if (orderStart.state === 'profile_done') return startOrder();
-          return done(orderStart);
+          if (orderStart.state === 'profile_form' || orderStart.state === 'form') { returnToMeetingIfNeeded(); return drawForm(orderStart); }
+          if (orderStart.state === 'profile_done') { returnToMeetingIfNeeded(); return startOrder(); }
+          await done(orderStart);
+          returnToMeetingIfNeeded();
+          return;
         }
         await continueFlow(r.registration);
+        returnToMeetingIfNeeded();
       } catch (e) { if (!e || !e.locRelogin) fail('LINEの確認に時間がかかっています。もう一度お試しください。', currentAction, e); }
       finally { state.starting = false; setBusy($('start-button'), false, '確認を開始する'); }
     }
@@ -1436,7 +1445,14 @@
     $('done-rally-button').onclick = function () { openRally('screen-done'); };
     /* フィット感診断（fit.html）。店舗登録済み＝stage 2、ご注文用会員登録済み＝stage 3 で最初の関係質問を省く。結果は fit.html が api=liff_diag へ送る。 */
     /* 診断結果の自動記録用に、LINEの本人確認トークンを同じタブの間だけ渡す（fit.html で LIFF が使えない場合の予備）。 */
-    function openFit(stage) { try { sessionStorage.setItem('lien_fit_idt', String(liff.getIDToken() || '')); } catch (ignore) {} location.href = 'fit.html?stage=' + stage; }
+    function openFit(stage) { try { sessionStorage.setItem('lien_fit_idt', String(liff.getIDToken() || '')); } catch (ignore) {} location.href = 'fit.html' + (stage === '' || stage === undefined ? '' : '?stage=' + stage); }
+    /* 代表 10/21 05:54（A）：商談テーブルの案内画面から、お待ちの間に診断。終わって戻ったら商談テーブルの案内に戻す */
+    var MEETING_RETURN_KEY = 'lien_return_meeting';
+    $('meeting-fit-button').onclick = function () {
+      try { sessionStorage.setItem(MEETING_RETURN_KEY, '1'); } catch (ignore) {}
+      var from = meetingFrom || 'screen-choice';
+      openFit(from === 'screen-choice' ? '' : (from === 'screen-done' ? 3 : 2));
+    };
     $('fit-button').onclick = function () { openFit(2); };
     $('done-fit-button').onclick = function () { openFit(3); };
     $('staff-code-button').onclick = submitStaffCode;
