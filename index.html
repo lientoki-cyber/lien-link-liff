@@ -1233,10 +1233,11 @@
         if (state.mode === 'order') {
           var orderStart = r.registration;
           if (!orderStart || !orderStart.ok) throw tagError(new Error('server response'), 'liff_order_entry');
-          if (orderStart.state === 'order_existing') return done(orderStart);
-          if (orderStart.state === 'profile_form' || orderStart.state === 'form') return drawForm(orderStart);
-          if (orderStart.state === 'profile_done') return startOrder();
-          return done(orderStart);
+          if (orderStart.state === 'profile_form' || orderStart.state === 'form') { returnToMeetingIfNeeded(); return drawForm(orderStart); }
+          if (orderStart.state === 'profile_done') { returnToMeetingIfNeeded(); return startOrder(); }
+          await done(orderStart);
+          returnToMeetingIfNeeded();
+          return;
         }
         await continueFlow(r.registration);
         returnToMeetingIfNeeded();
