@@ -1413,7 +1413,11 @@
       /* 登録状態に合わせて次の画面だけを出す：未登録→店舗登録／店舗登録済み→ご注文用の会員登録／会員登録済み→完了画面 */
       var from = meetingFrom || 'screen-choice';
       if (from === 'screen-choice') { showChoice(); return; }
-      if (from === 'screen-profile-done' && orderStepPending()) { startOrder(); return; }
+      /* 二度押しで liff_order_load を重ねて呼ばない（入力し始めた欄が消えないように・#159 Codex P2） */
+      if (from === 'screen-profile-done' && orderStepPending()) {
+        var btn = $('meeting-register-button'); if (btn.disabled) return; btn.disabled = true;
+        Promise.resolve(startOrder()).finally(function () { btn.disabled = false; }); return;
+      }
       showBackTo(from);
     };
     $('rally-register-button').onclick = function () {
