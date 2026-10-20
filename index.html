@@ -201,8 +201,17 @@
       retry.classList.remove('hide');
     }
     function clearInlineRetry() { var retry = $('inline-retry'); if (retry) retry.classList.add('hide'); }
-    function waitStart(label, progress) {
+    function waitStart(label, progress, opts) {
       clearWaitTimers(); waitStage(label, progress); showNotice();
+      if (opts && opts.register) {
+        /* 代表 10/20 13:27「ぐるぐるして進まない」：会員登録はBカート側の応答に30〜70秒かかることがある（perf 実測 bcart=23〜66秒）。
+           送信中は「もう一度確認する」（最初からやり直し）を出さず、待てばよいことを段階的に伝える。 */
+        clearInlineRetry(); $('retry-button').classList.add('hide');
+        state.waitTimers.push(window.setTimeout(function () { text('notice', 'Bカートで会員を作成しています。混み合っていると1分ほどかかります。画面を閉じずにお待ちください。'); }, 8000));
+        state.waitTimers.push(window.setTimeout(function () { text('notice', 'まだ作成中です（Bカート側が混み合っています）。このままお待ちください。二重に登録されることはありません。'); }, 25000));
+        state.waitTimers.push(window.setTimeout(function () { text('notice', 'もう少しで完了します。画面はそのままでお待ちください。'); }, 50000));
+        return;
+      }
       state.waitTimers.push(window.setTimeout(function () { $('notice').classList.remove('ok'); text('notice', '通信に時間がかかっています。このままお待ちください。'); }, 3000));
       state.waitTimers.push(window.setTimeout(offerRetry, 15000));
     }
@@ -1467,7 +1476,7 @@
       var orderProblems = visibleFieldProblems().concat(passwordProblems(password, passwordConfirm));
       if (!registration.termsAccepted) orderProblems.push({ key:'terms', message:'会員規約に同意してください。' });
       if (orderProblems.length) { showProblems(orderProblems); return; }
-      try { setBusy(button, true, '登録しています…'); waitStart('会員登録しています（10秒ほど）…', 72); var r = await api('liff_order_submit', { sid:state.sid, token:state.token, edits:edits, password:password, password2:passwordConfirm, emailConfirm:profileEmail(), registration:registration });
+      try { setBusy(button, true, '登録しています…'); waitStart('会員登録しています。Bカートで会員を作成中です（30秒〜1分ほど）…', 72, { register:true }); var r = await api('liff_order_submit', { sid:state.sid, token:state.token, edits:edits, password:password, password2:passwordConfirm, emailConfirm:profileEmail(), registration:registration });
         takeToken(r);
         if (!r.ok) {
           if (r.reload) { await refreshOrderToken(); return; }
