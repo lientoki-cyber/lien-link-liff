@@ -96,7 +96,7 @@
     <section class="card complete hide" id="screen-staff-code"><div class="mark">★</div><div class="step">STAFF PARTICIPATION</div><h2>スタッフ参加を確認します</h2><p class="small">EXPO CONNECTの画面に表示された10桁の確認コードを入力してください。QRだけではスタッフ参加になりません。</p><div class="fields"><div class="field"><label for="staff-code">確認コード</label><input id="staff-code" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="10" placeholder="10桁の数字"></div></div><button id="staff-code-button" type="button">スタッフ参加を確認する</button></section>
     <section class="card complete hide" id="screen-staff-experience"><div class="mark">✓</div><div class="step">STEP 2　店舗登録を体験</div><h2>店舗登録の流れを体験できます</h2><p class="small">ここで入力した内容は保存・送信されず、ご注文用の会員登録も作られません。</p><div class="fields"><div class="field"><label for="staff-store">店舗名（体験用）</label><input id="staff-store" type="text" autocomplete="organization"></div><div class="name-row"><div class="field"><label for="staff-last">ご担当者 姓</label><input id="staff-last" type="text" autocomplete="family-name"></div><div class="field"><label for="staff-first">名</label><input id="staff-first" type="text" autocomplete="given-name"></div></div><div class="field"><label for="staff-email">メールアドレス（体験用）</label><input id="staff-email" type="email" inputmode="email" autocomplete="email"></div></div><button id="staff-experience-button" type="button">店舗登録を体験する</button></section>
     <section class="card complete hide" id="screen-staff-done"><div class="mark">✓</div><div class="step">スタッフ参加</div><h2>参加ありがとうございます</h2><p class="small">スタッフ参加として記録しました。ご注文用の会員登録・来場者数・特典・売上の集計には含まれません。</p><button id="staff-rally-button" type="button">スタンプラリーに参加する</button><button class="ghost" id="staff-close-button" type="button">LINEに戻る</button></section>
-<section class="card hide" id="screen-rally"><div class="step">STAMP RALLY</div><h2 id="rally-title">4つ回って、ご来場特典を受け取ろう</h2><p class="small">各コーナーで「QRを読む」か、スタッフがお伝えする「合言葉」を入れると、スタンプが押されます。</p><p class="small hide" id="rally-order-note">ご注文をご希望の方は、ひとつ前の画面の「住所・パスワードを登録して注文へ進む」から会員登録へ進めます。</p><div class="rally-progress"><b id="rally-count">0</b>／4 そろいました</div><div class="rally-grid" id="rally-grid"></div><div class="rally-goal hide" id="rally-goal"><h3 id="rally-goal-title">4つそろいました</h3><p id="rally-claim-lead">この画面をスタッフにお見せください。特典をお渡しします。</p><div class="claim-qr hide" id="rally-qr" role="img" aria-label="特典受け取り用のQRコード"></div><div class="receipt" id="rally-receipt"></div><button class="hide" id="rally-order-button" type="button">会員登録へ進む</button><button class="hide" id="rally-register-button" type="button">店舗登録をして、プレゼントを受け取る（約1分）</button><p id="rally-goal-note">特典のお渡しは1店舗1回です。数量限定のため、なくなり次第終了します。</p><button class="ghost hide" id="rally-claim-refresh" type="button">表示を更新する</button></div><button class="ghost" id="rally-back-button" type="button">前の画面に戻る</button></section>
+<section class="card complete hide" id="screen-meeting"><div class="mark">☕</div><div class="step">BWJ OSAKA 2026</div><h2>まずは、商談テーブルへどうぞ</h2><p class="small">セミナーへのご参加、ありがとうございました。燕の巣・商品・導入プランについて、商談テーブルでスタッフがゆっくりご説明します。スタッフがご案内しますので、そのままお待ちください。</p><button id="meeting-register-button" type="button">商談のあとに：店舗登録・ご注文用の会員登録へ進む</button><button class="ghost" id="meeting-rally-button" type="button">スタンプラリーを見る（任意）</button></section><section class="card hide" id="screen-rally"><div class="step">STAMP RALLY</div><h2 id="rally-title">4つ回って、ご来場特典を受け取ろう</h2><p class="small">各コーナーで「QRを読む」か、スタッフがお伝えする「合言葉」を入れると、スタンプが押されます。</p><p class="small hide" id="rally-order-note">ご注文をご希望の方は、ひとつ前の画面の「住所・パスワードを登録して注文へ進む」から会員登録へ進めます。</p><div class="rally-progress"><b id="rally-count">0</b>／4 そろいました</div><div class="rally-grid" id="rally-grid"></div><div class="rally-goal hide" id="rally-goal"><h3 id="rally-goal-title">4つそろいました</h3><p id="rally-claim-lead">この画面をスタッフにお見せください。特典をお渡しします。</p><div class="claim-qr hide" id="rally-qr" role="img" aria-label="特典受け取り用のQRコード"></div><div class="receipt" id="rally-receipt"></div><button class="hide" id="rally-order-button" type="button">会員登録へ進む</button><button class="hide" id="rally-register-button" type="button">店舗登録をして、プレゼントを受け取る（約1分）</button><p id="rally-goal-note">特典のお渡しは1店舗1回です。数量限定のため、なくなり次第終了します。</p><button class="ghost hide" id="rally-claim-refresh" type="button">表示を更新する</button></div><button class="ghost" id="rally-back-button" type="button">前の画面に戻る</button></section>
     <div class="word-sheet hide" id="word-sheet" role="dialog" aria-modal="true" aria-labelledby="word-title"><div class="word-box"><h3 id="word-title">合言葉</h3><p>スタッフがお伝えする合言葉を入力してください（漢字・ひらがな・カタカナ、どれでも大丈夫です）。</p><input id="word-input" type="text" autocomplete="off" autocapitalize="off" enterkeyhint="done" maxlength="20" aria-label="合言葉"><button id="word-ok" type="button">スタンプを押す</button><button class="ghost" id="word-close" type="button">閉じる</button></div></div>
     <div class="scan-layer hide" id="scan-layer" role="dialog" aria-modal="true" aria-labelledby="scan-title"><p class="scan-title" id="scan-title">QRを読み取る</p><p class="scan-hint" id="scan-hint">スタッフのQRコードを枠の中に入れてください</p><div class="scan-box"><video id="scan-video" playsinline muted autoplay></video><div class="scan-frame"></div></div><button class="ghost" id="scan-close" type="button">閉じる</button></div>
     <p class="footer">リアン株式会社｜お困りの際は会場スタッフへお声がけください。</p>
@@ -165,7 +165,7 @@
       if (index >= 0) screenTrail = screenTrail.slice(0, index);
       renderScreen(id || 'screen-start');
     }
-    function _show(id) { ['screen-start','screen-friend','screen-choice','screen-email','screen-duplicate','screen-register','screen-profile-done','screen-done','screen-pending','screen-seminar','screen-staff-code','screen-staff-experience','screen-staff-done','screen-rally'].forEach(function (x) { $(x).classList.toggle('hide', x !== id); }); }
+    function _show(id) { ['screen-start','screen-friend','screen-choice','screen-email','screen-duplicate','screen-register','screen-profile-done','screen-done','screen-pending','screen-seminar','screen-staff-code','screen-staff-experience','screen-staff-done','screen-rally','screen-meeting'].forEach(function (x) { $(x).classList.toggle('hide', x !== id); }); }
     /* サーバーやブラウザの内部エラー文（英語の例外メッセージ）は画面に出さない */
     function friendlyMessage(message) {
       var m = String(message || '');
@@ -409,7 +409,10 @@
         }
         /* 再送で待つ間に別のスタンプが保存されていても消さないよう、保存直前に読み直す */
         v = rallyLoad(); v[no] = Date.now(); rallySave(v); rallySyncedSid = state.sid;
-        note(no + '番のスタンプを押しました。', true); drawRally(); return true;
+        note(no + '番のスタンプを押しました。', true); drawRally();
+        /* 代表 10/20 09:21：セミナー（1番）のあとはスタンプラリーへ進めず、商談テーブルへの案内を最優先で出す */
+        if (Number(no) === 1 && !state.staffMode && RALLY_SPOTS.filter(function (sp) { return rallyLoad()[sp.no]; }).length < RALLY_SPOTS.length) showMeeting();
+        return true;
       } catch (e) {
         /* LINEの再ログイン（画面の読み直し）に入った場合は、案内を出さずに待つ */
         if (e && e.locRelogin) { rallyRetryQueue(no); return false; }
@@ -528,7 +531,23 @@
       if (!from) { queueRally(code); note('スタンプをお預かりしました。店舗登録が完了すると反映します。', true); return; }
       openRally(from); rallyAccept(code);
     }
-    var CLAIM_AFTER_REG_KEY = 'loc_claim_after_register_bwj2026', rallyAutoToRegisterDone = false;
+    var CLAIM_AFTER_REG_KEY = 'loc_claim_after_register_bwj2026', rallyAutoToRegisterDone = false, meetingFrom = '';
+    function showMeeting() { meetingFrom = rallyBack; show('screen-meeting'); note('', true); window.scrollTo(0, 0); }
+    /* 代表 10/20 09:21：会員登録がうまく進まないときの予備導線（発注サイトの登録ページ）。
+       入力はもう一度必要で、LINEとの連携は自動では行われない（後日、メールアドレスで照合する）ことを明示する。 */
+    var BCART_REGIST_URL = 'https://lien-ec.i10.bcart.jp/regist.php';
+    function showRegistFallback() {
+      var box = $('regist-fallback');
+      if (!box) {
+        box = document.createElement('div'); box.id = 'regist-fallback'; box.className = 'seminar-card';
+        var p = document.createElement('p'); p.className = 'small'; p.textContent = 'うまく進まない場合は、発注サイトの会員登録ページからも登録できます。その場合は住所などをもう一度ご入力ください（LINEとのつながりは、後日メールアドレスで確認します）。';
+        var b = document.createElement('button'); b.type = 'button'; b.className = 'ghost'; b.textContent = '発注サイトの会員登録ページを開く';
+        b.onclick = function () { logClientError('regist_fallback_open', new Error('fallback')); try { liff.openWindow({ url:BCART_REGIST_URL, external:true }); } catch (e) { location.href = BCART_REGIST_URL; } };
+        box.appendChild(p); box.appendChild(b);
+      }
+      var screen = $('screen-register'); if (screen && box.parentNode !== screen) screen.appendChild(box);
+      box.classList.remove('hide');
+    }
     function applyPendingRally() {
       var claimAfter = false; try { claimAfter = sessionStorage.getItem(scopedStorageKey(CLAIM_AFTER_REG_KEY)) === '1'; } catch (ignore) {}
       if (claimAfter) {
@@ -1351,6 +1370,7 @@
       }
       waitDone();
       if (fromPending) { note('まだ確認中です。数分後にもう一度お試しください。お急ぎの場合はブースのスタッフにお声がけください。'); return; }
+      showRegistFallback();
       note('登録の結果をまだ確認できていません。入力内容はそのまま残っています。電波のよい場所で、もう一度「会員登録する」を押してください（二重に登録されることはありません）。');
     }
     async function startOrder() {
@@ -1388,6 +1408,14 @@
     $('rally-button').onclick = function () { openRally('screen-profile-done'); };
     /* 代表 10/20 08:02：店舗登録の前に、すぐスタンプラリーへ参加できる。プレゼントを受け取るときに店舗登録をお願いする。 */
     $('choice-rally-button').onclick = function () { openRally('screen-choice'); };
+    $('meeting-rally-button').onclick = function () { openRally(meetingFrom || 'screen-choice'); };
+    $('meeting-register-button').onclick = function () {
+      /* 登録状態に合わせて次の画面だけを出す：未登録→店舗登録／店舗登録済み→ご注文用の会員登録／会員登録済み→完了画面 */
+      var from = meetingFrom || 'screen-choice';
+      if (from === 'screen-choice') { showChoice(); return; }
+      if (from === 'screen-profile-done' && orderStepPending()) { startOrder(); return; }
+      showBackTo(from);
+    };
     $('rally-register-button').onclick = function () {
       try { sessionStorage.setItem(scopedStorageKey(CLAIM_AFTER_REG_KEY), '1'); } catch (ignore) {}
       $('rally-register-button').classList.add('hide'); refreshRallyButtons(); show('screen-choice'); note('🎉 スタンプラリー達成！続けて店舗登録をお願いします。終わるとプレゼントの受け取り画面に戻ります。', true); window.scrollTo(0, 0);
@@ -1446,6 +1474,7 @@
           if (/確認できませんでした|確認中|pending/.test(String(r.error || '')) || r.pending) { await recheckRegistration(); return; }
           var retryAfter = Number(r.retryAfter || 0);
           note(String(r.error || '') + (retryAfter > 0 ? '（約' + Math.ceil(retryAfter) + '秒後にもう一度お試しください）' : ''));
+          if (!r.fix) showRegistFallback();
           if (r.fix) {
             drawForm({ state:'form', fields:r.fix, token:r.token || state.token, testMode:state.testMode, profileEmail:r.profileEmail || profileEmail() });
             var serverProblems = r.fix.filter(function (field) { return field.problem; }).map(function (field) { return { key:field.key, message:field.problemText || '入力内容をご確認ください。' }; });
