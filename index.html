@@ -536,7 +536,7 @@
     /* 代表 10/20 09:21：会員登録がうまく進まないときの予備導線（発注サイトの登録ページ）。
        入力はもう一度必要で、LINEとの連携は自動では行われない（後日、メールアドレスで照合する）ことを明示する。 */
     var BCART_REGIST_URL = 'https://lien-ec.i10.bcart.jp/regist.php';
-    function showRegistFallback() {
+    function showRegistFallback(screenId) {
       var box = $('regist-fallback');
       if (!box) {
         box = document.createElement('div'); box.id = 'regist-fallback'; box.className = 'seminar-card';
@@ -545,7 +545,7 @@
         b.onclick = function () { logClientError('regist_fallback_open', new Error('fallback')); try { liff.openWindow({ url:BCART_REGIST_URL, external:true }); } catch (e) { location.href = BCART_REGIST_URL; } };
         box.appendChild(p); box.appendChild(b);
       }
-      var screen = $('screen-register'); if (screen && box.parentNode !== screen) screen.appendChild(box);
+      var screen = $(screenId || 'screen-register'); if (screen && box.parentNode !== screen) screen.appendChild(box);
       box.classList.remove('hide');
     }
     function applyPendingRally() {
@@ -1369,7 +1369,7 @@
         } catch (ignore) {}
       }
       waitDone();
-      if (fromPending) { note('まだ確認中です。数分後にもう一度お試しください。お急ぎの場合はブースのスタッフにお声がけください。'); return; }
+      if (fromPending) { showRegistFallback('screen-pending'); note('まだ確認中です。数分後にもう一度お試しください。お急ぎの場合はブースのスタッフにお声がけください。'); return; }
       showRegistFallback();
       note('登録の結果をまだ確認できていません。入力内容はそのまま残っています。電波のよい場所で、もう一度「会員登録する」を押してください（二重に登録されることはありません）。');
     }
@@ -1474,7 +1474,8 @@
           if (/確認できませんでした|確認中|pending/.test(String(r.error || '')) || r.pending) { await recheckRegistration(); return; }
           var retryAfter = Number(r.retryAfter || 0);
           note(String(r.error || '') + (retryAfter > 0 ? '（約' + Math.ceil(retryAfter) + '秒後にもう一度お試しください）' : ''));
-          if (!r.fix) showRegistFallback();
+          /* 入力の直し（項目・パスワード・規約）で済むときは予備導線を出さない（#159 Codex P2） */
+          if (!r.fix && !/パスワード|規約/.test(String(r.error || ''))) showRegistFallback();
           if (r.fix) {
             drawForm({ state:'form', fields:r.fix, token:r.token || state.token, testMode:state.testMode, profileEmail:r.profileEmail || profileEmail() });
             var serverProblems = r.fix.filter(function (field) { return field.problem; }).map(function (field) { return { key:field.key, message:field.problemText || '入力内容をご確認ください。' }; });
