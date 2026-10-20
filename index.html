@@ -410,8 +410,8 @@
         /* 再送で待つ間に別のスタンプが保存されていても消さないよう、保存直前に読み直す */
         v = rallyLoad(); v[no] = Date.now(); rallySave(v); rallySyncedSid = state.sid;
         note(no + '番のスタンプを押しました。', true); drawRally();
-        /* 代表 10/20 09:21：セミナー（1番）のあとはスタンプラリーへ進めず、商談テーブルへの案内を最優先で出す */
-        if (Number(no) === 1 && !state.staffMode && RALLY_SPOTS.filter(function (sp) { return rallyLoad()[sp.no]; }).length < RALLY_SPOTS.length) showMeeting();
+        /* 代表 10/20 09:21：セミナー（1番）のあとはスタンプラリーへ進めず、商談テーブルへの案内を最優先で出す（まだラリー画面にいるときだけ・#159 Codex P2） */
+        if (Number(no) === 1 && !state.staffMode && currentScreen === 'screen-rally' && RALLY_SPOTS.filter(function (sp) { return rallyLoad()[sp.no]; }).length < RALLY_SPOTS.length) showMeeting();
         return true;
       } catch (e) {
         /* LINEの再ログイン（画面の読み直し）に入った場合は、案内を出さずに待つ */
