@@ -1211,6 +1211,8 @@
       return { friend:!!(friendship && friendship.friendFlag), mode:state.mode, ref:state.ref, src:state.src, dx:state.dx, staffTicket:state.staffTicket, testNew:state.testNew };
     }
     /* 診断（fit.html）から戻ったときは、商談テーブルの案内に戻す（1回だけ・代表 10/21 A） */
+    /* fit.html から history.back で BFCache 復元されたときは start() が走らない。画面はそのまま商談案内なので、目印だけ消す。 */
+    window.addEventListener('pageshow', function (ev) { if (ev && ev.persisted) { try { sessionStorage.removeItem('lien_return_meeting'); } catch (ignore) {} } });
     function returnToMeetingIfNeeded() {
       var back = false; try { back = sessionStorage.getItem('lien_return_meeting') === '1'; sessionStorage.removeItem('lien_return_meeting'); } catch (ignore) {}
       if (back && ['screen-choice', 'screen-profile-done', 'screen-done'].indexOf(currentScreen) >= 0) { rallyBack = currentScreen; showMeeting(); }
