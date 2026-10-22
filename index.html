@@ -1218,7 +1218,7 @@
     window.addEventListener('pageshow', function (ev) { if (ev && ev.persisted) { try { sessionStorage.removeItem('lien_return_meeting'); } catch (ignore) {} } });
     function returnToMeetingIfNeeded() {
       var back = false; try { back = sessionStorage.getItem('lien_return_meeting') === '1'; sessionStorage.removeItem('lien_return_meeting'); } catch (ignore) {}
-      if (back && ['screen-choice', 'screen-profile-done', 'screen-done'].indexOf(currentScreen) >= 0) { rallyBack = currentScreen; showMeeting(); }
+      if (back && ['screen-choice', 'screen-profile-done', 'screen-done', 'screen-pending'].indexOf(currentScreen) >= 0) { rallyBack = currentScreen; showMeeting(); } /* 受付完了（screen-pending）から診断へ行った人も戻す（#169 Codex P2） */
     }
     async function start() {
       var currentAction = 'liff_friendship';
